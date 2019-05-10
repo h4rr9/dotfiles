@@ -1,0 +1,21 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"AdvancedNewFile",
+		"Anaconda",
+		"GitGutter",
+		"MarkdownPreview",
+		"Package Control",
+		"Predawn",
+		"requirementstxt",
+		"SideBarEnhancements",
+		"SublimeLinter",
+		"SublimeLinter-pycodestyle",
+		"SublimeLinter-pyflakes",
+		"Theme - Cyanide"
+	]
+}
