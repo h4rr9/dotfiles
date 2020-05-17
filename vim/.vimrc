@@ -1,97 +1,88 @@
-" Don't try to be vi compatible
-set nocompatible
+call plug#begin('~/.config/nvim/bundle')
 
-" Helps force plugins to load correctly when it is turned back on below
+
+Plug 'wikitopian/hardmode'
+Plug 'gruvbox-community/gruvbox'
+
+
+call plug#end()
+
+
+" basics
 filetype off
-
-" TODO: Load plugins here (pathogen or vundle)
-
-" Turn on syntax highlighting
-syntax on
-
-" For plugins to load correctly
 filetype plugin indent on
-
-" TODO: Pick a leader key
-" let mapleader = ","
-
-" Security
-set modelines=0
-
-" Show line numbers
+syntax on 
 set number
-
-" Show file stats
-set ruler
-
-" Encoding
-set encoding=utf-8
-
-" Whitespace
-set wrap
-set textwidth=79
-set formatoptions=tcqrn1
-set tabstop=2
-set shiftwidth=2
-set softtabstop=2
-set expandtab
-set noshiftround
-
-" Cursor motion
-set scrolloff=3
-set backspace=indent,eol,start
-set matchpairs+=<:> " use % to jump between pairs
-runtime! macros/matchit.vim
-
-" Move up/down editor lines
-nnoremap j gj
-nnoremap k gk
-
-" Allow hidden buffers
-set hidden
-
-" Rendering
-set ttyfast
-
-" Status bar
-set laststatus=2
-
-" Last line
-set showmode
-set showcmd
-
-" Searching
-nnoremap / /\v
-vnoremap / /\v
-set hlsearch
+set relativenumber
 set incsearch
 set ignorecase
 set smartcase
-set showmatch
-map <leader><space> :let @/=''<cr> " clear search
+set nohlsearch
+set tabstop=4
+set softtabstop=0
+set shiftwidth=4
+set shiftround
+set expandtab
+set nobackup
+set noswapfile
+set nowritebackup
+set nowrap
+set tw=79
+set fo-=t
+set cursorline
 
-" Remap help key.
-inoremap <F1> <ESC>:set invfullscreen<CR>a
-nnoremap <F1> :set invfullscreen<CR>
-vnoremap <F1> :set invfullscreen<CR>
 
-" Textmate holdouts
+"Better Copy Paste
+set pastetoggle=<F2>
+set clipboard=unnamed
 
-" Formatting
-map <leader>q gqip
 
-" Visualize tabs and newlines
-set listchars=tab:▸\ ,eol:¬
-" Uncomment this to enable by default:
-" set list " To enable by default
-" Or use your leader key + l to toggle on/off
-map <leader>l :set list!<CR> " Toggle tabs and EOL
+"Normal backspace
+set bs=2
 
-" Color scheme (terminal)
-set t_Co=256
+
+"Indent block
+vmap <Tab> >gv
+vmap <S-Tab> <gv
+
+
+"map leader key
+noremap <Space> <Nop>
+let mapleader = "\<Space>"
+
+
+"Quick Exit
+noremap <Leader>e :wq!<CR> "current tab
+noremap <Leader>E :wqa!<CR> "all tabs
+
+
+"move around windows
+map <c-j> <c-w>j
+map <c-k> <c-w>k
+map <c-l> <c-w>l
+map <c-h> <c-w>h
+
+
+"move around tabs
+map <Leader>n <esc>:tabprevious<CR>
+map <Leader>m <esc>:tabnext<CR>
+
+"Sort function to Key
+vnoremap <Leader>s :sort<CR>
+
+
+"Theme
+syntax enable
 set background=dark
-let g:solarized_termcolors=256
-let g:solarized_termtrans=1
-" put https://raw.github.com/altercation/vim-colors-solarized/master/colors/solarized.vim
-" in ~/.vim/colors/ and uncomment:
-colorscheme solarized
+let g:gruvbox_contrast_dark = 'hard'
+colorscheme gruvbox
+
+
+"HardMode Plugin
+let g:HardMode_level = 'wannabe'
+let g:HardMode_hardmodeMsg = 'Don''t use this!'
+autocmd VimEnter,BufNewFile,BufReadPost * silent! call HardMode()
+
+
+"Automatic loading of init.vim
+autocmd! bufwritepost init.vim source %
