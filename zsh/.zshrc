@@ -1,8 +1,8 @@
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/hduser/.oh-my-zsh"
+export ZSH="/home/pi/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -68,7 +68,8 @@ ZSH_THEME="spaceship"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git zsh-completions zsh-autosuggestions zsh-syntax-highlighting)
+autoload -U compinit && compinit
 
 source $ZSH/oh-my-zsh.sh
 
@@ -77,16 +78,16 @@ source $ZSH/oh-my-zsh.sh
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
-export LANG=en_US.UTF-8
+# export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-#if [[ -n $SSH_CONNECTION ]]; then
-#  export EDITOR='vim'
-#else
-#  export EDITOR='mvim'
-#fi
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
 
-export EDITOR='vim'
+export EDITOR='nvim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -99,30 +100,27 @@ export EDITOR='vim'
 # Example aliases
 alias zshconfig="mate ~/.zshrc"
 alias ohmyzsh="mate ~/.oh-my-zsh"
-alias cls="clear"
 alias celar="clear"
+alias cls="clear"
 alias ls="ls -l --color"
 alias fs='wmctrl -r ':ACTIVE:' -b toggle,fullscreen'
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-export HADOOP_INSTALL=/usr/local/hadoop/hadoop-2.6.5
-export PATH=$PATH:$HADOOP_INSTALL/bin
-export PATH=$PATH:$HADOOP_INSTALL/sbin
-export HADOOP_MAPRED_HOME=$HADOOP_INSTALL
-export HADOOP_COMMON_HOME=$HADOOP_INSTALL
-export HADOOP_HDFS_HOME=$HADOOP_INSTALL
-export YARN_HOME=$HADOOP_INSTALL
-export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_INSTALL/lib/native
-export HADOOP_OPTS="-Djava.library.path=$HADOOP_INSTALL/lib"
-export HIVE_HOME=/usr/lib/hive/
-export PATH=$PATH:$HIVE_HOME/bin
-export HADOOP_USER_CLASSPATH_FIRST=true
+alias vim="nvim"
 
-export HADOOP_CLASSPATH=$JAVA_HOME/lib/tools.jar
+# export SPACESHIP_EXEC_TIME_SHOW=false
+# export SPACESHIP_PACKAGE_SHOW=false
+# export SPACESHIP_XCODE_SHOW_LOCAL=false
+# export SPACESHIP_XCODE_SHOW_GLOBAL=false
+# export SPACESHIP_JULIA_SHOW=false
+# export SPACESHIP_DOCKER_SHOW=false
+# export SPACESHIP_EMBER_SHOW=false
+# export SPACESHIP_VI_MODE_SHOW=false
 
-export PIG_INSTALL=/usr/local/pig
-export PATH=$PATH:$PIG_INSTALL/bin
+# export PATH=$HOME/.local/bin:$PATH
+# export WORKON_HOME=$HOME/.virtualenvs
+# export PROJECT_HOME=$HOME/Devel
+# export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+# export VIRTUALENVWRAPPER_VIRTUALENV=/home/pi/.local/bin/virtualenv
+# source /home/pi/.local/bin/virtualenvwrapper.sh
 
-SPACESHIP_TIME_SHOW=true
-SPACESHIP_USER_SHOW=always
-export SCRIPTS_HOME=/home/hduser/scripts
-export PATH=$PATH:$SCRIPTS_HOME
+
+
