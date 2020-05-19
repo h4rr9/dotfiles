@@ -1,8 +1,8 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:/usr/share/:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/pi/.oh-my-zsh"
+export ZSH="/home/h4rry/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -68,10 +68,11 @@ ZSH_THEME="spaceship"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-completions zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git zsh-completions zsh-syntax-highlighting zsh-autosuggestions )
 autoload -U compinit && compinit
 
 source $ZSH/oh-my-zsh.sh
+
 
 # User configuration
 
@@ -79,7 +80,7 @@ source $ZSH/oh-my-zsh.sh
 
 # You may need to manually set your language environment
 export LANG=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8 
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
@@ -87,8 +88,6 @@ export LC_CTYPE=en_US.UTF-8
 # else
 #   export EDITOR='mvim'
 # fi
-
-export EDITOR='nvim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -101,27 +100,55 @@ export EDITOR='nvim'
 # Example aliases
 alias zshconfig="mate ~/.zshrc"
 alias ohmyzsh="mate ~/.oh-my-zsh"
+alias dc='cd'
 alias celar="clear"
 alias cls="clear"
 alias ls="ls -l --color"
 alias fs='wmctrl -r ':ACTIVE:' -b toggle,fullscreen'
 alias vim="nvim"
+alias v='nvim'
+alias clipboard='xclip -selection c'
 
-# export SPACESHIP_EXEC_TIME_SHOW=false
-# export SPACESHIP_PACKAGE_SHOW=false
-# export SPACESHIP_XCODE_SHOW_LOCAL=false
-# export SPACESHIP_XCODE_SHOW_GLOBAL=false
-# export SPACESHIP_JULIA_SHOW=false
-# export SPACESHIP_DOCKER_SHOW=false
-# export SPACESHIP_EMBER_SHOW=false
-# export SPACESHIP_VI_MODE_SHOW=false
+export SPACESHIP_PROMPT_ADD_NEWLINE=false
+export SPACESHIP_PROMPT_SEPARATE_LINE=false
+export SPACESHIP_HG_SHOW=false
+export SPACESHIP_PACKAGE_SHOW=false
+export SPACESHIP_NODE_SHOW=false
+export SPACESHIP_RUBY_SHOW=false
+export SPACESHIP_ELM_SHOW=false
+export SPACESHIP_ELIXIR_SHOW=false
+export SPACESHIP_XCODE_SHOW_LOCAL=false
+export SPACESHIP_SWIFT_SHOW_LOCAL=false
+export SPACESHIP_GOLANG_SHOW=false
+export SPACESHIP_PHP_SHOW=false
+export SPACESHIP_RUST_SHOW=false
+export SPACESHIP_JULIA_SHOW=false
+export SPACESHIP_DOCKER_SHOW=false
+export SPACESHIP_DOCKER_CONTEXT_SHOW=false
+export SPACESHIP_AWS_SHOW=false
+export SPACESHIP_CONDA_SHOW=false
+export SPACESHIP_PYENV_SHOW=false
+export SPACESHIP_DOTNET_SHOW=false
+export SPACESHIP_EMBER_SHOW=false
+export SPACESHIP_KUBECONTEXT_SHOW=false
+export SPACESHIP_TERRAFORM_SHOW=false
+export SPACESHIP_TERRAFORM_SHOW=false
+export SPACESHIP_VI_MODE_SHOW=false
+export SPACESHIP_JOBS_SHOW=false
+export SPACESHIP_EXEC_TIME_SHOW=false
 
-# export PATH=$HOME/.local/bin:$PATH
-# export WORKON_HOME=$HOME/.virtualenvs
-# export PROJECT_HOME=$HOME/Devel
-# export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
-# export VIRTUALENVWRAPPER_VIRTUALENV=/home/pi/.local/bin/virtualenv
-# source /home/pi/.local/bin/virtualenvwrapper.sh
+export PATH=$HOME/.local/bin:$PATH
+export WORKON_HOME=$HOME/.virtualenvs
+export PROJECT_HOME=$HOME/Devel
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+export VIRTUALENVWRAPPER_VIRTUALENV=$HOME/.local/bin/virtualenv
+source $HOME/.local/bin/virtualenvwrapper.sh
 
+export PATH=$PATH:/snap/bin
+export SPICETIFY_INSTALL="/home/h4rry/spicetify-cli"
+export PATH="$SPICETIFY_INSTALL:$PATH"
 
-
+mcd (){
+    mkdir -p "$1"
+    cd "$1"
+}
