@@ -20,6 +20,7 @@ Plug 'junegunn/fzf', {'do': { -> fzf#install() }}
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
+Plug 'christoomey/vim-tmux-navigator'
 
 call plug#end()
 
@@ -47,6 +48,9 @@ set nowrap
 set tw=79
 set fo-=t
 set cursorline
+set splitbelow
+set splitright
+set mouse+=a
 
 "Better Copy Paste
 set pastetoggle=<F2>
@@ -78,8 +82,6 @@ map <c-k> <c-w>k
 map <c-l> <c-w>l
 map <c-h> <c-w>h
 
-
-"move around tabs
 map <Leader>n <esc>:tabprevious<CR>
 map <Leader>m <esc>:tabnext<CR>
 
@@ -133,3 +135,15 @@ let g:Highlightedyank_highlight_duration = 1000
 "fzf keymaps
 map <C-p> <Esc><Esc>:Files!<CR>
 inoremap <C-f> <Esc><Esc>:BLines!<CR>
+
+" auto change dir for tabs
+function! OnTabEnter(path)
+  if isdirectory(a:path)
+    let dirname = a:path
+  else
+    let dirname = fnamemodify(a:path, ":h")
+  endif
+  execute "tcd ". dirname
+endfunction()
+
+autocmd TabNewEntered * call OnTabEnter(expand("<amatch>"))
