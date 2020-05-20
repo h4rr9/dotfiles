@@ -1,2 +1,2 @@
-# config-files
-my config files, hacked together by combining various sources.
+# dotfiles
+my dotfiles, hacked together by combining various sources.
