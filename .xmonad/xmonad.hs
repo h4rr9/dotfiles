@@ -119,8 +119,8 @@ myKeys =
 
     
     --Floating windows
-    , ("M-<Delete>", withFocused $ windows . W.sink) -- Push floating window back to tile
-    , ("M-S-<Delete>", sinkAll) 
+    , ("M-t", withFocused $ windows . W.sink) -- Push floating window back to tile
+    , ("M-S-t", sinkAll) 
 
 
    --Layouts 
@@ -222,6 +222,14 @@ threeCol = renamed [Replace "threeCol"]
            $ limitWindows 7
            $ mySpacing' 4
            $ ThreeCol 1 (3/100) (1/2)
+monocle  = renamed [Replace "monocle"]
+           $ limitWindows 20
+           $ Full
+floats   = renamed [Replace "floats"]
+           $ noFrillsDeco shrinkText topBarTheme
+           $ limitWindows 20
+           $ simplestFloat
+
 tabs     = renamed [Replace "tabs"]
            -- I cannot add spacing to this layout because it will
            -- add spacing between window and tabs which looks bad.
@@ -231,7 +239,7 @@ tabs     = renamed [Replace "tabs"]
 myLayoutHook = avoidStruts $ mouseResize $ windowArrange $ 
                mkToggle (NBFULL ?? NOBORDERS ?? EOT) $ myDefaultLayout
              where
-               myDefaultLayout = tall ||| grid ||| noBorders tabs |||  threeCol 
+               myDefaultLayout = tall ||| monocle ||| grid ||| noBorders tabs |||  threeCol ||| floats 
 
 ------------------------------------------------------------------------
 -- Window rules:
@@ -249,8 +257,7 @@ myLayoutHook = avoidStruts $ mouseResize $ windowArrange $
 -- 'className' and 'resource' are used below.
 --
 myManageHook = composeAll
-    [ className =? "MPlayer"        --> doFloat
-    , className =? "Gimp"           --> doFloat
+    [ className =? "Gimp"           --> doFloat
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore 
     ]
