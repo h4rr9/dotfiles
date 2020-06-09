@@ -1,17 +1,13 @@
+
 call plug#begin('~/.config/nvim/bundle')
 
 
 Plug 'wikitopian/hardmode'
 Plug 'gruvbox-community/gruvbox'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'zchee/deoplete-jedi'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
-Plug 'sbdchd/neoformat'
-Plug 'davidhalter/jedi-vim'
-Plug 'neomake/neomake'
 Plug 'machakann/vim-highlightedyank'
 Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins' }
 Plug 'tmhedberg/SimpylFold'
@@ -21,6 +17,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'neoclide/coc.nvim', {'branch' : 'release'}
 
 call plug#end()
 
@@ -105,28 +102,10 @@ autocmd VimEnter,BufNewFile,BufReadPost * silent! call HardMode()
 "Automatic loading of init.vim
 autocmd! bufwritepost init.vim source %
 
-" deoplete setup
-let g:deoplete#enable_at_startup = 1
-autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif "to remove top window
-"To navigate suggestion with tab
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-
 
 "Airline theme
 let g:airline_theme='minimalist'
 
-"Formatter options
-let g:neoformat_basic_format_align = 1
-let g:neoformat_basic_format_trim = 1
-let g:neoformat_basic_format_retab = 1
-
-"jedi-vim options
-let g:jedi#completions_enabled = 0
-let g:use_splits_not_buffers = "right"
-
-"neomake options
-let g:neomake_python_enable_makers = ['flake8']
-call neomake#configure#automake('nrwi', 500)
 
 "Highlight yank plugin options
 hi HighlightedyankRegion cterm=reverse gui=reverse
@@ -147,3 +126,5 @@ function! OnTabEnter(path)
 endfunction()
 
 autocmd TabNewEntered * call OnTabEnter(expand("<amatch>"))
+
+source $HOME/.config/nvim/plug-config/coc.vim
