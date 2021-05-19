@@ -1,0 +1,62 @@
+
+# A valid snippet should starts with:
+#
+#		snippet trigger_word [ "description" [ options ] ]
+#
+# and end with:
+#
+#		endsnippet
+#
+# Snippet options:
+#
+#		b - Beginning of line.
+#		i - In-word expansion.
+#		w - Word boundary.
+#		r - Regular expression
+#		e - Custom context snippet
+#		A - Snippet will be triggered automatically, when condition matches.
+#
+# Basic example:
+#
+#		snippet emitter "emitter properties" b
+#		private readonly ${1} = new Emitter<$2>()
+#		public readonly ${1/^_(.*)/$1/}: Event<$2> = this.$1.event
+#		endsnippet
+#
+# Online reference: https://github.com/SirVer/ultisnips/blob/master/doc/UltiSnips.txt
+
+snippet randint "random integer using Mersenne Twister pseudo-random generator" b
+std::mt19937 mt_rng(
+		std::chrono::steady_clock::now().time_since_epoch().count());
+ll randint(ll a, ll b)
+{
+	return std::uniform_int_distribution<ll>(a, b)(mt_rng);
+}
+endsnippet
+
+snippet neal_hash "safe hash function" b
+struct custom_hash {
+	static uint64_t splitmix64(uint64_t x) {
+		// http://xorshift.di.unimi.it/splitmix64.c
+		x += 0x9e3779b97f4a7c15;
+		x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+		x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+		return x ^ (x >> 31);
+	}
+
+	size_t operator()(uint64_t x) const {
+		static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+		return splitmix64(x + FIXED_RANDOM);
+	}
+};
+endsnippet
+
+snippet hash_pair "hash for pairs" b
+struct pair_hash {
+	size_t operator()(const pair<int, int>& x) const
+	{
+		return hash<long long>()(
+				((long long)x.first) ^ (((long long)x.second) << 32));
+	}
+};
+endsnippet
