@@ -27,8 +27,8 @@
 snippet FIRSTTRUE "First True Binary Search" b
 ll FIRSTTRUE(std::function<bool(ll)> f, ll lb, ll rb){
 	while (lb < rb){
-		ll mb = (lb + rb + 1) / 2;
-		f(mb) ? lb = mb : rb = mb - 1;
+		ll mb = (lb + rb) / 2;
+		f(mb) ? rb = mb : lb = mb + 1;
 	}
 	return lb;
 }
