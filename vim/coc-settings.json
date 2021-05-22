@@ -1,3 +1,6 @@
 {
-    "clangd.semanticHighlighting": true
+    "clangd.semanticHighlighting": true,
+    "diagnostic.messageTarget": "echo",
+    "diagnostic.checkCurrentLine": true,
+    "coc.preferences.formatOnSaveFiletypes": ["python", "cpp"]
 }
