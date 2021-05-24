@@ -1,6 +1,7 @@
 {
     "clangd.semanticHighlighting": true,
-    "diagnostic.messageTarget": "echo",
     "diagnostic.checkCurrentLine": true,
-    "coc.preferences.formatOnSaveFiletypes": ["python", "cpp"]
+    "diagnostic.messageTarget": "echo",
+    "coc.preferences.formatOnSaveFiletypes": ["python", "cpp"],
+    "clangd.arguments": [ "-fallback-style=WebKit" ]
 }

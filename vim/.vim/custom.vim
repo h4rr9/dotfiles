@@ -61,7 +61,7 @@ function! s:ExecuteWithInput(input_number)
 endfunction
 
 function! s:Execute()
-    execute "!%:r"
+    execute ":\<C-U>!%:r \<CR>"
 endfunction
 
 " provide number of inputfile (of the form in{inputnumber})
@@ -70,5 +70,5 @@ endfunction
 :command -nargs=1 Split :call MySplit("<args>")
 :command Execute call s:Execute()
 
-cabbrev run Run
-cabbrev exe Execute
+cabbrev run <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Run' : 'run')<CR>
+cabbrev exe <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Exe' : 'exe')<CR>

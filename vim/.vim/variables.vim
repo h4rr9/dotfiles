@@ -36,11 +36,8 @@ set switchbuf+=useopen
 set termguicolors
 
 "Ctrlp settings
-let g:ctrlp_map = '<C-p>'
-let g:ctrlp_cmd = 'CtrlPMixed'
 let g:ctrlp_match_window = 'bottom,order:ttb'
 let g:ctrlp_working_path_mode = 0
-let g:ctrlp_switch_buffer = 0
 
 if executable('rg')
   set grepprg=rg\ --color=never
@@ -50,12 +47,7 @@ else
   let g:ctrlp_clear_cache_on_exit = 0
 endif
 
-"HardTime
-let g:hardtime_default_on = 1
 
-"Highlight yank
-hi HighlightedyankRegion cterm=reverse gui=reverse
-let g:Highlightedyank_highlight_duration = 1000
 
 "python paths
 let g:python3_host_prog='C:\Users\Hariganesh\AppData\Local\Programs\Python\Python37\python.exe'
