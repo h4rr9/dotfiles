@@ -45,3 +45,5 @@ let g:config_file_list = ['variables.vim',
 for f in g:config_file_list
     execute 'source ' . g:nvim_config_root . '\vim_files\' . f
 endfor
+
+" :TODO remove this later
