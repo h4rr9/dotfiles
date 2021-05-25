@@ -34,21 +34,17 @@ set clipboard=unnamed
 set bs=2
 set switchbuf+=useopen
 set termguicolors
-
-"Ctrlp settings
-let g:ctrlp_match_window = 'bottom,order:ttb'
-let g:ctrlp_working_path_mode = 0
-
-if executable('rg')
-  set grepprg=rg\ --color=never
-  let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
-  let g:ctrlp_use_caching = 0
-else
-  let g:ctrlp_clear_cache_on_exit = 0
-endif
+set shortmess+=c
+set undodir=~/.vim/undodir
+set undofile
+set scrolloff=8
+set signcolumn=yes
 
 
 
 "python paths
 let g:python3_host_prog='C:\Users\Hariganesh\AppData\Local\Programs\Python\Python37\python.exe'
 let g:python_host_prog='C:\Users\Hariganesh\AppData\Local\Programs\Python\Python37\python.exe'
+
+"sqlite path
+let g:sql_clib_path = 'D:\softwares\sqlite\sqlite3.dll'
