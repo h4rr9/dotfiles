@@ -39,12 +39,10 @@ set undodir=~/.vim/undodir
 set undofile
 set scrolloff=8
 set signcolumn=yes
-
+set t_Co=256
 
 
 "python paths
-let g:python3_host_prog='C:\Users\Hariganesh\AppData\Local\Programs\Python\Python37\python.exe'
-let g:python_host_prog='C:\Users\Hariganesh\AppData\Local\Programs\Python\Python37\python.exe'
+let g:python3_host_prog='/usr/bin/python3'
+let g:python_host_prog='/usr/bin/python'
 
-"sqlite path
-let g:sql_clib_path = 'D:\softwares\sqlite\sqlite3.dll'

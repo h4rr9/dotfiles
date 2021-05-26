@@ -66,7 +66,7 @@ search_dotfiles = function()
     require("telescope.builtin").find_files(
         {
             prompt_title = "< VimRC >",
-            cwd = "~/AppData/Local/nvim"
+            cwd = "~/.config/nvim"
         }
     )
 end

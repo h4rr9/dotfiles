@@ -1,16 +1,16 @@
 
 " comiple/run
-autocmd filetype cpp nnoremap <F9> :w <bar> !g++ -g -Wall -D _DEBUG -std=c++14 % -o %:r -Wl,--stack,268435456<CR>
+autocmd filetype cpp nnoremap <F9> :w <bar> !g++ -g -Wall -D _DEBUG -std=c++14 % -o %:r<CR>
 
 function! MySplit( ex_num )
 
     if expand('%:e') == 'cpp'
 
-        let inp_file = expand('%:.:h') . '\in' . a:ex_num
-        let out_file = expand('%:.:h') . '\out' . a:ex_num
-        let output_file = expand('%:.:h') . '\out'
-        let debug_file = expand('%:.:h') . '\debug'
-        let cpp_file = expand('%:.')
+        let inp_file = expand('%:p:h') . '/in' . a:ex_num
+        let out_file = expand('%:p:h') . '/out' . a:ex_num
+        let output_file = expand('%:p:h') . '/out'
+        let debug_file = expand('%:p:h') . '/debug'
+        let cpp_file = expand('%:p')
         let inp_winnum=bufwinnr(bufnr(expand(inp_file)))
         let out_winnum=bufwinnr(bufnr(expand(out_file)))
         let cpp_winnum=bufwinnr(bufnr(expand(cpp_file)))
@@ -51,9 +51,9 @@ endfunction
 
 function! s:ExecuteWithInput(input_number)
     if expand('%:e') == 'cpp'
-        let fin = expand('%:.:h') . '\in' . a:input_number
-        let fout = expand('%:.:h') . '\out'
-        let debug = expand('%:.:h') . '\debug'
+        let fin = expand('%:p:h') . '/in' . a:input_number
+        let fout = expand('%:p:h') . '/out'
+        let debug = expand('%:p:h') . '/debug'
         execute "!%:r < " . fin . " > " . fout . " 2> " . debug
         execute ":Split " . a:input_number
     endif
