@@ -24,7 +24,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'windwp/nvim-autopairs'
-
 call plug#end()
 
 let g:nvim_config_root = stdpath('config')
@@ -38,6 +37,8 @@ let g:config_file_list = [
     \ 'compe-config.vim',
     \ 'lsp-pyright.vim',
     \ 'lsp-clangd.vim',
+    \ 'lsp-rust-analyser.vim',
+    \ 'lsp-efm.vim',
     \ 'treesitter-config.vim',
     \ 'telescope-config.vim',
     \ 'lualine-config.vim',
@@ -51,3 +52,4 @@ let g:config_file_list = [
 for f in g:config_file_list
 	    execute 'source ' . g:nvim_config_root . '/vim_files/' . f
     endfor
+    
