@@ -29,7 +29,6 @@ local function switch_source_header_splitcmd(bufnr, splitcmd)
     )
 end
 
-
 require "lspconfig".clangd.setup {
     cmd = {
         "clangd",
@@ -61,9 +60,11 @@ require "lspconfig".clangd.setup {
     },
     root_dir = function()
         return vim.loop.cwd()
+    end,
+    on_attach = function(client)
+        client.resolved_capabilities.document_formatting = false
     end
 }
-
 EOF
 
 autocmd BufWritePre *.cpp lua vim.lsp.buf.formatting_sync(nil, 100)

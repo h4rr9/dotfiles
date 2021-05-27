@@ -13,7 +13,10 @@ require'lspconfig'.rust_analyzer.setup({
                 enable = true
             },
         }
-    }
+    },
+    on_attach = function(client)
+        client.resolved_capabilities.document_formatting = false
+    end
 })
 EOF
 
