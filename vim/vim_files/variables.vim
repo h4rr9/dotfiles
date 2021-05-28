@@ -39,8 +39,9 @@ set undodir=~/.vim/undodir
 set undofile
 set scrolloff=8
 set signcolumn=yes
-set t_Co=256
 
+" set shell
+set shell=/bin/bash
 
 "python paths
 let g:python3_host_prog='/usr/bin/python3'

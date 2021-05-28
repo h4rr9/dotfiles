@@ -97,7 +97,7 @@ search_cp = function()
         {
             shorten_path = false,
             prompt_title = "< cp >",
-            cwd = "/mnt/f/cp",
+            cwd = "~/cp",
             layout_strategy = "horizontal",
             previewer = false,
 
