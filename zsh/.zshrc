@@ -88,6 +88,7 @@ autoload -U promptinit; promptinit
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
+export LANGUAGE=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8 
 
@@ -128,7 +129,7 @@ export PATH=$HOME/.local/bin:$PATH
 
 fpath=(~/.zsh.d/ $fpath)
 
-export GPG_TTY=$(tty)
+export GPG_TTY=$TTY
 
 if [[ ! -a ~/.gnupg/S.gpg-agent ]]; then
     eval  $(gpg-agent --daemon --options ~/.gnupg/gpg-agent.conf) > /dev/null
@@ -139,3 +140,7 @@ export GPG_AGENT_INFO=${HOME}/.gnupg/S.gpg-agent:0:1
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export TEMP=1232
