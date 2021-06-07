@@ -19,7 +19,6 @@ set nowritebackup
 set nowrap
 set tw=79
 set fo-=t
-set cursorline
 set splitbelow
 set splitright
 set mouse+=a
@@ -33,15 +32,16 @@ set pastetoggle=<F2>
 set clipboard=unnamed
 set bs=2
 set switchbuf+=useopen
-set termguicolors
 set shortmess+=c
 set undodir=~/.vim/undodir
 set undofile
 set scrolloff=8
 set signcolumn=yes
-
+set guicursor=
 " set shell
 set shell=/bin/bash
+
+set updatetime=50
 
 "python paths
 let g:python3_host_prog='/usr/bin/python3'

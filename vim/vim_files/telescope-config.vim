@@ -72,7 +72,7 @@ require("telescope").setup {
         },
         extensions = {
             fzy_native = {
-                override_generic_sorter = true,
+                override_generic_sorter = false,
                 override_file_sorter = true
             }
         }
@@ -80,6 +80,7 @@ require("telescope").setup {
 }
 
 require("telescope").load_extension("fzy_native")
+require'telescope'.load_extension('zoxide')
 
 search_dotfiles = function()
     require("telescope.builtin").find_files(
@@ -105,18 +106,17 @@ search_cp = function()
     )
 end
 
-vim.api.nvim_set_keymap("n", "<leader>vrc", ":lua search_dotfiles()<CR>", {noremap = true, silent = true})
-vim.api.nvim_set_keymap("n", "<leader>cp", ":lua search_cp()<CR>", {noremap = true, silent = true})
+vim.api.nvim_set_keymap("n", "<leader>fne", ":lua search_dotfiles()<CR>", {noremap = true, silent = true})
+vim.api.nvim_set_keymap("n", "<leader>fcp", ":lua search_cp()<CR>", {noremap = true, silent = true})
 EOF
 
 
-nnoremap <silent><leader>ps :lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ")})<CR>
-nnoremap <silent><leader>pg :lua require('telescope.builtin').git_files()<CR>
-nnoremap <silent><Leader>pf :lua require('telescope.builtin').find_files()<CR>
-nnoremap <silent><Leader>pp :lua require('telescope.builtin').file_browser()<CR>
-nnoremap <silent><Leader>ff :lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>
+nnoremap <silent><leader>fs :lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ")})<CR>
+nnoremap <silent><leader>fg :lua require('telescope.builtin').git_files()<CR>
+nnoremap <silent><Leader>ff :lua require('telescope.builtin').find_files()<CR>
+nnoremap <silent><Leader>fe :lua require('telescope.builtin').file_browser()<CR>
+nnoremap <silent><Leader>fif :lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>
 
-nnoremap <silent><leader>pw :lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>
-nnoremap <silent><leader>pb :lua require('telescope.builtin').buffers()<CR>
-nnoremap <silent><leader>vh :lua require('telescope.builtin').help_tags()<CR>
-nnoremap <silent> <leader>P :lua require('telescope').extensions.frecency.frecency()<CR>
+nnoremap <silent><leader>fb :lua require('telescope.builtin').buffers()<CR>
+nnoremap <silent> <leader>F :lua require('telescope').extensions.frecency.frecency()<CR>
+nnoremap <silent> <leader>fcd :lua require('telescope').extensions.zoxide.list({show_score = false})<CR>

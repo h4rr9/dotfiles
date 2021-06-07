@@ -1,52 +1,45 @@
-
 " comiple/run
 autocmd filetype cpp nnoremap <F9> :w <bar> !g++ -g -Wall -D _DEBUG -std=c++14 % -o %:r<CR>
 
 function! MySplit( ex_num )
-
-    if expand('%:e') == 'cpp'
-
-        let inp_file = expand('%:p:h') . '/in' . a:ex_num
-        let out_file = expand('%:p:h') . '/out' . a:ex_num
-        let output_file = expand('%:p:h') . '/out'
-        let debug_file = expand('%:p:h') . '/debug'
-        let cpp_file = expand('%:p')
-        let inp_winnum=bufwinnr(bufnr(expand(inp_file)))
-        let out_winnum=bufwinnr(bufnr(expand(out_file)))
-        let cpp_winnum=bufwinnr(bufnr(expand(cpp_file)))
-        let output_winnum=bufwinnr(bufnr(expand(output_file)))
+    let inp_file = expand('%:p:h') . '/in' . a:ex_num
+    let out_file = expand('%:p:h') . '/out' . a:ex_num
+    let output_file = expand('%:p:h') . '/out'
+    let debug_file = expand('%:p:h') . '/debug'
+    let cpp_file = expand('%:p')
+    let inp_winnum=bufwinnr(bufnr(expand(inp_file)))
+    let out_winnum=bufwinnr(bufnr(expand(out_file)))
+    let cpp_winnum=bufwinnr(bufnr(expand(cpp_file)))
+    let output_winnum=bufwinnr(bufnr(expand(output_file)))
 
 
 
-        if (inp_winnum == -1 ) || (out_winnum == -1) || (output_winnum == -1)
-            exe cpp_winnum . "wincmd w"
-
-            if winnr('$') > 1
-                exe "normal \<C-W>o"
-            endif
-
-            exe "vsplit " . output_file
-            exe "above split " . inp_file
-            exe "vsplit " . out_file
-        endif
-
-        let debug_dirty = filereadable(debug_file) && len(readfile(debug_file)) > 0
-        let debug_winnum=bufwinnr(bufnr(expand(debug_file)))
-
-        if debug_dirty && (debug_winnum == -1)
-            let output_winnum_new=bufwinnr(bufnr(expand(output_file)))
-            exe output_winnum_new . 'wincmd w'
-            exe 'vsplit ' . debug_file
-        endif
-
-        if !debug_dirty && debug_winnum != -1
-            exe debug_winnum . 'wincmd w'
-            exe "normal \<C-W>c"
-        endif
+    if (inp_winnum == -1 ) || (out_winnum == -1) || (output_winnum == -1)
         exe cpp_winnum . "wincmd w"
-    else
-        echo "Not a cpp file..."
+
+        if winnr('$') > 1
+            exe "normal \<C-W>o"
+        endif
+
+        exe "vsplit " . output_file
+        exe "above split " . inp_file
+        exe "vsplit " . out_file
     endif
+
+    let debug_dirty = filereadable(debug_file) && len(readfile(debug_file)) > 0
+    let debug_winnum=bufwinnr(bufnr(expand(debug_file)))
+
+    if debug_dirty && (debug_winnum == -1)
+        let output_winnum_new=bufwinnr(bufnr(expand(output_file)))
+        exe output_winnum_new . 'wincmd w'
+        exe 'vsplit ' . debug_file
+    endif
+
+    if !debug_dirty && debug_winnum != -1
+        exe debug_winnum . 'wincmd w'
+        exe "normal \<C-W>c"
+    endif
+    exe cpp_winnum . "wincmd w"
 endfunction
 
 function! s:ExecuteWithInput(input_number)
@@ -54,7 +47,7 @@ function! s:ExecuteWithInput(input_number)
         let fin = expand('%:p:h') . '/in' . a:input_number
         let fout = expand('%:p:h') . '/out'
         let debug = expand('%:p:h') . '/debug'
-        execute "!%:r < " . fin . " > " . fout . " 2> " . debug
+        execute "!%:p:r < " . fin . " > " . fout . " 2> " . debug
         execute ":Split " . a:input_number
     endif
 
@@ -72,3 +65,5 @@ endfunction
 
 cabbrev run <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Run' : 'run')<CR>
 cabbrev exe <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Exe' : 'exe')<CR>
+
+

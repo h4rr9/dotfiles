@@ -13,12 +13,9 @@ let mapleader = "\<Space>"
 "sort
 vnoremap <Leader>s :sort<CR>
 
-
-
-
 "Navigation keys
-map <Leader>m <esc>:tabnext<CR>
-map <Leader>n <esc>:tabprevious<CR>
+map <Leader>N <esc>:tabnext<CR>
+map <Leader>P <esc>:tabprevious<CR>
 map <c-h> <c-w>h
 map <c-j> <c-w>j
 map <c-k> <c-w>k
@@ -31,12 +28,12 @@ nnoremap <Left> <NOP>
 nnoremap <Right> <NOP>
 
 " LSP Mappings
-nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> gD <cmd>lua vim.lsp.buf.declaration()<CR>
-nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
-nnoremap <silent> gi <cmd>lua vim.lsp.buf.implementation()<CR>
-nnoremap <silent> gh <cmd>lua vim.lsp.buf.signature_help()<CR>
-nnoremap <silent> K <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <silent> <leader>gd <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> <leader>gD <cmd>lua vim.lsp.buf.declaration()<CR>
+nnoremap <silent> <leader>gr <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <silent> <leader>gi <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap <silent> <leader>gh <cmd>lua vim.lsp.buf.signature_help()<CR>
+nnoremap <silent> <leader>K <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap <silent> <leader>rn :lua vim.lsp.buf.rename()<CR>
 nnoremap <silent> <leader>sd :lua vim.lsp.diagnostic.show_line_diagnostics(); vim.lsp.diagnostic.show_line_diagnostics()<CR>
 nnoremap <silent> <C-n> <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
@@ -50,5 +47,16 @@ inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
 inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
 
 " Quickfix list nav
-nnoremap <leader><C-n> :cnext<CR>zz
-nnoremap <leader><C-p> :cprev<CR>zz
+nnoremap <leader>n :cnext<CR>
+nnoremap <leader>p :cprev<CR>
+nnoremap <leader>C :cclose<CR>
+
+
+" Quick source file
+nnoremap <leader><leader> <cmd>luafile %<cr>
+
+" yank all
+nnoremap <leader>yy :%y*<cr>
+
+" run test cases
+nnoremap <leader>rr <cmd>lua require('runner').get_results()<cr>

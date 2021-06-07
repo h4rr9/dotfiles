@@ -1,33 +1,41 @@
 call plug#begin('~/.config/nvim/plugged')
 
 Plug 'SirVer/ultisnips'
-Plug 'eddyekofo94/gruvbox-flat.nvim'
+Plug 'folke/zen-mode.nvim'
+Plug 'glepnir/lspsaga.nvim'
 Plug 'hoob3rt/lualine.nvim'
 Plug 'hrsh7th/nvim-compe'
 Plug 'jiangmiao/auto-pairs'
+Plug 'jvgrootveld/telescope-zoxide'
 Plug 'kyazdani42/nvim-tree.lua'
-Plug 'kyazdani42/nvim-web-devicons' " for file icons
+Plug 'kyazdani42/nvim-web-devicons' 
 Plug 'mbbill/undotree'
+Plug 'mhinz/vim-startify'
 Plug 'neovim/nvim-lspconfig'
+Plug 'npxbr/gruvbox.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-telescope/telescope-frecency.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim'
+Plug 'nvim-telescope/telescope-symbols.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'onsails/lspkind-nvim'
+Plug 'rktjmp/lush.nvim'
 Plug 'scrooloose/nerdcommenter'
-Plug 'shinchu/lightline-gruvbox.vim'
+Plug 'shaunsingh/nord.nvim'
 Plug 'tami5/sql.nvim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-unimpaired'
 Plug 'windwp/nvim-autopairs'
 call plug#end()
 
 let g:nvim_config_root = stdpath('config')
 
-let g:config_file_list = [
+let g:vim_config_file_list = [
     \ 'variables.vim',
     \ 'colorscheme.vim',
     \ 'mapping.vim',
@@ -37,18 +45,25 @@ let g:config_file_list = [
     \ 'lsp-pyright.vim',
     \ 'lsp-clangd.vim',
     \ 'lsp-rust-analyser.vim',
+    \ 'lsp-sumneko-lua-config.vim',
     \ 'lsp-efm.vim',
     \ 'treesitter-config.vim',
     \ 'telescope-config.vim',
     \ 'lualine-config.vim',
-    \ 'nvim-tree-config.vim'
+    \ 'nvim-tree-config.vim',
+    \ 'zen-config.vim',
     \ ]
 
+let g:lua_config_file_list = [
+   "\ 'runner/init.lua'
+    \]
 
 
 
-
-for f in g:config_file_list
+for f in g:vim_config_file_list
 	    execute 'source ' . g:nvim_config_root . '/vim_files/' . f
     endfor
     
+for f in g:lua_config_file_list
+	    execute 'luafile  ' . g:nvim_config_root . '/lua_files/' . f
+    endfor
