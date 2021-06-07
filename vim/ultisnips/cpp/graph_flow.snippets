@@ -1,0 +1,171 @@
+snippet edmonds_karp "Edward-Karp Implementation of Ford-Fulkerson max flow algorithm" b
+template <class T> struct EdmondsKarp {
+
+    struct Edge {
+        int dest, back;
+        T f, c;
+    };
+
+    int n;
+
+    vt<vt<Edge>> g;
+    vt<Edge *> aug_path;
+
+    EdmondsKarp(int n) : g(n), aug_path(n){};
+
+    EdmondsKarp(int n, vt<int> adj[], vt<vt<T>> &cap) : g(n), aug_path(n) {
+
+        this->n = n;
+
+        FOR(s, n)
+        EACH(t, adj[s]) {
+            g[s].pb({t, sz(g[t]), 0, cap[s][t]});
+            g[t].pb({s, sz(g[s]) - 1, 0, cap[t][s]});
+        }
+    }
+
+    void ae(int s, int t, T c, T r_c = 0) {
+        if (s == t)
+            return;
+
+        g[s].pb({t, sz(g[t]), 0, c});
+        g[t].pb({s, sz(g[s]) - 1, 0, r_c});
+    }
+
+    T bfs(int s, int t) {
+        vt<bool> vis(n, false);
+        vis[s] = true;
+
+        queue<pair<int, T>> q;
+        q.push(mp(s, numeric_limits<T>::max()));
+
+        while (!q.empty()) {
+            int cur = q.front().F;
+            T flow = q.front().S;
+            q.pop();
+
+            EACH(e, g[cur]) {
+                if (!vis[e.dest] and e.c > 0) {
+                    vis[e.dest] = true;
+                    aug_path[e.dest] = &e;
+                    T new_flow = min(flow, e.c);
+
+                    if (e.dest == t)
+                        return new_flow;
+                    q.push(mp(e.dest, new_flow));
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    T mf(int s, int t) {
+        T flow = 0, new_flow;
+
+        while ((new_flow = bfs(s, t))) {
+            flow += new_flow;
+            for (int node = t; node != s;
+                 node = g[node][aug_path[node]->back].dest) {
+                Edge &e = *aug_path[node];
+                e.c -= new_flow;
+                e.f += new_flow;
+
+                Edge &back = g[e.dest][e.back];
+
+                back.c += new_flow;
+                back.f -= new_flow;
+            }
+        }
+
+        return flow;
+    }
+};
+endsnippet
+
+snippet push_relabel "Push-Relabel with highest label selection rule and gap heiristic" b
+
+template <class T> struct PushRelabel {
+
+    struct Edge {
+        int dest, back;
+        T f, c;
+    };
+
+    int n;
+    vt<int> ht;
+    vt<vt<Edge>> g;
+    vt<Edge *> cur;
+    vt<vt<int>> hs;
+    vt<T> ec;
+
+    PushRelabel(int n, vt<int> adj[], vt<vt<T>> &cap) : g(n), cur(n) {
+        FOR(s, n)
+        EACH(t, adj[s]) {
+            g[s].pb({t, sz(g[t]), 0, cap[s][t]});
+            g[t].pb({s, sz(g[s]) - 1, 0, cap[t][s]});
+        }
+    }
+
+    void ae(int s, int t, T cap, T rcap = 0) {
+        assert(s != t);
+
+        g[s].pb({t, sz(g[t]), 0, cap});
+        g[t].pb({s, sz(g[s]) - 1, 0, rcap});
+    }
+
+    void p(Edge &e, T f) {
+        Edge &back = g[e.dest][e.back];
+        if (!ec[e.dest] && f)
+            hs[ht[e.dest]].push_back(e.dest);
+        e.f += f;
+        e.c -= f;
+        ec[e.dest] += f;
+        back.f -= f;
+        back.c += f;
+        ec[back.dest] -= f;
+    }
+
+    T mf(int s, int t) {
+        int n = sz(g);
+
+        ht.assign(n, 0);
+        hs.assign(2 * n, vt<int>());
+        ec.assign(n, 0);
+
+        vt<int> co(2 * n);
+        co[0] = n - 1, ht[s] = n, ec[t] = 1;
+
+        FOR(n) cur[i] = g[i].data();
+        EACH(e, g[s]) p(e, e.c);
+
+        for (int hi = 0;;) {
+            while (hs[hi].empty())
+                if (!hi--)
+                    return -ec[s];
+
+            int u = hs[hi].back();
+            hs[hi].pop_back();
+
+            while (ec[u] > 0) {
+                if (cur[u] == g[u].data() + sz(g[u])) {
+                    ht[u] = 1e9;
+                    EACH(e, g[u])
+                    if (e.c and ht[u] > ht[e.dest] + 1) {
+                        ht[u] = ht[e.dest] + 1, cur[u] = &e;
+                    }
+                    if (++co[ht[u]], !--co[hi] and hi < n)
+                        FOR(n)
+                    if (hi < ht[i] and ht[i] < n)
+                        --co[ht[i]], ht[i] = 1 + n;
+
+                    hi = ht[u];
+                } else if (cur[u]->c and ht[u] == ht[cur[u]->dest] + 1)
+                    p(*cur[u], min(ec[u], cur[u]->c));
+                else
+                    ++cur[u];
+            }
+        }
+    }
+};
+endsnippet
