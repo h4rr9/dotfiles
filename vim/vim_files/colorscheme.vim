@@ -11,7 +11,6 @@ set background=dark
 colorscheme gruvbox
 
 
-highlight ColorColumn ctermbg=0 guibg=blue
 hi SignColumn guibg=none
 highlight Normal guibg=none
 hi CursorLineNR guibg=None

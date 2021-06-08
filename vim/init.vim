@@ -7,8 +7,10 @@ Plug 'hoob3rt/lualine.nvim'
 Plug 'hrsh7th/nvim-compe'
 Plug 'jiangmiao/auto-pairs'
 Plug 'jvgrootveld/telescope-zoxide'
+Plug 'kosayoda/nvim-lightbulb'
 Plug 'kyazdani42/nvim-tree.lua'
 Plug 'kyazdani42/nvim-web-devicons' 
+Plug 'lewis6991/gitsigns.nvim'
 Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
 Plug 'neovim/nvim-lspconfig'
@@ -21,6 +23,7 @@ Plug 'nvim-telescope/telescope-symbols.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+Plug 'ojroques/nvim-bufdel'
 Plug 'onsails/lspkind-nvim'
 Plug 'rktjmp/lush.nvim'
 Plug 'scrooloose/nerdcommenter'
@@ -30,15 +33,13 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'windwp/nvim-autopairs'
-Plug 'kosayoda/nvim-lightbulb'
-Plug 'lewis6991/gitsigns.nvim'
-Plug 'ojroques/nvim-bufdel'
 call plug#end()
 
 let g:nvim_config_root = stdpath('config')
 
 let g:vim_config_file_list = [
     \ 'variables.vim',
+    \ 'lualine-config.vim',
     \ 'colorscheme.vim',
     \ 'mapping.vim',
     \ 'custom.vim',
@@ -51,7 +52,6 @@ let g:vim_config_file_list = [
     \ 'lsp-efm.vim',
     \ 'treesitter-config.vim',
     \ 'telescope-config.vim',
-    \ 'lualine-config.vim',
     \ 'nvim-tree-config.vim',
     \ 'zen-config.vim',
     \ 'gitsigns-config.vim',
