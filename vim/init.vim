@@ -2,7 +2,7 @@ call plug#begin('~/.config/nvim/plugged')
 
 Plug 'SirVer/ultisnips'
 Plug 'folke/zen-mode.nvim'
-Plug 'glepnir/lspsaga.nvim'
+Plug 'gbrlsnchs/telescope-lsp-handlers.nvim'
 Plug 'hoob3rt/lualine.nvim'
 Plug 'hrsh7th/nvim-compe'
 Plug 'jiangmiao/auto-pairs'
@@ -24,13 +24,15 @@ Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'onsails/lspkind-nvim'
 Plug 'rktjmp/lush.nvim'
 Plug 'scrooloose/nerdcommenter'
-Plug 'shaunsingh/nord.nvim'
 Plug 'tami5/sql.nvim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'windwp/nvim-autopairs'
+Plug 'kosayoda/nvim-lightbulb'
+Plug 'lewis6991/gitsigns.nvim'
+Plug 'ojroques/nvim-bufdel'
 call plug#end()
 
 let g:nvim_config_root = stdpath('config')
@@ -52,6 +54,7 @@ let g:vim_config_file_list = [
     \ 'lualine-config.vim',
     \ 'nvim-tree-config.vim',
     \ 'zen-config.vim',
+    \ 'gitsigns-config.vim',
     \ ]
 
 let g:lua_config_file_list = [

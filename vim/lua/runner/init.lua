@@ -4,22 +4,80 @@ local api = vim.api
 local M = {}
 
 M.__buf = nil
+M.__border_buf = nil
+M.__win = nil
+M.__border_win = nil
+
 function _G.dump(...)
     local objects = vim.tbl_map(vim.inspect, {...})
     print(unpack(objects))
 end
 
-M._create_window = function()
-    M.__buf = api.nvim_create_buf(false, true) -- create new emtpy buffer
+M._diff = function(test_case_id)
 
+    local exec = M._exec
+    local input_file = 'in' .. test_case_id
+    local output_file = 'out' .. test_case_id
+    local temp_file = output_file .. '.temp'
+
+    Job:new({
+        command = 'runner.sh',
+        args = {exec, input_file, output_file, temp_file},
+        cwd = M._path,
+        env = {['PATH'] = '/home/h4rr9/.local/bin:/usr/bin'}
+    }):sync()
+
+    local output_job = Job:new({command = 'cat', args = {temp_file}, cwd = M._path, env = {['PATH'] = '/bin'}})
+    local expected_output_job = Job:new({command = 'cat', args = {output_file}, cwd = M._path, env = {['PATH'] = '/bin'}})
+
+    output_job:sync()
+    expected_output_job:sync()
+    M._cleanup({test_case_id})
+
+    local result = {'output', string.rep('-', 50)}
+    for _, v in pairs(output_job:result()) do table.insert(result, v) end
+
+    table.insert(result, '')
+    table.insert(result, '')
+    table.insert(result, output_file)
+    table.insert(result, string.rep('-', 50))
+    for _, v in pairs(expected_output_job:result()) do table.insert(result, v) end
+    return result
+
+end
+
+M._get_selection = function()
+
+    local option = vim.api.nvim_get_current_line()
+    option = option:gsub('^%s+', '')
+    local is_valid_option = option:match('Test Case (%d+)')
+    if is_valid_option == nil then return -1 end
+    return tonumber(is_valid_option)
+end
+
+M._create_and_update_output_window = function()
+    local selected = M._get_selection()
+    if selected ~= -1 then
+        api.nvim_win_close(M.__win, true)
+        M._create_window({height_factor = 0.4, width_factor = 0.3})
+        local contents = M._diff(selected)
+        local title = '☀️    Output ' .. selected .. '   🌑'
+        M._update_buf(contents, title, false)
+    end
+end
+
+M._create_window = function(window_opts)
+
+    M.__buf = api.nvim_create_buf(false, true) -- create new emtpy buffer
+    M.__border_buf = api.nvim_create_buf(false, true)
     api.nvim_buf_set_option(M.__buf, 'bufhidden', 'wipe')
     -- get dimensions
     local width = api.nvim_get_option("columns")
     local height = api.nvim_get_option("lines")
 
     -- calculate our floating window size
-    local win_height = math.ceil(height * 0.4)
-    local win_width = math.ceil(width * 0.2)
+    local win_height = math.ceil(height * window_opts.height_factor)
+    local win_width = math.ceil(width * window_opts.width_factor)
 
     -- and its starting position
     local row = math.ceil((height - win_height) / 2 - 1)
@@ -28,13 +86,14 @@ M._create_window = function()
     -- set some options
     local opts = {style = "minimal", relative = "editor", width = win_width, height = win_height, row = row, col = col}
     -- and finally create it with buffer attached
-    local border_buf = api.nvim_create_buf(false, true)
 
-    local closingKeys = {'<Esc>', '<CR>', '<Leader>', '<C-o>', '<C-^>', '<C-i>', 'q'}
+    local closingKeys = {
+        '<Esc>', '<Leader>', '<C-o>', '<C-^>', '<C-i>', 'q', '<C-h>', '<C-j>', '<C-k>', '<C-l>', '<C-w><C-h>', '<C-w><C-j>', '<C-w><C-k>',
+        '<C-w><C-l>'
+    }
     for i = 1, #closingKeys do
         -- call nvim_buf_set_keymap(buf, 'n', closingKey, ':close<CR>', {'silent': v:true, 'nowait': v:true, 'noremap': v:true})
-        vim.api.nvim_buf_set_keymap(M.__buf, 'n', closingKeys[i], ':close<CR>', {['silent'] = true, ['nowait'] = true, ['noremap'] = true})
-        vim.api.nvim_buf_set_keymap(border_buf, 'n', closingKeys[i], ':close<CR>', {['silent'] = true, ['nowait'] = true, ['noremap'] = true})
+        api.nvim_buf_set_keymap(M.__buf, 'n', closingKeys[i], ':close<CR>', {['silent'] = true, ['nowait'] = true, ['noremap'] = true})
     end
 
     local border_lines = {'╭' .. string.rep('─', win_width - 2) .. '╮'}
@@ -42,33 +101,45 @@ M._create_window = function()
     for _ = 1, (win_height - 2) do table.insert(border_lines, middle_line) end
     table.insert(border_lines, '╰' .. string.rep('─', win_width - 2) .. '╯')
 
-    api.nvim_buf_set_lines(border_buf, 0, -1, false, border_lines)
-    local border_win = api.nvim_open_win(border_buf, true, opts)
+    -- draw borders
+    api.nvim_buf_set_lines(M.__border_buf, 0, -1, false, border_lines)
+
     -- change window paremeters to make main window smaler than border window
+    M.__border_win = api.nvim_open_win(M.__border_buf, true, opts)
+
     opts.row = opts.row + 1
     opts.height = opts.height - 2
     opts.col = opts.col + 2
     opts.width = opts.width - 4
 
-    local win = api.nvim_open_win(M.__buf, true, opts)
+    M.__win = api.nvim_open_win(M.__buf, true, opts)
     -- fix bg colors from folke/zen-mode.nvim lua/zen-mode/view.lua:201
-    vim.api.nvim_win_set_option(win, "winhighlight", "NormalFloat:" .. "Normal")
-    vim.api.nvim_win_set_option(border_win, "winhighlight", "NormalFloat:" .. "Normal")
+    -- api.nvim_win_set_option(win, "winhighlight", "VertSplit:" .. "Normal")
+    api.nvim_win_set_option(M.__win, "winhighlight", "NormalFloat:Normal")
+    api.nvim_win_set_option(M.__border_win, "winhighlight", "NormalFloat:Normal")
+    -- find highlight group for Border
+    -- vim.api.nvim_win_set_option(win, "winhighlight", "BorderFloat:" .. "Normal")
     -- close buffer when focus is changed
-    api.nvim_command('au BufEnter,WinEnter,WinLeave <buffer> exe "silent bwipeout! "' .. M.__buf)
-    api.nvim_command('au BufEnter,WinEnter,WinLeave  <buffer> exe "silent bwipeout! "' .. border_buf)
+    api.nvim_command('au BufWipeout <buffer> exe "silent bwipeout! "' .. M.__border_buf)
+
 end
 
 M._cleanup = function(test_case_ids)
 
     local temp_files = {}
-
     for temp_file_id = 1, #test_case_ids do table.insert(temp_files, 'out' .. temp_file_id .. '.temp') end
-
     Job:new({command = 'rm', args = temp_files, cwd = M._path, env = {['PATH'] = '/usr/bin'}}):sync() -- or start()
+
 end
 
 M._run_test_cases = function(test_cases)
+
+    local sort_helper = function(a, b)
+        local a_id = a:match('Test Case (%d+)')
+        local b_id = b:match('Test Case (%d+)')
+
+        return (tonumber(a_id) < tonumber(b_id))
+    end
 
     local command_output = {}
     local jobs = {}
@@ -92,26 +163,30 @@ M._run_test_cases = function(test_cases)
     end
     for i = 1, #test_cases do
         if next(jobs[i]:result()) ~= nil then
-            table.insert(command_output, "Test Case " .. i .. " Failed ❎")
+            table.insert(command_output, "Test Case " .. test_cases[i] .. " Failed ❎")
         else
-            table.insert(command_output, "Test Case " .. i .. " Passed ✅")
+            table.insert(command_output, "Test Case " .. test_cases[i] .. " Passed ✅")
         end
     end
-    return command_output
+    -- :TODO implement sort_helper to sort based on test_cases[i] in
+    -- command_output
 
+    table.sort(command_output, sort_helper)
+
+    return command_output
 end
 
-M._update_view = function(result)
+M._update_buf = function(result, title, centered)
 
     local function center(str)
         local width = api.nvim_win_get_width(0)
         local shift = math.floor(width / 2) - math.floor(string.len(str) / 2)
         return string.rep(' ', shift) .. str
     end
+    if centered == true then for k, _ in pairs(result) do result[k] = center(result[k]) end end
 
-    for k, _ in pairs(result) do result[k] = center(result[k]) end
-
-    api.nvim_buf_set_lines(M.__buf, 0, -1, false, {center('💀 Test Case Status 💀'), ''})
+    api.nvim_buf_set_option(M.__buf, 'modifiable', true)
+    api.nvim_buf_set_lines(M.__buf, 0, -1, false, {center(title), ' '})
     api.nvim_buf_set_lines(M.__buf, 3, -1, false, result)
 
     api.nvim_buf_add_highlight(M.__buf, -1, 'WhidHeader', 0, 0, -1)
@@ -119,6 +194,8 @@ M._update_view = function(result)
 
     api.nvim_buf_add_highlight(M.__buf, -1, 'ctermbg', 0, 0, -1)
     api.nvim_buf_set_option(M.__buf, 'modifiable', false)
+
+    api.nvim_win_set_cursor(M.__win, {3, 0})
 end
 
 M._prepping = function()
@@ -172,14 +249,18 @@ M.get_results = function()
 
     local test_cases = M._get_test_cases()
 
-    M._create_window()
     if next(test_cases) ~= nil then
         local output = M._run_test_cases(test_cases)
-        M._update_view(output)
+        M._create_window({height_factor = 0.4, width_factor = 0.2})
+
+        -- map <cr> to open new floating window with diff / output files
+        api.nvim_buf_set_keymap(M.__buf, 'n', '<cr>', "<cmd>lua require('runner')._create_and_update_output_window()<cr>",
+                                {['silent'] = true, ['nowait'] = true, ['noremap'] = true})
+
+        M._update_buf(output, '💀 Test Cases Status 💀', true)
         M._cleanup(test_cases)
     else
-        local output = {"No Test Cases found 🤷"}
-        M._update_view(output)
+        assert(false, "🤷 No Test Cases found 🤷")
     end
 
 end

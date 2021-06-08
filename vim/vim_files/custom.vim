@@ -1,5 +1,5 @@
 " comiple/run
-autocmd filetype cpp nnoremap <F9> :w <bar> !g++ -g -Wall -D _DEBUG -std=c++14 % -o %:r<CR>
+autocmd filetype cpp nnoremap <F9> :w <bar> !g++ -g -Wall -Wextra -O2 -D _DEBUG -std=c++14 % -o %:r<CR>
 
 function! MySplit( ex_num )
     let inp_file = expand('%:p:h') . '/in' . a:ex_num
@@ -63,6 +63,7 @@ endfunction
 :command -nargs=1 Split :call MySplit("<args>")
 :command Execute call s:Execute()
 
+cabbrev open <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Split' : 'open')<CR>
 cabbrev run <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Run' : 'run')<CR>
 cabbrev exe <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Exe' : 'exe')<CR>
 

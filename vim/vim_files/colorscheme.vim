@@ -3,13 +3,7 @@ set termguicolors
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
-"let g:nord_contrast = 1
-"let g:nord_borders = 1
-"let g:nord_disable_background = 0
-"let g:nord_cursorline_transparent = 0
-
 let g:gruvbox_contrast_dark = "hard"
-let g:gruvbox_bold = 0
 let g:gruvbox_underline = 0
 let g:gruvbox_invert_selection = 0
 
