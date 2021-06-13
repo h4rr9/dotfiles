@@ -77,7 +77,7 @@ nnoremap <leader>C :cclose<CR>
 
 
 " Quick source file
-nnoremap <leader><leader> <cmd>luafile %<cr>
+nnoremap <leader><leader> <cmd>so  %<cr>
 
 " yank all
 nnoremap <leader>yy :%y*<cr>

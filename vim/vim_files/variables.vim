@@ -29,7 +29,6 @@ set foldnestmax=10
 set noshowmode
 set hidden
 set pastetoggle=<F2>
-set clipboard=unnamed
 set bs=2
 set switchbuf+=useopen
 set shortmess+=c
@@ -48,4 +47,16 @@ set updatetime=50
 let g:python3_host_prog='/usr/bin/python3'
 let g:python_host_prog='/usr/bin/python'
 
-
+let g:clipboard = {
+  \ 'name': 'win32yank',
+  \ 'copy': {
+  \    '+': 'win32yank.exe -i --crlf',
+  \    '*': 'win32yank.exe -i --crlf',
+  \  },
+  \ 'paste': {
+  \    '+': 'win32yank.exe -o --lf',
+  \    '*': 'win32yank.exe -o --lf',
+  \ },
+  \ 'cache_enabled': 0,
+  \ }
+set clipboard=unnamed
