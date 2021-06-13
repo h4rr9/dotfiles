@@ -1,7 +1,7 @@
 local gl = require('galaxyline')
 local condition = require('galaxyline.condition')
 local gls = gl.section
-gl.short_line_list = {'NvimTree', 'vista', 'dbui', 'qf', 'startify', 'fugitive', 'fugitiveblame', 'plug'}
+gl.short_line_list = {'NvimTree', 'vista', 'dbui', 'qf', 'startify', 'fugitive', 'fugitiveblame', 'vim-plug', 'testcases-status'}
 
 local colors = {
     bg = "none",
@@ -54,6 +54,13 @@ local function get_mode()
     return map[mode_code]
 end
 
+local function file_readonly()
+    if vim.bo.filetype == 'help' then return '' end
+    local icon = ''
+    if vim.bo.readonly == true then return " " .. icon .. " " end
+    return ''
+end
+
 gls.left[1] = {
     RainbowRed = {
         provider = function()
@@ -103,7 +110,23 @@ gls.left[3] = {
     }
 }
 
-gls.left[4] = {FileName = {provider = 'FileName', condition = condition.buffer_not_empty, highlight = {colors.magenta, colors.bg}}}
+gls.left[4] = {
+    FileName = {
+        provider = function()
+            local file = vim.fn.expand('%:t')
+            local shortened_path = vim.fn.pathshorten(vim.fn.expand('%:h'))
+            local sp_file = shortened_path .. '/' .. file
+            if shortened_path == '.' then sp_file = file end
+            if vim.fn.empty(file) == 1 then return '' end
+            if string.len(file_readonly()) ~= 0 then return sp_file .. file_readonly() end
+            local icon = ''
+            if vim.bo.modifiable then if vim.bo.modified then return sp_file .. ' ' .. icon .. '  ' end end
+            return sp_file .. ' '
+        end,
+        condition = condition.buffer_not_empty,
+        highlight = {colors.magenta, colors.bg, 'bold'}
+    }
+}
 
 gls.left[7] = {
     RainbowRed = {

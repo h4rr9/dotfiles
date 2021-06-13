@@ -36,8 +36,9 @@ set shortmess+=c
 set undodir=~/.vim/undodir
 set undofile
 set scrolloff=8
-set signcolumn=yes
+set signcolumn=auto:2
 set guicursor=
+set cursorline
 " set shell
 set shell=/bin/bash
 

@@ -10,12 +10,14 @@ let g:gruvbox_invert_selection = 0
 set background=dark
 colorscheme gruvbox
 
-
 hi SignColumn guibg=none
 highlight Normal guibg=none
+hi CursorLine guibg=#3c3836
 hi CursorLineNR guibg=None
 highlight LineNr guifg=#5eacd3
 highlight qfFileName guifg=#aed75f
+hi NormalFloat guibg=none
+hi FLoatBorder guifg=#ffffff
 
 augroup highlight_yank
     autocmd!

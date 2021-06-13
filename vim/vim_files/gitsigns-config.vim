@@ -32,6 +32,9 @@ require('gitsigns').setup {
   use_decoration_api = true,
   use_internal_diff = true,  -- If luajit is present
 }
+
+require('gitsigns').toggle_signs()
+
 EOF
 
 nnoremap <leader>hs <cmd>lua require('gitsigns').stage_hunk()<cr>
@@ -40,4 +43,5 @@ nnoremap <leader>hr <cmd>lua require('gitsigns').reset_hunk()<cr>
 nnoremap <leader>hR <cmd>lua require('gitsigns').reset_buffer()<cr>
 nnoremap <leader>hp <cmd>lua require('gitsigns').preview_hunk()<cr>
 nnoremap <leader>hb <cmd>lua require('gitsigns').toggle_current_line_blame()<cr>
+nnoremap <leader>ht <cmd>lua require('gitsigns').toggle_signs()<cr>
 

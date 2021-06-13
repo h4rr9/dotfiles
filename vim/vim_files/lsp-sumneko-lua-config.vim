@@ -4,6 +4,8 @@ USER = vim.fn.expand('$USER')
 local sumneko_root_path = ""
 local sumneko_binary = ""
 
+local cfg = require('lsp-signature-config').cfg
+
 sumneko_root_path = "/home/" .. USER .. "/.config/nvim/lua-language-server"
 sumneko_binary = "/home/" .. USER .. "/.config/nvim/lua-language-server/bin/Linux/lua-language-server"
 
@@ -19,6 +21,7 @@ require'lspconfig'.sumneko_lua.setup {
             },
             diagnostics = {
                 -- Get the language server to recognize the `vim` global
+                enable = true,
                 globals = {'vim'}
             },
             workspace = {
@@ -26,6 +29,10 @@ require'lspconfig'.sumneko_lua.setup {
                 library = {[vim.fn.expand('$VIMRUNTIME/lua')] = true, [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true}
             }
         }
-    }
+    },
+    on_attach = function(client)
+        require'lsp_signature'.on_attach(cfg)
+        client.resolved_capabilities.document_formatting = false
+    end
 }
 EOF

@@ -6,8 +6,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # If you come from bash you might have to change your $PATH.
- export PATH=$HOME/bin:/usr/local/bin:$PATH
-
+export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH="$HOME/neovim/bin:$PATH"
 # Path to your oh-my-zsh installation.
 export ZSH="/home/h4rr9/.oh-my-zsh"
 
@@ -16,7 +16,7 @@ export ZSH="/home/h4rr9/.oh-my-zsh"
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="powerlevel10k/powerlevel10k"
-eval `dircolors ~/.dircolors`
+test -r "~/.dir_colors" && eval $(dircolors ~/.dir_colors)
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
@@ -120,6 +120,8 @@ export LC_CTYPE=en_US.UTF-8
  alias vim="nvim"
  alias vi="nvim"
 
+ export BAT_THEME="gruvbox-dark"
+
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -143,4 +145,6 @@ export GPG_AGENT_INFO=${HOME}/.gnupg/S.gpg-agent:0:1
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-export TEMP=1232
+
+export _ZO_DATA_DIR=$HOME/.local/share
+eval "$(zoxide init zsh)"

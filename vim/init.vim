@@ -3,7 +3,7 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'SirVer/ultisnips'
 Plug 'folke/zen-mode.nvim'
 Plug 'gbrlsnchs/telescope-lsp-handlers.nvim'
-Plug 'hoob3rt/lualine.nvim'
+Plug 'glepnir/galaxyline.nvim'
 Plug 'hrsh7th/nvim-compe'
 Plug 'jiangmiao/auto-pairs'
 Plug 'jvgrootveld/telescope-zoxide'
@@ -25,8 +25,10 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'ojroques/nvim-bufdel'
 Plug 'onsails/lspkind-nvim'
+Plug 'ray-x/lsp_signature.nvim'
 Plug 'rktjmp/lush.nvim'
 Plug 'scrooloose/nerdcommenter'
+Plug 'simrat39/rust-tools.nvim'
 Plug 'tami5/sql.nvim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
@@ -39,13 +41,12 @@ let g:nvim_config_root = stdpath('config')
 
 let g:vim_config_file_list = [
     \ 'variables.vim',
-    \ 'lualine-config.vim',
     \ 'colorscheme.vim',
     \ 'mapping.vim',
     \ 'custom.vim',
     \ 'plugin.vim',
     \ 'compe-config.vim',
-    \ 'lsp-pyright.vim',
+    \ 'lsp-pylsp.vim',
     \ 'lsp-clangd.vim',
     \ 'lsp-rust-analyser.vim',
     \ 'lsp-sumneko-lua-config.vim',
@@ -58,7 +59,8 @@ let g:vim_config_file_list = [
     \ ]
 
 let g:lua_config_file_list = [
-   "\ 'runner/init.lua'
+    \ 'galaxyline-config.lua',
+    \ 'lsp-signature-config.lua'
     \]
 
 
@@ -68,5 +70,5 @@ for f in g:vim_config_file_list
     endfor
     
 for f in g:lua_config_file_list
-	    execute 'luafile  ' . g:nvim_config_root . '/lua_files/' . f
+	    execute 'luafile  ' . g:nvim_config_root . '/lua/' . f
     endfor

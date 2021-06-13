@@ -54,7 +54,7 @@ function! s:ExecuteWithInput(input_number)
 endfunction
 
 function! s:Execute()
-    execute ":\<C-U>!%:r \<CR>"
+    execute ":!%:r"
 endfunction
 
 " provide number of inputfile (of the form in{inputnumber})

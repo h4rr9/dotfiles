@@ -27,10 +27,10 @@ require "lspconfig".efm.setup {
     root_dir = function()
         return vim.loop.cwd()
     end,
-    filetypes = {"cpp", "lua", "python", "rs"},
+    filetypes = {"cpp", "lua", "python", "rust"},
     settings = {
         languages = {
-            python = {{formatCommand = "yapf --style=google", formatStdin = true}},
+            python = {{formatCommand = "black --quiet --line-length 79 -", formatStdin = true}},
             rust = {{formatCommand = "rustfmt", formatStdin = true}},
             cpp = {{formatCommand = "clang-format -style='{BasedOnStyle: LLVM, IndentWidth: 4}'", formatStdin = true}},
             lua = {

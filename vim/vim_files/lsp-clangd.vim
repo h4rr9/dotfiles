@@ -1,5 +1,6 @@
 lua << EOF
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+local cfg = require('lsp-signature-config').cfg
 
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 capabilities.textDocument.completion.completionItem.resolveSupport = {
@@ -62,9 +63,11 @@ require "lspconfig".clangd.setup {
         return vim.loop.cwd()
     end,
     on_attach = function(client)
+        require'lsp_signature'.on_attach(cfg)
         client.resolved_capabilities.document_formatting = false
     end
 }
 EOF
 
 autocmd BufWritePre *.cpp lua vim.lsp.buf.formatting_sync(nil, 100)
+autocmd BufWritePre *.h lua vim.lsp.buf.formatting_sync(nil, 100)
