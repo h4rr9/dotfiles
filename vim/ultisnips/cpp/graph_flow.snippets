@@ -19,8 +19,7 @@ template <class T> struct EdmondsKarp {
 
         FOR(s, n)
         EACH(t, adj[s]) {
-            g[s].pb({t, sz(g[t]), 0, cap[s][t]});
-            g[t].pb({s, sz(g[s]) - 1, 0, cap[t][s]});
+            ae(s, t, cap[s][t], cap[t][s]);
         }
     }
 
@@ -99,11 +98,12 @@ template <class T> struct PushRelabel {
     vt<vt<int>> hs;
     vt<T> ec;
 
+    PushRelabel(int n) : g(n), cur(n){};
+
     PushRelabel(int n, vt<int> adj[], vt<vt<T>> &cap) : g(n), cur(n) {
         FOR(s, n)
         EACH(t, adj[s]) {
-            g[s].pb({t, sz(g[t]), 0, cap[s][t]});
-            g[t].pb({s, sz(g[s]) - 1, 0, cap[t][s]});
+            ae(s, t, cap[s][t], cap[t][s]);
         }
     }
 

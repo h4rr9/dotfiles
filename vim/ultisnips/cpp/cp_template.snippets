@@ -30,6 +30,10 @@ snippet cp_template "modified tmwilliam168's cp template" A
 
 using namespace std;
 
+#ifdef _STACK
+#include <sys/resource.h>
+#endif
+
 #define ll long long
 #define ld long double
 #define ar array
@@ -140,6 +144,13 @@ void solve() { $1 }
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
+
+#ifdef _STACK
+    rlimit R;
+    getrlimit(RLIMIT_STACK, &R);
+    R.rlim_cur = R.rlim_max;
+    setrlimit(RLIMIT_STACK, &R);
+#endif
 
     int t = 1;
     read(t);

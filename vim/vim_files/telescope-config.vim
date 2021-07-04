@@ -12,33 +12,19 @@ require("telescope").setup {
             "--column",
             "--smart-case"
         },
-        prompt_position = "bottom",
         prompt_prefix = "> ",
         selection_caret = "> ",
         entry_prefix = "  ",
         initial_mode = "insert",
         selection_strategy = "reset",
-        sorting_strategy = "descending",
+        sorting_strategy = "ascending",
         layout_strategy = "horizontal",
         scroll_strategy = "cycle",
         layout_config = {
-            width = 0.8,
-            height = 0.85,
-            horizontal = {
-                preview_width = 0.6
-            },
-            vertical = {
-                width = 0.9,
-                height = 0.95,
-                preview_height = 0.5
-            },
-            flex = {
-                horizontal = {
-                    preview_width = 0.9
-                }
-            }
-        },
-        layout_defaults = {
+            prompt_position = "top",
+            width = 0.75,
+            height = 0.75,
+            preview_cutoff = 120,
             horizontal = {
                 mirror = false
             },
@@ -52,10 +38,6 @@ require("telescope").setup {
         generic_sorter = require "telescope.sorters".get_generic_fuzzy_sorter,
         shorten_path = true,
         winblend = 0,
-        width = 0.75,
-        preview_cutoff = 120,
-        results_height = 1,
-        results_width = 0.8,
         border = {},
         borderchars = {"─", "│", "─", "│", "╭", "╮", "╯", "╰"},
         color_devicons = true,
@@ -72,38 +54,39 @@ require("telescope").setup {
         },
         extensions = {
             fzy_native = {
-                override_generic_sorter = false,
+                override_generic_sorter = true,
                 override_file_sorter = true
             }
         }
     }
 }
 
-require("telescope").load_extension("fzy_native")
+require('telescope').load_extension('fzy_native')
 require'telescope'.load_extension('zoxide')
 require('telescope').load_extension('lsp_handlers')
+require('telescope').load_extension('dap')
 
 search_dotfiles = function()
     require("telescope.builtin").find_files(
-        {
-            shorten_path = false,
-            prompt_title = "< VimRC >",
-            cwd = "~/.config/nvim",
-            previewer = false,
-        }
+        require("telescope.themes").get_dropdown(
+            {
+                shorten_path = false,
+                prompt_title = "< VimRC >",
+                cwd = "~/.config/nvim"
+            }
+        )
     )
 end
 
 search_cp = function()
     require("telescope.builtin").find_files(
-        {
-            shorten_path = false,
-            prompt_title = "< cp >",
-            cwd = "~/cp",
-            layout_strategy = "horizontal",
-            previewer = false,
-
-        }
+        require("telescope.themes").get_dropdown(
+            {
+                shorten_path = false,
+                prompt_title = "< cp >",
+                cwd = "~/cp"
+            }
+        )
     )
 end
 
@@ -113,7 +96,9 @@ EOF
 
 
 nnoremap <silent><leader>fs :lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ")})<CR>
-nnoremap <silent><leader>fg :lua require('telescope.builtin').git_files()<CR>
+nnoremap <silent><leader>fgf :lua require('telescope.builtin').git_files()<CR>
+nnoremap <silent><leader>fgb :lua require('telescope.builtin').git_branches()<CR>
+nnoremap <silent><leader>fgc :lua require('telescope.builtin').git_commits()<CR>
 nnoremap <silent><Leader>ff :lua require('telescope.builtin').find_files()<CR>
 nnoremap <silent><Leader>fe :lua require('telescope.builtin').file_browser()<CR>
 nnoremap <silent><Leader>fif :lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>

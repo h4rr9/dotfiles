@@ -1,5 +1,4 @@
 filetype plugin indent on
-syntax on
 
 set encoding=utf-8
 set number
@@ -31,13 +30,13 @@ set hidden
 set pastetoggle=<F2>
 set bs=2
 set switchbuf+=useopen
-set shortmess+=c
 set undodir=~/.vim/undodir
 set undofile
-set scrolloff=8
-set signcolumn=auto:2
+set scrolloff=2
+set signcolumn=yes:2
 set guicursor=
-set cursorline
+set shortmess-=F
+set shortmess+=c
 " set shell
 set shell=/bin/bash
 

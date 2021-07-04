@@ -10,6 +10,10 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
         "additionalTextEdits"
     }
 }
+capabilities.textDocument.completion.editsNearCursor = true
+capabilities.offsetEncoding = {"utf-8", "utf-16"}
+
+
 local function switch_source_header_splitcmd(bufnr, splitcmd)
     bufnr = require "lspconfig".util.validate_bufnr(bufnr)
     local params = {uri = vim.uri_from_bufnr(bufnr)}
@@ -36,7 +40,8 @@ require "lspconfig".clangd.setup {
         "--background-index",
         "--pch-storage=memory",
         "--clang-tidy",
-        "--suggest-missing-includes"
+        "--suggest-missing-includes",
+        "--header-insertion=iwyu",
     },
     capabilities = capabilities,
     commands = {
@@ -59,9 +64,9 @@ require "lspconfig".clangd.setup {
             description = "Open source/header in a new split"
         }
     },
-    root_dir = function()
-        return vim.loop.cwd()
-    end,
+--    root_dir = function()
+ --       return vim.loop.cwd()
+  --  end,
     on_attach = function(client)
         require'lsp_signature'.on_attach(cfg)
         client.resolved_capabilities.document_formatting = false
@@ -69,5 +74,3 @@ require "lspconfig".clangd.setup {
 }
 EOF
 
-autocmd BufWritePre *.cpp lua vim.lsp.buf.formatting_sync(nil, 100)
-autocmd BufWritePre *.h lua vim.lsp.buf.formatting_sync(nil, 100)

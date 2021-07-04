@@ -114,9 +114,10 @@ gls.left[4] = {
     FileName = {
         provider = function()
             local file = vim.fn.expand('%:t')
-            local shortened_path = vim.fn.pathshorten(vim.fn.expand('%:h'))
+            local shortened_path = vim.fn.pathshorten(vim.fn.expand('%:.:h'))
+            local parent_dir = vim.fn.expand('%:p:h:t')
             local sp_file = shortened_path .. '/' .. file
-            if shortened_path == '.' then sp_file = file end
+            if shortened_path == '.' then sp_file = parent_dir .. '/' .. file end
             if vim.fn.empty(file) == 1 then return '' end
             if string.len(file_readonly()) ~= 0 then return sp_file .. file_readonly() end
             local icon = ''
@@ -128,7 +129,7 @@ gls.left[4] = {
     }
 }
 
-gls.left[7] = {
+gls.left[5] = {
     RainbowRed = {
         provider = function()
             return ' '
@@ -137,14 +138,14 @@ gls.left[7] = {
     }
 }
 
-gls.left[12] = {DiagnosticError = {provider = 'DiagnosticError', icon = '  ', highlight = {colors.red, colors.bg}}}
-gls.left[13] = {DiagnosticWarn = {provider = 'DiagnosticWarn', icon = '  ', highlight = {colors.yellow, colors.bg}}}
+gls.left[6] = {DiagnosticError = {provider = 'DiagnosticError', icon = '  ', highlight = {colors.red, colors.bg}}}
+gls.left[7] = {DiagnosticWarn = {provider = 'DiagnosticWarn', icon = '  ', highlight = {colors.yellow, colors.bg}}}
 
-gls.left[14] = {DiagnosticHint = {provider = 'DiagnosticHint', icon = '  ', highlight = {colors.cyan, colors.bg}}}
+gls.left[8] = {DiagnosticHint = {provider = 'DiagnosticHint', icon = '  ', highlight = {colors.cyan, colors.bg}}}
 
-gls.left[15] = {DiagnosticInfo = {provider = 'DiagnosticInfo', icon = '  ', highlight = {colors.blue, colors.bg}}}
+gls.left[9] = {DiagnosticInfo = {provider = 'DiagnosticInfo', icon = '  ', highlight = {colors.blue, colors.bg}}}
 
-gls.left[16] = {
+gls.left[10] = {
     ShowLspClient = {
         provider = function()
             local msg = "No Active Lsp"
@@ -164,16 +165,52 @@ gls.left[16] = {
             if tbl[vim.bo.filetype] then return false end
             return true
         end,
-        icon = ' LSP : ',
+        icon = '  LSP : ',
         highlight = {colors.fg, colors.bg, 'bold'}
     }
 }
 
-gls.right[1] = {LineInfo = {provider = 'LineColumn', separator_highlight = {'NONE', colors.bg}, highlight = {colors.fg, colors.bg}}}
+gls.left[11] = {
+    MetalsStatus = {
+        provider = function()
+            return "  " .. (vim.g["metals_status"] or "")
+        end,
+        highlight = {colors.fg, colors.bg}
+    }
+}
 
-gls.right[2] = {PerCent = {provider = 'LinePercent', separator_highlight = {'NONE', colors.bg}, highlight = {colors.fg, colors.bg, 'bold'}}}
+gls.right[1] = {DiffAdd = {provider = 'DiffAdd', condition = condition.hide_in_width, icon = '  ', highlight = {colors.green, colors.bg}}}
+gls.right[2] = {
+    DiffModified = {provider = 'DiffModified', condition = condition.hide_in_width, icon = ' 柳', highlight = {colors.orange, colors.bg}}
+}
+gls.right[3] = {DiffRemove = {provider = 'DiffRemove', condition = condition.hide_in_width, icon = '  ', highlight = {colors.red, colors.bg}}}
 
-gls.right[3] = {
+gls.right[4] = {
+    GitIcon = {
+        provider = function()
+            return '  '
+        end,
+        condition = condition.check_git_workspace,
+        separator_highlight = {'NONE', colors.bg},
+        highlight = {colors.violet, colors.bg, 'bold'}
+    }
+}
+gls.right[5] = {GitBranch = {provider = 'GitBranch', condition = condition.check_git_workspace, highlight = {colors.violet, colors.bg}}}
+
+gls.right[6] = {
+    RainbowBlue = {
+        provider = function()
+            return ' '
+        end,
+        highlight = {colors.blue, colors.bg}
+    }
+}
+
+gls.right[7] = {LineInfo = {provider = 'LineColumn', separator_highlight = {'NONE', colors.bg}, highlight = {colors.fg, colors.bg}}}
+
+gls.right[8] = {PerCent = {provider = 'LinePercent', separator_highlight = {'NONE', colors.bg}, highlight = {colors.fg, colors.bg, 'bold'}}}
+
+gls.right[9] = {
     FileEncode = {
         provider = function()
             local encode = vim.bo.fenc ~= '' and vim.bo.fenc or vim.o.enc
@@ -186,7 +223,7 @@ gls.right[3] = {
     }
 }
 
-gls.right[4] = {
+gls.right[10] = {
     FileFormat = {
         provider = function()
             return vim.bo.fileformat
@@ -198,38 +235,11 @@ gls.right[4] = {
     }
 }
 
-gls.right[5] = {
-    RainbowBlue = {
-        provider = function()
-            return ' '
-        end
-    }
-}
-
-gls.right[6] = {DiffAdd = {provider = 'DiffAdd', condition = condition.hide_in_width, icon = '  ', highlight = {colors.green, colors.bg}}}
-gls.right[7] = {
-    DiffModified = {provider = 'DiffModified', condition = condition.hide_in_width, icon = ' 柳', highlight = {colors.orange, colors.bg}}
-}
-gls.right[8] = {DiffRemove = {provider = 'DiffRemove', condition = condition.hide_in_width, icon = '  ', highlight = {colors.red, colors.bg}}}
-
-gls.right[9] = {
-    GitIcon = {
-        provider = function()
-            return '  '
-        end,
-        condition = condition.check_git_workspace,
-        separator_highlight = {'NONE', colors.bg},
-        highlight = {colors.violet, colors.bg, 'bold'}
-    }
-}
-gls.right[10] = {GitBranch = {provider = 'GitBranch', condition = condition.check_git_workspace, highlight = {colors.violet, colors.bg}}}
-
 gls.right[11] = {
     RainbowBlue = {
         provider = function()
             return ' '
-        end,
-        highlight = {colors.blue, colors.bg}
+        end
     }
 }
 

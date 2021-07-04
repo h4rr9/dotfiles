@@ -27,6 +27,8 @@ M._diff = function(test_case_id)
         env = {['PATH'] = '/home/h4rr9/.local/bin:/usr/bin'}
     }):sync()
 
+    -- :TODO chage individual 'cat <file>' to a single 'pr -m -t <file-a> <file-b>'
+
     local output_job = Job:new({command = 'cat', args = {temp_file}, cwd = M._path, env = {['PATH'] = '/bin'}})
     local expected_output_job = Job:new({command = 'cat', args = {output_file}, cwd = M._path, env = {['PATH'] = '/bin'}})
 
@@ -61,7 +63,7 @@ M._create_and_update_output_window = function()
         api.nvim_win_close(M.__win, true)
         M._create_window()
         local contents = M._diff(selected)
-        local title = '☀️    Output ' .. selected .. '   🌑'
+        local title = 'Output ' .. selected
         M._update_buf(contents, title, false)
     end
 end
@@ -229,10 +231,10 @@ M.get_results = function()
         api.nvim_buf_set_keymap(M.__buf, 'n', '<cr>', "<cmd>lua require('runner')._create_and_update_output_window()<cr>",
                                 {['silent'] = true, ['nowait'] = true, ['noremap'] = true})
 
-        M._update_buf(output, '💀 Test Cases Status 💀', true)
+        M._update_buf(output, 'Test Cases Status', true)
         M._cleanup(test_cases)
     else
-        assert(false, "🤷 No Test Cases found 🤷")
+        assert(false, "No Test Cases found")
     end
 
 end

@@ -27,7 +27,7 @@ require "lspconfig".efm.setup {
     root_dir = function()
         return vim.loop.cwd()
     end,
-    filetypes = {"cpp", "lua", "python", "rust"},
+    filetypes = {"cpp", "lua", "python", "rust", "javascript", "typescript"},
     settings = {
         languages = {
             python = {{formatCommand = "black --quiet --line-length 79 -", formatStdin = true}},
@@ -37,6 +37,19 @@ require "lspconfig".efm.setup {
                 {
                     formatCommand = "lua-format -i --no-keep-simple-function-one-line --no-break-after-operator --column-limit=150 --break-after-table-lb",
                     formatStdin = true
+                }
+            },
+            typescript = {
+                {
+                    formatCommand = 
+                            "prettier --config ~/.config/nvim/.prettierrc ${INPUT}",
+                    formatStdin = true
+                },
+                {
+                    lintCommand = "eslint -f unix --stdin --stdin-filename ${INPUT}",
+                    lintIgnoreExitCode = true,
+                    lintStdin = true,
+                    lintFormats = {"%f:%l:%c: %m"}
                 }
             }
         }

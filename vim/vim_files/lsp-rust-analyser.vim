@@ -35,7 +35,7 @@ local opts = {
             -- whether to align to the lenght of the longest line in the file
             max_len_align = true,
             -- padding from the left if max_len_align is true
-            max_len_align_padding = 1,
+            max_len_align_padding = 20,
             -- whether to align to the extreme right or not
             right_align = false,
             -- padding from the right if right_align is true
@@ -64,7 +64,7 @@ local opts = {
             ["rust-analyzer"] = {
                 assist = {
                     importGranularity = "module",
-                    importPrefix = "by_self"
+                    importPrefix = "by_crate"
                 },
                 cargo = {
                     loadOutDirsFromCheck = true

@@ -1,0 +1,206 @@
+snippet least_common_ancestor "LCA using Binary Lifting" b
+struct LCA {
+
+    int n;
+    int timer;
+
+    vt<vt<int>> ancestor;
+    vt<int> tin, tout;
+
+    LCA(int root, int n, vt<int> adj[])
+        : n(n), ancestor(n, vt<int>(20, -2)), tin(n, -1),
+          tout(n, -1) { // set super ancestor = -2
+        dfs(root, -1, adj);
+    }
+
+    void dfs(int v, int p, vt<int> adj[]) {
+        tin[v] = ++timer;
+        EACH(node, adj[v]) {
+            if (node != p) {
+                FOR(i, 1, 20) {
+                    ancestor[node][0] = v;
+                    if (ancestor[node][i - 1] == -2)
+                        break;
+                    ancestor[node][i] = ancestor[ancestor[node][i - 1]][i - 1];
+                }
+                dfs(node, v, adj);
+            }
+        }
+        tout[v] = ++timer;
+    }
+
+    bool is_ancestor(int u, int v) {
+        if (u == -2)
+            return true;
+        return tin[u] <= tin[v] and tout[u] >= tout[v];
+    }
+
+    int lca(int a, int b) {
+
+        if (is_ancestor(a, b))
+            return a;
+        if (is_ancestor(b, a))
+            return b;
+        for (int i = 19; i >= 0; --i) {
+            if (!is_ancestor(ancestor[a][i], b))
+                a = ancestor[a][i];
+        }
+        return ancestor[a][0];
+    }
+
+    int kth_ancenstor(int node, int step) {
+        if (step <= 0)
+            return node;
+
+        FOR(20)
+        if (node != -2 and step & (1 << i)) {
+            node = ancestor[node][i];
+        }
+
+        return node;
+    }
+};
+endsnippet
+
+snippet heavy_light_decomposition "Heavy Light Decomposition"
+template <typename T> struct HeavyLightDecomposition {
+    vt<int> label, depth, chain, subtr_sz, par, bigchild;
+    Segment_Tree<node<T>, update<T>> sgt;
+    LCA lca;
+    int label_time;
+
+    HeavyLightDecomposition(int root, int n, vt<int> *adj, vt<T> &vals)
+        : label(n), depth(n), chain(n), subtr_sz(n), par(n), bigchild(n, -2),
+          sgt(n), lca(root, n, adj), label_time(0) {
+
+        dfs_size(
+            root, -1, 0,
+            adj); // finds depth and subtree_sizes and largest child subtree
+        dfs_labels(
+            root, -1, adj,
+            vals); // labels heavy chains consecutively for single segtree query
+
+        FOR(n) chain[i] = i;
+        dfs_chains(root, -1, adj); // finds top of each heavy chain
+    };
+
+    void dfs_labels(int v, int p, vt<int> adj[], vt<T> &vals) {
+        label[v] = label_time++;
+
+        update<T> upd(vals[v]);
+        sgt.modify(label[v], upd);
+
+        if (bigchild[v] != -2) {
+            dfs_labels(bigchild[v], v, adj, vals);
+        }
+
+        EACH(node, adj[v]) {
+            if (node != p and node != bigchild[v]) {
+                dfs_labels(node, v, adj, vals);
+            }
+        }
+    }
+
+    void dfs_chains(int v, int p, vt<int> adj[]) {
+
+        if (bigchild[v] != -2) {
+            chain[bigchild[v]] = chain[v];
+        }
+
+        EACH(node, adj[v]) {
+            if (node != p) {
+                dfs_chains(node, v, adj);
+            }
+        }
+    }
+
+    void dfs_size(int v, int p, int d, vt<int> adj[]) {
+        subtr_sz[v] = 1;
+        depth[v] = d;
+        par[v] = p;
+
+        int bigc = -2, bigv = -2;
+
+        EACH(node, adj[v]) {
+            if (node != p) {
+                dfs_size(node, v, d + 1, adj);
+                subtr_sz[v] += subtr_sz[node];
+
+                if (subtr_sz[node] > bigv) {
+                    bigc = node;
+                    bigv = subtr_sz[node];
+                }
+            }
+        }
+
+        bigchild[v] = bigc;
+    }
+
+    node<T> query_chain(int v, int p, bool first_vert_chain, bool lazy) {
+
+        node<T> res;
+
+        while (depth[p] < depth[v]) {
+            int top = chain[v]; // top of current chain;
+
+            if (depth[top] <=
+                depth[p]) { // resets to below lca if equal or above lca;
+                int diff = depth[v] - depth[p];
+                top = lca.kth_ancenstor(v, diff - 1);
+            }
+
+            node<T> query_res = sgt.query(label[top], label[v] + 1, lazy);
+
+            if (first_vert_chain)
+                res = node<T>::merge(res, query_res);
+            else
+                res = node<T>::merge(query_res, res);
+
+            v = par[top];
+        }
+
+        return res;
+    }
+
+    node<T> query(int u, int v, bool lazy = false) {
+
+        int lc = lca.lca(u, v);
+
+        node<T> lca_res = sgt.query(label[lc], label[lc] + 1, lazy);
+
+        node<T> left_res =
+            node<T>::merge(query_chain(u, lc, true, lazy), lca_res);
+
+        return node<T>::merge(left_res, query_chain(v, lc, false, lazy));
+    }
+
+    void modify(int v, update<T> &upd) { sgt.modify(label[v], upd); }
+
+    void lazy_modify_chain(int v, int p, update<T> &upd) {
+
+        while (depth[p] < depth[v]) {
+            int top = chain[v]; // top of current chain;
+
+            if (depth[top] <=
+                depth[p]) { // resets to below lca if equal or above lca;
+                int diff = depth[v] - depth[p];
+                top = lca.kth_ancenstor(v, diff - 1);
+            }
+
+            sgt.lazy_modify(label[top], label[v] + 1, upd);
+
+            v = par[top];
+        }
+    }
+
+    void lazy_modify(int v, int u, update<T> &upd) {
+
+        int lc = lca.lca(u, v);
+
+        lazy_modify(label[u], label[lc] + 1, upd);
+        lazy_modify(label[v], label[lc] + 1, upd);
+
+        sgt.lazy_modify(label[lc], label[lc] + 1, upd);
+    }
+};
+endsnippet

@@ -1,5 +1,7 @@
-" comiple/run
-autocmd filetype cpp nnoremap <F9> :w <bar> !g++ -g -Wall -Wextra -O2 -D _DEBUG -std=c++14 % -o %:r<CR>
+" compile fast
+autocmd filetype cpp nnoremap <F8> :w <bar> !g++ -std=c++17 -Wall -Wextra -O2 % -o %:r -D _STACK<CR>
+" compile safe
+autocmd filetype cpp nnoremap <F9> :w <bar> !g++ -std=c++17 -Wall -Wno-unused-result % -o %:r -g -fsanitize=address -fsanitize=undefined -D _DEBUG -D _STACK<CR>
 
 function! MySplit( ex_num )
     let inp_file = expand('%:p:h') . '/in' . a:ex_num
@@ -67,4 +69,5 @@ cabbrev open <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Split' : 'open')<CR>
 cabbrev run <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Run' : 'run')<CR>
 cabbrev exe <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Exe' : 'exe')<CR>
 
-
+ca Hash w !cpp -dD -P -fpreprocessed \| tr -d '[:space:]' \
+ \| md5sum \| cut -c-6

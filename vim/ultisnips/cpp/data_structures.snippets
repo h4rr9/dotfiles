@@ -1,0 +1,369 @@
+snippet segment_tree "Iterative Segment Tree with Lazy Propagation" b
+template <typename node, typename update> struct Segment_Tree {
+    int n;
+    int h;
+    vt<node> t;
+    vt<update> d;
+    vt<int> roots;
+    update identity;
+
+    Segment_Tree(int n) : n(n), t(2 * n, node()), d(n) {
+
+        node identity;
+        FOR(i, n)
+        t[i + n] = node(identity.v, i);
+
+        FOR(i, n - 1, 0, -1)
+        t[i] = node::merge(t[i << 1], t[i << 1 | 1]);
+
+        h = sizeof(int) * 8 - __builtin_clz(n);
+    }
+
+    template <class T> Segment_Tree(vt<T> a) : n(sz(a)), t(2 * n), d(n) {
+
+        FOR(i, n)
+        t[i + n] = node(a[i], i);
+
+        FOR(i, n - 1, 0, -1)
+        t[i] = node::merge(t[i << 1], t[i << 1 | 1]);
+
+        h = sizeof(int) * 8 - __builtin_clz(n);
+    }
+
+    node query(int l, int r, bool lazy = true) { // sum on interval [l, r)
+        node l_res, r_res;
+
+        if (lazy)
+            push(l, l + 1), push(r - 1, r);
+
+        for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
+            if (l & 1)
+                l_res = node::merge(l_res, t[l++]);
+            if (r & 1)
+                r_res = node::merge(t[--r], r_res);
+        };
+
+        l_res = node::merge(l_res, r_res);
+
+        return l_res;
+    }
+
+    void modify(int p, update &upd) {
+
+        upd.apply(t[p + n]);
+        for (p += n; p > 1; p >>= 1)
+            if (p & 1)
+                t[p >> 1] = node::merge(t[p ^ 1], t[p]);
+            else
+                t[p >> 1] = node::merge(t[p], t[p ^ 1]);
+    }
+
+    void lazy_modify(int l, int r, update &upd) {
+        if (upd.is_identity())
+            return;
+        push(l, l + 1);
+        push(r - 1, r);
+        bool cl = false, cr = false;
+        for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
+            if (cl)
+                calc(l - 1);
+            if (cr)
+                calc(r);
+            if (l & 1)
+                apply(l++, upd), cl = true;
+            if (r & 1)
+                apply(--r, upd), cr = true;
+        }
+        for (--l; r > 0; l >>= 1, r >>= 1) {
+            if (cl)
+                calc(l);
+            if (cr && (!cl || l != r))
+                calc(r);
+        }
+    }
+
+    void push(int l, int r) {
+        int s = h;
+        for (l += n, r += n - 1; s > 0; --s)
+            for (int i = l >> s; i <= r >> s; ++i)
+                if (not d[i].is_identity()) {
+                    apply(i << 1, d[i]);
+                    apply(i << 1 | 1, d[i]);
+                    d[i] = identity;
+                }
+    }
+
+    void calc(int p) {
+        if (d[p].is_identity())
+            t[p] = node::merge(t[p << 1], t[p << 1 | 1]);
+        else
+            d[p].apply(t[p]);
+    }
+
+    void apply(int p, update &upd) {
+        upd.apply(t[p]);
+        if (p < n)
+            d[p].combine(upd);
+    }
+
+    void init_roots() {
+        vector<int> roots_r;
+        for (auto l = n, r = n << 1; l < r; l >>= 1, r >>= 1) {
+            if (l & 1)
+                roots.push_back(l++);
+            if (r & 1)
+                roots_r.push_back(--r);
+        }
+        roots.insert(roots.end(), roots_r.rbegin(), roots_r.rend());
+    }
+
+    /**
+     * @brief binary search in log(n), don't forget to call init_roots()
+     *
+     * @param x value to search for
+     * @return index of found element
+     */
+	int binary_search(int x) {
+
+			if (query(0, n).v < x)
+				return -1;
+
+			auto pred = [x, this](int i) {
+				if (!d[i >> 1].is_identity()) {
+					apply(i, d[i >> 1]);
+					apply(i ^ 1, d[i >> 1]);
+					d[i >> 1] = identity;
+				}
+				return this->t[i].v >= x;
+			};
+			int root = *find_if(all(roots), pred);
+
+			while (root < n && t[root].v >= x) {
+
+				root <<= 1; // go to left child
+				if (!pred(root))
+					root |= 1; // go to right child
+			}
+
+			return root - n;
+		}
+};
+
+template <typename T> struct node {
+
+    T v = 0, ind = -1, tl = -1, tr = -2;
+
+    node() {}
+    node(T x, T i) : v(x), ind(i), tl(i), tr(i) {}
+    node(T v, T ind, T tl, T tr) : v(v), ind(ind), tl(tl), tr(tr) {}
+
+    static node merge(const node &l_node, const node &r_node) {
+        T tl, tr;
+        if (l_node.tl >= 0 and r_node.tl >= 0)
+            tl = min(l_node.tl, r_node.tl);
+        else
+            tl = max(l_node.tl, r_node.tl);
+        tr = max(l_node.tr, r_node.tr);
+
+        T v = max(l_node.v, r_node.v);
+        T ind = (l_node.v == v) ? l_node.ind : r_node.ind;
+
+        return node(v, ind, tl, tr);
+    }
+};
+
+template <typename T> struct update {
+
+    T v = 0;
+    T ql = 0, qr = 0;
+    update() {} // identity element
+    update(int a, int ql, int qr) : ql(ql), qr(qr) { v = a; }
+
+    bool is_identity() {
+        update identity;
+        return v == identity.v;
+    }
+
+    void combine(const update &other) {
+        // applied update from other(provided and parent)
+        ql = other.ql, qr = other.qr;
+        v += other.v;
+    }
+    void apply(node<T> &s) { // apply lazy value on segment
+
+        s.v += v;
+    }
+};
+endsnippet
+
+
+snippet fenwick_tree "Fenwick Tree" b
+template <class T> struct Fenwick_Tree {
+
+    int n;
+    vt<T> t;
+
+    Fenwick_Tree(int n) : n(n), t(n, 0) {}
+    Fenwick_Tree(vt<T> &v) : n(sz(v)), t(n, 0) {
+
+        FOR(k, n) { modify(k, v[k]); }
+    }
+
+    T query(int k) {
+        T ans = 0;
+        for (; k > 0; k &= k - 1)
+            ans += t[k - 1];
+        return ans;
+    }
+
+    void modify(int k, T x) {
+        for (; k < n; k |= k + 1)
+            t[k] += x;
+    }
+
+    T lower_bound(T sum) {
+        if (sum < 0)
+            return -1;
+        int pos = 0;
+        for (int pw = 1 << 25; pw; pw >>= 1) {
+            if (pos + pw <= n and t[pos + pw - 1] < sum)
+                pos += pw, sum -= t[pos - 1];
+        }
+
+        return pos;
+    }
+};
+endsnippet
+
+snippet fenwick_tree_2d "2D Fenwick_Tree" b
+template <typename T> struct Fenwick_Tree_2D {
+    int n, m;
+    vt<vt<T>> t;
+
+    Fenwick_Tree_2D(int n, int m) : n(n), m(m), t(n, vt<T>(m, 0)) {}
+
+    Fenwick_Tree_2D(vt<vt<T>> &v)
+        : n(sz(v)), m(sz(*v.begin())), t(n, vt<T>(m, 0)) {
+
+        FOR(i, n)
+        FOR(j, m) { modify(i, j, v[i][j]); }
+    }
+
+    void modify(int p, int q, T x) {
+        for (int i = p; i < n; i |= i + 1)
+            for (int j = q; j < m; j |= j + 1)
+                t[i][j] += x;
+    }
+
+    T query(int p, int q) {
+        ll res = 0;
+
+        for (int i = p; i > 0; i &= i - 1)
+            for (int j = q; j > 0; j &= j - 1)
+                res += t[i - 1][j - 1];
+
+        return res;
+    }
+
+    T query_single(int p, int q) {
+
+        T v1 = query(p + 1, q + 1);
+        T v2 = query(p, q + 1);
+        T v3 = query(p + 1, q);
+        T v4 = query(p, q);
+
+        T res = v1 - v2 - v3 + v4;
+    }
+};
+endsnippet
+
+snippet persistent_segment_tree "Persistent Segment Tree with memory dealloc"
+template <typename T> struct Node {
+
+    T v = 0, tr = -1, tl = -2;
+
+    Node *l, *r;
+
+    Node() : l(nullptr), r(nullptr) {}
+    Node(T x, int i) : v(x), tr(i + 1), tl(i), l(nullptr), r(nullptr) {}
+
+    Node(Node *l, Node *r) : l(l), r(r) { merge(); }
+
+    Node(Node *vertex, T x) {
+
+        v = x;
+        tl = vertex->tl;
+        tr = vertex->tr;
+        l = vertex->l;
+        r = vertex->r;
+    }
+
+    void merge() {
+        assert(l != nullptr and r != nullptr);
+
+        if (l->tl >= 0 and r->tl >= 0)
+            tl = min(l->tl, r->tl);
+        else
+            tl = max(l->tl, r->tl);
+        tr = max(l->tr, r->tr);
+
+        v = l->v + r->v;
+    }
+};
+
+template <typename T> struct PSGT {
+
+    deque<Node<T>> heap;
+
+    Node<T> *heap_memory(const Node<T> &new_node) {
+        heap.push_back(new_node);
+        return &heap.back();
+    }
+
+    Node<T> *build(int tl, int tr) { //[0,n)
+        if (tl + 1 < tr) {
+            int tm = tl + (tr - tl) / 2;
+            return heap_memory(Node<T>(build(tl, tm), build(tm, tr)));
+        } else {
+            heap_memory(Node<T>());
+        }
+    }
+
+    Node<T> *build(vt<T> &vec, int tl, int tr) { // [0,n)
+        if (tl + 1 < tr) {
+            int tm = tl + (tr - tl) / 2;
+            return heap_memory(Node<T>(build(vec, tl, tm), build(vec, tm, tr)));
+        } else {
+            return heap_memory(Node<T>(vec[tl], tl));
+        }
+    }
+
+    Node<T> *modify(Node<T> *v, int pos, T diff) {
+
+        if (v->tl == v->tr - 1) {
+            return heap_memory(Node<T>(v, diff));
+        }
+
+        int tm = v->tl + (v->tr - v->tl) / 2;
+
+        if (pos < tm)
+            return heap_memory(Node<T>(modify(v->l, pos, diff), v->r));
+
+        else
+            return heap_memory(Node<T>(v->l, modify(v->r, pos, diff)));
+    }
+
+    T query(Node<T> *v, int ql, int qr) { // [0,n)
+
+        if (ql >= v->tr or qr <= v->tl)
+            return 0;
+
+        if (ql <= v->tl and qr >= v->tr)
+            return v->v;
+
+        return query(v->l, ql, qr) + query(v->r, ql, qr);
+    }
+
+    Node<T> *clone(Node<T> *v) { return heap_memory(Node<T>(v->l, v->r)); }
+};
+endsnippet

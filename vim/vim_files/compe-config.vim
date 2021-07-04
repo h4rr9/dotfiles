@@ -1,12 +1,12 @@
 lua << EOF
-vim.o.completeopt = "menuone,noselect,noinsert"
+vim.o.completeopt = "menuone,noselect"
 
 require'compe'.setup {
   enabled = true;
   autocomplete = true;
   debug = false;
   min_length = 1;
-  preselect = 'enable';
+  preselect = 'disable';
   throttle_time = 80;
   source_timeout = 200;
   incomplete_delay = 400;
@@ -16,16 +16,16 @@ require'compe'.setup {
   documentation = true;
 
   source = {
-    path = true;
-    buffer = true;
-    calc = true;
-    nvim_lsp = true;
-    nvim_lua = true;
-    spell = true;
-    tags = true;
-    treesitter = true;
-    omni = false;
-    ultisnips = true;
+    path = true,
+    buffer = true,
+    calc = true,
+    nvim_lsp = true,
+    nvim_lua = true,
+    spell = false,
+    tags = true,
+    treesitter = true,
+    omni = false,
+    ultisnips = true,
   };
 }
 

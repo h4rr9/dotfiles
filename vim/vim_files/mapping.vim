@@ -13,35 +13,12 @@ let mapleader = "\<Space>"
 "sort
 vnoremap <Leader>s :sort<CR>
 
-"Navigation keys
-map <Leader>N <esc>:tabnext<CR>
-map <Leader>P <esc>:tabprevious<CR>
+" fast naviagtion
+nnoremap <silent><leader>n :tabnext<cr>
+nnoremap <silent><leader>p :tabprev<cr>
 
 " tmux and vim pane navigation
-if exists('$TMUX')
-  function! TmuxOrSplitSwitch(wincmd, tmuxdir)
-    let previous_winnr = winnr()
-    silent! execute "wincmd " . a:wincmd
-    if previous_winnr == winnr()
-      call system("tmux select-pane -" . a:tmuxdir)
-      redraw!
-    endif
-  endfunction
-
-  let previous_title = substitute(system("tmux display-message -p '#{pane_title}'"), '\n', '', '')
-  let &t_ti = "\<Esc>]2;vim\<Esc>\\" . &t_ti
-  let &t_te = "\<Esc>]2;". previous_title . "\<Esc>\\" . &t_te
-
-  nnoremap <silent> <C-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
-  nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr>
-  nnoremap <silent> <C-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
-  nnoremap <silent> <C-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
-else
-  map <C-h> <C-w>h
-  map <C-j> <C-w>j
-  map <C-k> <C-w>k
-  map <C-l> <C-w>l
-endif
+" done by vim-tmux-navigator plugin
 
 "Stop using arrow keys!!!
 nnoremap <Up> <NOP>
@@ -64,20 +41,11 @@ nnoremap <silent> <C-n> <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
 nnoremap <silent> <C-p> <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> <leader>ac <cmd>lua vim.lsp.buf.code_action()<CR>
 
-inoremap <silent><expr> <C-Space> compe#complete()
-inoremap <silent><expr> <CR>      compe#confirm('<CR>')
-inoremap <silent><expr> <C-e>     compe#close('<C-e>')
-inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
-inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
-
 " Quickfix list nav
-nnoremap <leader>n :cnext<CR>
-nnoremap <leader>p :cprev<CR>
 nnoremap <leader>C :cclose<CR>
 
-
 " Quick source file
-nnoremap <leader><leader> <cmd>so  %<cr>
+nnoremap <leader><leader> <cmd>so %<cr>
 
 " yank all
 nnoremap <leader>yy :%y*<cr>
@@ -86,7 +54,7 @@ nnoremap <leader>yy :%y*<cr>
 nnoremap <leader>rr <cmd>lua require('runner').get_results()<cr>
 
 "smart delete buffers (nvim-bufdel)
-nnoremap <leader>bd <cmd>BufDel<cr>
+nnoremap <leader>db <cmd>BufDel<cr>
 
 " moving lines
 vnoremap J :m '>+1<CR>gv=gv
