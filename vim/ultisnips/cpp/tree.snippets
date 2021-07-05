@@ -197,8 +197,8 @@ template <typename T> struct HeavyLightDecomposition {
 
         int lc = lca.lca(u, v);
 
-        lazy_modify(label[u], label[lc] + 1, upd);
-        lazy_modify(label[v], label[lc] + 1, upd);
+        lazy_modify_chain(u, lc, upd);
+        lazy_modify_chain(v, lc, upd);
 
         sgt.lazy_modify(label[lc], label[lc] + 1, upd);
     }
