@@ -204,3 +204,63 @@ template <typename T> struct HeavyLightDecomposition {
     }
 };
 endsnippet
+
+snippet centroid_decomposition "Centroid Decomposition" b
+struct Centroid_Decomposition {
+    int centroid_root, n;
+    vt<int> parent, subtree;
+    vt<vt<int>> centroid_tree;
+    vt<bool> processed;
+
+    Centroid_Decomposition(int n, vt<int> adj[])
+        : n(n), parent(n), subtree(n), centroid_tree(n), processed(n, false) {
+        centroid_root =
+            get_centroid(0, -1, get_subtree_sizes(0, -1, adj) >> 1, adj);
+
+        centroid_decomp(centroid_root, -1, adj);
+
+        FOR(n) { // building centroid tree
+            if (parent[i] != -1) {
+                centroid_tree[i].pb(parent[i]);
+                centroid_tree[parent[i]].pb(i);
+            }
+        }
+    }
+
+    void centroid_decomp(int v, int p, vt<int> adj[]) {
+
+        int subtree_sz_v = get_subtree_sizes(v, -1, adj);
+        int centroid = get_centroid(v, -1, subtree_sz_v >> 1, adj);
+        processed[centroid] = true;
+        parent[centroid] = p;
+
+        EACH(node, adj[centroid])
+        if (!processed[node])
+            centroid_decomp(node, centroid, adj);
+    }
+
+    int get_subtree_sizes(int v, int p, vt<int> adj[]) {
+
+        subtree[v] = 1;
+
+        EACH(node, adj[v]) {
+            if (node != p and !processed[node]) {
+                subtree[v] += get_subtree_sizes(node, v, adj);
+            }
+        }
+
+        return subtree[v];
+    }
+
+    int get_centroid(int v, int p, int desired, vt<int> adj[]) {
+
+        EACH(node, adj[v]) {
+            if (!processed[node] && node != p && subtree[node] > desired) {
+                return get_centroid(node, v, desired, adj);
+            }
+        }
+
+        return v;
+    }
+};
+endsnippet

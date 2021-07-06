@@ -209,14 +209,24 @@ template <class T> struct Fenwick_Tree {
         FOR(k, n) { modify(k, v[k]); }
     }
 
-    T query(int k) {
+    T query(int k) { // [0,k)
         T ans = 0;
         for (; k > 0; k &= k - 1)
             ans += t[k - 1];
         return ans;
     }
 
-    void modify(int k, T x) {
+    T query(int a, int b) { // [a,b)
+        T l_ans = 0, r_ans = 0;
+        if (a > 0)
+            l_ans = query(a);
+
+        r_ans = query(b);
+
+        return r_ans - l_ans;
+    }
+
+    void modify(int k, T x) { // modifies at k
         for (; k < n; k |= k + 1)
             t[k] += x;
     }
@@ -232,7 +242,7 @@ template <class T> struct Fenwick_Tree {
 
         return pos;
     }
-};
+}
 endsnippet
 
 snippet fenwick_tree_2d "2D Fenwick_Tree" b
