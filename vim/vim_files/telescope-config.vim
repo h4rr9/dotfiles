@@ -36,7 +36,7 @@ require("telescope").setup {
         file_sorter = require "telescope.sorters".get_fuzzy_file,
         file_ignore_patterns = {},
         generic_sorter = require "telescope.sorters".get_generic_fuzzy_sorter,
-        shorten_path = true,
+        path_display = {},
         winblend = 0,
         border = {},
         borderchars = {"─", "│", "─", "│", "╭", "╮", "╯", "╰"},
@@ -56,7 +56,12 @@ require("telescope").setup {
             fzy_native = {
                 override_generic_sorter = true,
                 override_file_sorter = true
-            }
+            },
+		lsp_handlers = {
+			code_action = {
+				telescope = require('telescope.themes').get_dropdown({}),
+			},
+		},
         }
     }
 }
@@ -70,7 +75,7 @@ search_dotfiles = function()
     require("telescope.builtin").find_files(
         require("telescope.themes").get_dropdown(
             {
-                shorten_path = false,
+                path_display = {'shorten'},
                 prompt_title = "< VimRC >",
                 cwd = "~/.config/nvim"
             }
@@ -82,16 +87,22 @@ search_cp = function()
     require("telescope.builtin").find_files(
         require("telescope.themes").get_dropdown(
             {
-                shorten_path = false,
+                    path_display = {'shortn'},
                 prompt_title = "< cp >",
                 cwd = "~/cp"
             }
         )
     )
+
+
+
 end
 
 vim.api.nvim_set_keymap("n", "<leader>fne", ":lua search_dotfiles()<CR>", {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "<leader>fcp", ":lua search_cp()<CR>", {noremap = true, silent = true})
+
+
+
 EOF
 
 
@@ -99,7 +110,7 @@ nnoremap <silent><leader>fs :lua require('telescope.builtin').grep_string({ sear
 nnoremap <silent><leader>fgf :lua require('telescope.builtin').git_files()<CR>
 nnoremap <silent><leader>fgb :lua require('telescope.builtin').git_branches()<CR>
 nnoremap <silent><leader>fgc :lua require('telescope.builtin').git_commits()<CR>
-nnoremap <silent><Leader>ff :lua require('telescope.builtin').find_files()<CR>
+nnoremap <silent><Leader>ff :lua require('telescope.builtin').find_files({find_command = {'rg', '--files', '--hidden', '-g', '!.git' }})<CR>
 nnoremap <silent><Leader>fe :lua require('telescope.builtin').file_browser()<CR>
 nnoremap <silent><Leader>fif :lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>
 

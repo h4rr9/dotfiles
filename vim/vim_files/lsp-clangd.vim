@@ -34,6 +34,8 @@ local function switch_source_header_splitcmd(bufnr, splitcmd)
     )
 end
 
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+
 require "lspconfig".clangd.setup {
     cmd = {
         "clangd",

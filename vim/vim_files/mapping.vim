@@ -39,7 +39,7 @@ nnoremap <silent> <leader>rn :lua vim.lsp.buf.rename()<CR>
 nnoremap <silent> <leader>sd :lua vim.lsp.diagnostic.show_line_diagnostics(); vim.lsp.diagnostic.show_line_diagnostics()<CR>
 nnoremap <silent> <C-n> <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
 nnoremap <silent> <C-p> <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
-nnoremap <silent> <leader>ac <cmd>lua vim.lsp.buf.code_action()<CR>
+nnoremap <silent> <leader>ac <cmd>Telescope lsp_code_actions<CR>
 
 " Quickfix list nav
 nnoremap <leader>C :cclose<CR>
@@ -56,6 +56,31 @@ nnoremap <leader>rr <cmd>lua require('runner').get_results()<cr>
 "smart delete buffers (nvim-bufdel)
 nnoremap <leader>db <cmd>BufDel<cr>
 
+
+" hacks
+" Normal vim behaviour
+nnoremap Y y$
+
+" keep things centered
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
+nnoremap J mzJ`z
+
+"undo breakpoints
+inoremap , ,<c-g>u
+inoremap . .<c-g>u
+inoremap ! !<c-g>u
+inoremap ? ?<c-g>u
+
+" jump list mutation
+nnoremap <expr> k (v:count > 3 ? "m'" . v:count : "") . 'k'
+nnoremap <expr> j (v:count > 3 ? "m'" . v:count : "") . 'j'
+
 " moving lines
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
+
+"easy replace
+nnoremap cn *``cgn
+nnoremap cN *``cgN

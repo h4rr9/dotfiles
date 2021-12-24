@@ -19,6 +19,11 @@ highlight qfFileName guifg=#aed75f
 highlight NormalFloat guibg=none
 highlight FloatBorder guifg=#ebdbb2
 
+set pumblend=50
+highlight PmenuSel blend=0
+
+
+
 augroup highlight_yank
     autocmd!
     autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({timeout = 100})

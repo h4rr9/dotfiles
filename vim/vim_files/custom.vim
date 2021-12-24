@@ -1,7 +1,7 @@
 " compile fast
-autocmd filetype cpp nnoremap <F8> :w <bar> !g++ -std=c++17 -Wall -Wextra -O2 % -o %:r -D _STACK<CR>
+autocmd filetype cpp nnoremap <F8> :w <bar> !g++ -std=c++17 -Wall -O2 % -o %:r -D _STACK<CR>
 " compile safe
-autocmd filetype cpp nnoremap <F9> :w <bar> !g++ -std=c++17 -Wall -Wno-unused-result % -o %:r -g -fsanitize=address -fsanitize=undefined -D _DEBUG -D _STACK<CR>
+autocmd filetype cpp nnoremap <F9> :w <bar> !g++ -std=c++17 -Wall -Wextra -Wno-unused-result % -o %:r -g -fsanitize=address -fsanitize=undefined -D _DEBUG -D _STACK<CR>
 
 function! MySplit( ex_num )
     let inp_file = expand('%:p:h') . '/in' . a:ex_num
@@ -24,8 +24,11 @@ function! MySplit( ex_num )
         endif
 
         exe "vsplit " . output_file
+        setlocal nobuflisted
         exe "above split " . inp_file
+        setlocal nobuflisted
         exe "vsplit " . out_file
+        setlocal nobuflisted
     endif
 
     let debug_dirty = filereadable(debug_file) && len(readfile(debug_file)) > 0
@@ -35,6 +38,7 @@ function! MySplit( ex_num )
         let output_winnum_new=bufwinnr(bufnr(expand(output_file)))
         exe output_winnum_new . 'wincmd w'
         exe 'vsplit ' . debug_file
+        setlocal nobuflisted
     endif
 
     if !debug_dirty && debug_winnum != -1

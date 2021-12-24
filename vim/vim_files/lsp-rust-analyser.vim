@@ -2,6 +2,8 @@ lua << EOF
 
 local cfg = require('lsp-signature-config').cfg
 
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
 local opts = {
     tools = {
         -- rust-tools options
@@ -77,7 +79,8 @@ local opts = {
         on_attach = function(client)
             require'lsp_signature'.on_attach(cfg)
             client.resolved_capabilities.document_formatting = false
-        end
+        end,
+        capabilities=capabilities
     } -- rust-analyer options
 }
 

@@ -9,6 +9,8 @@ local cfg = require('lsp-signature-config').cfg
 sumneko_root_path = "/home/" .. USER .. "/.config/nvim/lua-language-server"
 sumneko_binary = "/home/" .. USER .. "/.config/nvim/lua-language-server/bin/Linux/lua-language-server"
 
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
 require'lspconfig'.sumneko_lua.setup {
     cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"},
     settings = {
@@ -33,6 +35,7 @@ require'lspconfig'.sumneko_lua.setup {
     on_attach = function(client)
         require'lsp_signature'.on_attach(cfg)
         client.resolved_capabilities.document_formatting = false
-    end
+    end,
+    capabilities=capabilities
 }
 EOF

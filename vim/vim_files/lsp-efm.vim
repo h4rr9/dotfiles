@@ -17,7 +17,7 @@ local on_attach = function(client)
     if client.resolved_capabilities.document_formatting then
         vim.api.nvim_command [[augroup Format]]
         vim.api.nvim_command [[autocmd! * <buffer>]]
-        vim.api.nvim_command [[autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()]]
+        vim.api.nvim_command [[autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting_sync()]]
         vim.api.nvim_command [[augroup END]]
     end
 end
@@ -27,12 +27,13 @@ require "lspconfig".efm.setup {
     root_dir = function()
         return vim.loop.cwd()
     end,
-    filetypes = {"cpp", "lua", "python", "rust", "javascript", "typescript"},
+    filetypes = {"c", "cpp", "lua", "python", "rust", "javascript", "typescript"},
     settings = {
         languages = {
             python = {{formatCommand = "black --quiet --line-length 79 -", formatStdin = true}},
             rust = {{formatCommand = "rustfmt", formatStdin = true}},
             cpp = {{formatCommand = "clang-format -style='{BasedOnStyle: LLVM, IndentWidth: 4}'", formatStdin = true}},
+            c = {{formatCommand = "clang-format -style='{BasedOnStyle: LLVM, IndentWidth: 4}'", formatStdin = true}},
             lua = {
                 {
                     formatCommand = "lua-format -i --no-keep-simple-function-one-line --no-break-after-operator --column-limit=150 --break-after-table-lb",

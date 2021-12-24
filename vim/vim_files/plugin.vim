@@ -4,6 +4,10 @@ require('bufdel').setup {
   next = 'alternate' 
 }
 
+require("todo-comments").setup{}
+
+require('nvim-autopairs').setup{}
+
 EOF
 
 
@@ -31,10 +35,18 @@ let g:startify_custom_header = [
             \    "                                   "
             \ ]
 
-
+" vim-tex settings
+let g:vimtex_view_general_viewer = 'sumatraPDF'
+let g:vimtex_view_general_options = '-reuse-instance @pdf'
+let g:vimtex_view_general_options_latexmk = '-reuse-instance'
 
 let g:startify_change_to_dir = 0
 augroup lightbulb
 autocmd!
 autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()
+augroup END
+
+augroup maketab
+autocmd!
+autocmd FileType make setlocal noexpandtab
 augroup END
