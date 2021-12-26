@@ -6,12 +6,11 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
 " lsp
-"Plug 'folke/trouble.nvim'
-"Plug 'hrsh7th/nvim-compe'
-Plug 'SirVer/ultisnips'
+Plug 'L3MON4D3/LuaSnip'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lua'
@@ -20,11 +19,11 @@ Plug 'lukas-reineke/cmp-under-comparator'
 Plug 'neovim/nvim-lspconfig'
 Plug 'octaltree/cmp-look'
 Plug 'onsails/lspkind-nvim'
-Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 Plug 'ray-x/cmp-treesitter'
 Plug 'ray-x/lsp_signature.nvim'
 Plug 'scalameta/nvim-metals'
 Plug 'simrat39/rust-tools.nvim'
+Plug 'rafamadriz/friendly-snippets'
 
 " dap
 Plug 'mfussenegger/nvim-dap'
@@ -44,7 +43,6 @@ Plug 'kyazdani42/nvim-tree.lua'
 Plug 'gbrlsnchs/telescope-lsp-handlers.nvim'
 Plug 'jvgrootveld/telescope-zoxide'
 Plug 'nvim-telescope/telescope-dap.nvim'
-"Plug 'nvim-telescope/telescope-frecency.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim'
 Plug 'nvim-telescope/telescope-symbols.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -74,6 +72,7 @@ Plug 'folke/zen-mode.nvim'
 Plug 'mbbill/undotree'
 Plug 'ojroques/nvim-bufdel'
 Plug 'windwp/nvim-autopairs'
+Plug 'gauteh/vim-cppman'
 
 " comments
 Plug 'scrooloose/nerdcommenter'
@@ -92,7 +91,6 @@ let g:vim_config_file_list = [
     \ 'mapping.vim',
     \ 'custom.vim',
     \ 'plugin.vim',
-    "\ 'compe-config.vim',
     \ 'lsp-efm.vim',
     \ 'lsp-pylsp.vim',
     \ 'lsp-clangd.vim',
@@ -112,7 +110,8 @@ let g:vim_config_file_list = [
 let g:lua_config_file_list = [
     \ 'galaxyline-config.lua',
     \ 'lsp-signature-config.lua',
-    \ 'cmp-config.lua'
+    \ 'cmp-config.lua',
+    \ 'luasnip-config.lua'
     \]
 
 

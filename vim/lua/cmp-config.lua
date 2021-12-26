@@ -2,67 +2,45 @@
 local cmp = require 'cmp'
 local lspkind = require('lspkind')
 
+local luasnip = require("luasnip")
+
 local t = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+local has_words_before = function()
+    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
 cmp.setup({
     snippet = {
         expand = function(args)
-            vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+            require('luasnip').lsp_expand(args.body)
         end
     },
     mapping = {
-        ["<Tab>"] = cmp.mapping({
-            c = function()
-                if cmp.visible() then
-                    cmp.select_next_item({behavior = cmp.SelectBehavior.Insert})
-                else
-                    cmp.complete()
-                end
-            end,
-            i = function(fallback)
-                if cmp.visible() then
-                    cmp.select_next_item({behavior = cmp.SelectBehavior.Insert})
-                elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-                    vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_forward)"), 'm', true)
-                else
-                    fallback()
-                end
-            end,
-            s = function(fallback)
-                if vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-                    vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_forward)"), 'm', true)
-                else
-                    fallback()
-                end
+        ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+                cmp.select_next_item()
+            elseif luasnip.expand_or_jumpable() then
+                luasnip.expand_or_jump()
+            elseif has_words_before() then
+                cmp.complete()
+            else
+                fallback()
             end
-        }),
-        ["<S-Tab>"] = cmp.mapping({
-            c = function()
-                if cmp.visible() then
-                    cmp.select_prev_item({behavior = cmp.SelectBehavior.Insert})
-                else
-                    cmp.complete()
-                end
-            end,
-            i = function(fallback)
-                if cmp.visible() then
-                    cmp.select_prev_item({behavior = cmp.SelectBehavior.Insert})
-                elseif vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-                    return vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_backward)"), 'm', true)
-                else
-                    fallback()
-                end
-            end,
-            s = function(fallback)
-                if vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-                    return vim.api.nvim_feedkeys(t("<Plug>(ultisnips_jump_backward)"), 'm', true)
-                else
-                    fallback()
-                end
+        end, {"i", "s"}),
+
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+                cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then
+                luasnip.jump(-1)
+            else
+                fallback()
             end
-        }),
+        end, {"i", "s"}),
         ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item({behavior = cmp.SelectBehavior.Select}), {'i'}),
         ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item({behavior = cmp.SelectBehavior.Select}), {'i'}),
         ['<C-n>'] = cmp.mapping({
@@ -113,8 +91,9 @@ cmp.setup({
         })
         -- ... Your other configuration ...
     },
+
     sources = {
-        {name = 'nvim_lsp'}, {name = 'nvim_lua'}, {name = 'ultisnips'}, {name = 'buffer', keyword_length = 4}, {name = 'path'},
+        {name = 'nvim_lsp'}, {name = 'nvim_lua'}, {name = 'luasnip'}, {name = 'buffer', keyword_length = 4}, {name = 'path'},
         {name = 'treesitter', keyword_length = 4}, {name = 'look', keyword_length = 4}
     },
     sorting = {
@@ -133,7 +112,7 @@ cmp.setup({
                 nvim_lsp = "[lsp]",
                 nvim_lua = "[api]",
                 path = "[path]",
-                ultisnips = "[ultisnips]",
+                luasnip = "[luasnips]",
                 treesitter = "[treesitter]",
                 look = "[look]"
             }
@@ -168,64 +147,50 @@ local check_back_space = function()
 end
 
 _G.tab_complete = function()
-    if vim.fn.pumvisible() == 1 then
-        return t "<C-n>"
+    if cmp and cmp.visible() then
+        cmp.select_next_item()
+    elseif luasnip and luasnip.expand_or_jumpable() then
+        return t("<Plug>luasnip-expand-or-jump")
     elseif check_back_space() then
         return t "<Tab>"
     else
-        return vim.fn['cmp#complete']()
+        cmp.complete()
     end
+    return ""
 end
 _G.s_tab_complete = function()
-    if vim.fn.pumvisible() == 1 then
-        return t "<C-p>"
+    if cmp and cmp.visible() then
+        cmp.select_prev_item()
+    elseif luasnip and luasnip.jumpable(-1) then
+        return t("<Plug>luasnip-jump-prev")
     else
-        -- If <S-Tab> is not working in your terminal, change it to <C-h>
         return t "<S-Tab>"
     end
+    return ""
 end
+
 
 vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<C-E>", "<Plug>luasnip-next-choice", {})
+vim.api.nvim_set_keymap("s", "<C-E>", "<Plug>luasnip-next-choice", {})
 
-require('lspkind').init({
-    -- enables text annotations
-    --
-    -- default: true
-    with_text = true,
+-- gray
+vim.cmd [[highlight! CmpItemAbbrDeprecated guibg=NONE gui=strikethrough guifg=#928374]]
+-- blue
+vim.cmd [[highlight! CmpItemAbbrMatch guibg=NONE guifg=#458588]]
+vim.cmd [[highlight! CmpItemAbbrMatchFuzzy guibg=NONE guifg=#458588]]
+-- light blue
+vim.cmd [[highlight! CmpItemKindVariable guibg=NONE guifg=#83A598]]
+vim.cmd [[highlight! CmpItemKindInterface guibg=NONE guifg=#83A598]]
+vim.cmd [[highlight! CmpItemKindText guibg=NONE guifg=#83A598]]
+-- pink
+vim.cmd [[highlight! CmpItemKindFunction guibg=NONE guifg=#B16286]]
+vim.cmd [[highlight! CmpItemKindMethod guibg=NONE guifg=#B16286]]
+-- front
+vim.cmd [[highlight! CmpItemKindKeyword guibg=NONE guifg=#EBDBB2]]
+vim.cmd [[highlight! CmpItemKindProperty guibg=NONE guifg=#EBDBB2]]
+vim.cmd [[highlight! CmpItemKindUnit guibg=NONE guifg=#EBDBB2]]
 
-    -- default symbol map
-    -- can be either 'default' or
-    -- 'codicons' for codicon preset (requires vscode-codicons font installed)
-    --
-    -- default: 'default'
-    preset = 'default',
-
-    -- override preset symbols
-    --
-    -- default: {}
-    symbol_map = {
-        Text = '',
-        Method = 'ƒ',
-        Function = '',
-        Constructor = '',
-        Variable = '',
-        Class = '',
-        Interface = 'ﰮ',
-        Module = '',
-        Property = '',
-        Unit = '',
-        Value = '',
-        Enum = '了',
-        Keyword = '',
-        Snippet = '﬌',
-        Color = '',
-        File = '',
-        Folder = '',
-        EnumMember = '',
-        Constant = '',
-        Struct = ''
-    }
-})
