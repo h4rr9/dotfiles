@@ -1,8 +1,7 @@
 lua << EOF
+local cfg = require("lsp-signature-config").cfg
 
-local cfg = require('lsp-signature-config').cfg
-
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 local opts = {
     tools = {
@@ -73,14 +72,25 @@ local opts = {
                 },
                 procMacro = {
                     enable = true
+                },
+                checkOnSave = {
+                    allFeatures = true,
+                    overrideCommand = {
+                        "cargo",
+                        "clippy",
+                        "--workspace",
+                        "--message-format=json",
+                        "--all-targets",
+                        "--all-features"
+                    }
                 }
             }
         },
         on_attach = function(client)
-            require'lsp_signature'.on_attach(cfg)
+            require "lsp_signature".on_attach(cfg)
             client.resolved_capabilities.document_formatting = false
         end,
-        capabilities=capabilities
+        capabilities = capabilities
     } -- rust-analyer options
 }
 

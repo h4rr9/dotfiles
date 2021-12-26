@@ -114,8 +114,8 @@ cmp.setup({
         -- ... Your other configuration ...
     },
     sources = {
-        {name = 'nvim_lsp'}, {name = 'ultisnips'}, {name = 'buffer'}, {name = 'path'}, {name = 'treesitter', keyword_length = 2},
-        {name = 'look', keyword_length = 4}
+        {name = 'nvim_lsp'}, {name = 'nvim_lua'}, {name = 'ultisnips'}, {name = 'buffer', keyword_length = 4}, {name = 'path'},
+        {name = 'treesitter', keyword_length = 4}, {name = 'look', keyword_length = 4}
     },
     sorting = {
         comparators = {
@@ -127,9 +127,19 @@ cmp.setup({
     formatting = {
         format = lspkind.cmp_format({
             with_text = true, -- do not show text alongside icons
-            maxwidth = 50 -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+            maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+            menu = {
+                buffer = "[buf]",
+                nvim_lsp = "[lsp]",
+                nvim_lua = "[api]",
+                path = "[path]",
+                ultisnips = "[ultisnips]",
+                treesitter = "[treesitter]",
+                look = "[look]"
+            }
         })
-    }
+    },
+    experimental = {native_menu = false, ghost_text = true}
 })
 
 -- Use buffer source for `/`.

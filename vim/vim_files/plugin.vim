@@ -10,8 +10,10 @@ require('nvim-autopairs').setup{}
 
 EOF
 
+let g:UltiSnipsExpandTrigger="<tab>"  
+let g:UltiSnipsJumpForwardTrigger="<c-k>"                                       
+let g:UltiSnipsJumpBackwardTrigger="<c-j>"         
 
-let g:UltiSnipsExpandTrigger = '<c-j>'
 let g:indent_blankline_char = '⦚'
 let g:indent_blankline_space_char = '.'
 let g:indent_blankline_filetype_exclude = ['startify', 'help', 'testcases-status']
