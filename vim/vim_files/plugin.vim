@@ -10,9 +10,9 @@ require('nvim-autopairs').setup{}
 
 EOF
 
-let g:UltiSnipsExpandTrigger="<tab>"  
-let g:UltiSnipsJumpForwardTrigger="<c-k>"                                       
-let g:UltiSnipsJumpBackwardTrigger="<c-j>"         
+let g:UltiSnipsExpandTrigger = "<tab>"  
+let g:UltiSnipsJumpForwardTrigger = "<tab>"                                       
+let g:UltiSnipsJumpBackwardTrigger = "<c-j>"         
 
 let g:indent_blankline_char = '⦚'
 let g:indent_blankline_space_char = '.'

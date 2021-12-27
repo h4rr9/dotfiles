@@ -5,41 +5,20 @@ local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protoco
 
 local opts = {
     tools = {
-        -- rust-tools options
-        -- automatically set inlay hints (type hints)
-        -- There is an issue due to which the hints are not applied on the first
-        -- opened file. For now, write to the file to trigger a reapplication of
-        -- the hints or just run :RustSetInlayHints.
-        -- default: true
         autoSetHints = true,
-        -- whether to show hover actions inside the hover window
-        -- this overrides the default hover handler
-        -- default: true
+
         hover_with_actions = true,
         runnables = {
-            -- whether to use telescope for selection menu or not
-            -- default: true
-            use_telescope = true
+            use_telescope = false
 
-            -- rest of the opts are forwarded to telescope
         },
         inlay_hints = {
-            -- wheter to show parameter hints with the inlay hints or not
-            -- default: true
             show_parameter_hints = true,
-            -- prefix for parameter hints
-            -- default: "<-"
             parameter_hints_prefix = " ⇚ ",
-            -- prefix for all the other hints (type, chaining)
-            -- default: "=>"
             other_hints_prefix = " » ",
-            -- whether to align to the lenght of the longest line in the file
             max_len_align = true,
-            -- padding from the left if max_len_align is true
             max_len_align_padding = 20,
-            -- whether to align to the extreme right or not
             right_align = false,
-            -- padding from the right if right_align is true
             right_align_padding = 7
         },
         hover_actions = {

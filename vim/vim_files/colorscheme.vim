@@ -19,10 +19,8 @@ highlight qfFileName guifg=#aed75f
 highlight NormalFloat guibg=none
 highlight FloatBorder guifg=#ebdbb2
 
-set pumblend=50
+set pumblend=10
 highlight PmenuSel blend=0
-
-
 
 augroup highlight_yank
     autocmd!

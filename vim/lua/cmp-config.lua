@@ -1,4 +1,7 @@
 -- Setup nvim-cmp.
+vim.cmd [[set completeopt=menu,menuone,noselect]]
+vim.cmd [[let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy'] ]]
+
 local cmp = require 'cmp'
 local lspkind = require('lspkind')
 
@@ -89,13 +92,9 @@ cmp.setup({
                 end
             end
         })
-        -- ... Your other configuration ...
     },
 
-    sources = {
-        {name = 'nvim_lsp'}, {name = 'nvim_lua'}, {name = 'luasnip'}, {name = 'buffer', keyword_length = 4}, {name = 'path'},
-        {name = 'treesitter', keyword_length = 4}, {name = 'look', keyword_length = 4}
-    },
+    sources = {{name = 'nvim_lsp'}, {name = 'nvim_lua'}, {name = 'luasnip'}, {name = 'buffer'}, {name = 'path'}, {name = 'calc'}},
     sorting = {
         comparators = {
             cmp.config.compare.offset, cmp.config.compare.exact, cmp.config.compare.score, require"cmp-under-comparator".under,
@@ -107,31 +106,18 @@ cmp.setup({
         format = lspkind.cmp_format({
             with_text = true, -- do not show text alongside icons
             maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
-            menu = {
-                buffer = "[buf]",
-                nvim_lsp = "[lsp]",
-                nvim_lua = "[api]",
-                path = "[path]",
-                luasnip = "[luasnips]",
-                treesitter = "[treesitter]",
-                look = "[look]"
-            }
+            menu = {buffer = "[buf]", calc = "[calc]", nvim_lsp = "[lsp]", nvim_lua = "[api]", path = "[path]", luasnip = "[snips]"}
         })
+
     },
     experimental = {native_menu = false, ghost_text = true}
 })
 
 -- Use buffer source for `/`.
-cmp.setup.cmdline('/', {
-    completion = {autocomplete = false},
-    sources = {
-        -- { name = 'buffer' }
-        {name = 'buffer', opts = {keyword_pattern = [=[[^[:blank:]].*]=]}}
-    }
-})
+cmp.setup.cmdline('/', {completion = {autocomplete = true}, sources = {{name = 'buffer'}}})
 
 -- Use cmdline & path source for ':'.
-cmp.setup.cmdline(':', {completion = {autocomplete = false}, sources = cmp.config.sources({{name = 'path'}}, {{name = 'cmdline'}})})
+cmp.setup.cmdline(':', {completion = {autocomplete = true}, sources = {{name = 'path'}, {name = 'cmdline'}}})
 
 -- Use (s-)tab to:
 --- move to prev/next item in completion menuone
@@ -168,7 +154,6 @@ _G.s_tab_complete = function()
     end
     return ""
 end
-
 
 vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
