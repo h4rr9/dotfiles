@@ -7,6 +7,8 @@ spotify_status:start()
 
 X = spotify_status.listen
 
+local spotify_symbol = {["⏸️"] = true, ["▶️"] = false}
+
 local colors = {
     bg = "none",
     fg = "#FBF1C7",
@@ -158,7 +160,6 @@ gls.left[9] = {
 }
 gls.left[10] = {GitBranch = {provider = 'GitBranch', condition = condition.check_git_workspace, highlight = {colors.violet, colors.bg}}}
 
-
 gls.left[11] = {
     SeperatorLeft = {
         provider = function()
@@ -212,7 +213,9 @@ gls.left[17] = {
 gls.right[1] = {
     SpotifyStatusSymbol = {
         provider = function()
-            return "  " .. string.sub(spotify_status.listen(), 1, 4)
+            local symbol = string.sub(spotify_status.listen(), 1, 3)
+            if string.byte(string.sub(symbol, 2, 2)) == 143 then symbol = symbol .. " " end
+            return "  " .. symbol .. " "
         end,
         highlight = {colors.red, colors.bg}
     }
