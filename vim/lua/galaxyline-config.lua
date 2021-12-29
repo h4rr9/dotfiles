@@ -7,17 +7,17 @@ gl.short_line_list = {'Trouble', 'NvimTree', 'vista', 'dbui', 'qf', 'startify', 
 spotify_status:start()
 
 local colors = {
-    bg = "none",
-    fg = "#FBF1C7",
-    yellow = "#D79921",
-    cyan = "#689D6A",
-    darkblue = "#076678",
-    green = "#98971A",
-    orange = "#D65D0E",
-    magenta = "#B16286",
-    violet = "#689D6A",
-    blue = "#458588",
-    red = "#CC241D"
+    bg = 'none',
+    fg = '#FBF1C7',
+    yellow = '#D79921',
+    cyan = '#689D6A',
+    darkblue = '#076678',
+    green = '#98971A',
+    orange = '#D65D0E',
+    magenta = '#B16286',
+    violet = '#689D6A',
+    blue = '#458588',
+    red = '#CC241D'
 }
 
 local function get_mode()
@@ -60,7 +60,7 @@ end
 local function file_readonly()
     if vim.bo.filetype == 'help' then return '' end
     local icon = ''
-    if vim.bo.readonly == true then return " " .. icon .. " " end
+    if vim.bo.readonly == true then return ' ' .. icon .. ' ' end
     return ''
 end
 
@@ -176,12 +176,12 @@ gls.left[15] = {DiagnosticInfo = {provider = 'DiagnosticInfo', icon = '  ', h
 gls.left[16] = {
     ShowLspClient = {
         provider = function()
-            local msg = "No Active Lsp"
-            local buf_ft = vim.api.nvim_buf_get_option(0, "filetype")
+            local msg = 'No Active Lsp'
+            local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
             local clients = vim.lsp.get_active_clients()
             if next(clients) == nil then return msg end
             for _, client in ipairs(clients) do
-                if not string.find(client.name, "efm") then
+                if not string.find(client.name, 'efm') then
                     local filetypes = client.config.filetypes
                     if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then return client.name end
                 end
@@ -193,7 +193,7 @@ gls.left[16] = {
             if tbl[vim.bo.filetype] then return false end
             return true
         end,
-        icon = '  LSP : ',
+        icon = "  LSP : ",
         highlight = {colors.fg, colors.bg, 'bold'}
     }
 }
@@ -201,7 +201,7 @@ gls.left[16] = {
 gls.left[17] = {
     MetalsStatus = {
         provider = function()
-            return "  " .. (vim.g["metals_status"] or "")
+            return '  ' .. (vim.g['metals_status'] or '')
         end,
         highlight = {colors.fg, colors.bg}
     }
@@ -212,11 +212,11 @@ gls.right[1] = {
         provider = function()
             local symbol = string.sub(spotify_status.listen(), 1, 3)
             if string.byte(string.sub(symbol, 2, 2)) == 143 then
-                symbol = " 🎵 " .. "⏸️"
+                symbol = ' 🎵 ' .. '⏸️'
             elseif string.byte(string.sub(symbol, 2, 2)) == 150 then
-                symbol = " 🎵 " .. "▶️"
+                symbol = ' 🎵 ' .. '▶️'
             else
-                symbol = ""
+                symbol = ''
             end
             return symbol
         end,
@@ -228,8 +228,8 @@ gls.right[2] = {
     SpotifyStatusText = {
         provider = function()
             local song_status = string.sub(spotify_status.listen(), 4)
-            if song_status == nil or song_status == "" then return "" end
-            return " " .. song_status .. " 🎵 "
+            if song_status == nil or song_status == '' then return '' end
+            return ' ' .. song_status .. ' 🎵 '
         end,
         highlight = {colors.fg, colors.bg, 'bold'}
     }

@@ -2,6 +2,10 @@
 vim.cmd [[set completeopt=menu,menuone,noselect]]
 vim.cmd [[let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy'] ]]
 
+
+
+
+
 local cmp = require 'cmp'
 local lspkind = require('lspkind')
 

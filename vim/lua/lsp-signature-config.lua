@@ -1,4 +1,5 @@
 local M = {}
+
 M.cfg = {
     bind = true, -- This is mandatory, otherwise border config won't get registered.
     -- If you want to hook lspsaga or other signature handler, pls set to false
