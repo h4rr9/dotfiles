@@ -75,7 +75,6 @@ require("telescope").load_extension("ui-select")
 require('telescope').load_extension('fzy_native')
 require'telescope'.load_extension('zoxide')
 require('telescope').load_extension('lsp_handlers')
-require('telescope').load_extension('dap')
 
 search_dotfiles = function()
     require("telescope.builtin").find_files(

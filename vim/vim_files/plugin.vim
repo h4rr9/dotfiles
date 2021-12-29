@@ -4,6 +4,8 @@ require('bufdel').setup {
   next = 'alternate' 
 }
 
+require("trouble").setup {}
+
 require("todo-comments").setup{}
 
 require('nvim-autopairs').setup{}

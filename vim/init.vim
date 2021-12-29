@@ -6,6 +6,7 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
 " lsp
+Plug 'folke/trouble.nvim'
 Plug 'L3MON4D3/LuaSnip'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-calc'
@@ -25,12 +26,9 @@ Plug 'scalameta/nvim-metals'
 Plug 'simrat39/rust-tools.nvim'
 Plug 'rafamadriz/friendly-snippets'
 
-" dap
-Plug 'mfussenegger/nvim-dap'
-Plug 'rcarriga/nvim-dap-ui'
 
 " statusline and colorscheme and icons
-Plug 'glepnir/galaxyline.nvim'
+Plug 'NTBBloodbath/galaxyline.nvim'
 Plug 'h4rr9/gruvbox.nvim'
 Plug 'kyazdani42/nvim-web-devicons' 
 
@@ -42,7 +40,6 @@ Plug 'kyazdani42/nvim-tree.lua'
 " telescope
 Plug 'gbrlsnchs/telescope-lsp-handlers.nvim'
 Plug 'jvgrootveld/telescope-zoxide'
-Plug 'nvim-telescope/telescope-dap.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim'
 Plug 'nvim-telescope/telescope-symbols.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -74,6 +71,7 @@ Plug 'mbbill/undotree'
 Plug 'ojroques/nvim-bufdel'
 Plug 'windwp/nvim-autopairs'
 Plug 'gauteh/vim-cppman'
+Plug 'KadoBOT/nvim-spotify', { 'do': 'make' }
 
 " comments
 Plug 'scrooloose/nerdcommenter'
@@ -105,7 +103,7 @@ let g:vim_config_file_list = [
     \ 'nvim-tree-config.vim',
     \ 'zen-config.vim',
     \ 'gitsigns-config.vim',
-    \ 'dap_config.vim',
+    "\ 'dap_config.vim',
     \ ]
 
 let g:lua_config_file_list = [

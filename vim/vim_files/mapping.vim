@@ -40,6 +40,7 @@ nnoremap <silent> <leader>sd :lua vim.lsp.diagnostic.show_line_diagnostics(); vi
 nnoremap <silent> <C-n> <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
 nnoremap <silent> <C-p> <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> <leader>ac <cmd>Telescope lsp_code_actions<CR>
+nnoremap <silent> <leader>gx <cmd>TroubleToggle<CR>
 
 " Quickfix list nav
 nnoremap <leader>C :cclose<CR>
@@ -84,3 +85,7 @@ vnoremap K :m '<-2<CR>gv=gv
 "easy replace
 nnoremap cn *``cgn
 nnoremap cN *``cgN
+
+nnoremap <silent> <leader>so :Spotify<CR>
+
+

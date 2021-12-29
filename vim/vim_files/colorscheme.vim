@@ -18,6 +18,8 @@ highlight LineNr guifg=#5eacd3
 highlight qfFileName guifg=#aed75f
 highlight NormalFloat guibg=none
 highlight FloatBorder guifg=#ebdbb2
+highlight StatusLine guibg=none
+highlight StatusLine guifg=none
 
 set pumblend=10
 highlight PmenuSel blend=0

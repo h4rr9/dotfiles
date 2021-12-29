@@ -1,7 +1,9 @@
 local gl = require('galaxyline')
 local condition = require('galaxyline.condition')
+local spotify_status = require('nvim-spotify').status
 local gls = gl.section
-gl.short_line_list = {'NvimTree', 'vista', 'dbui', 'qf', 'startify', 'fugitive', 'fugitiveblame', 'vim-plug', 'testcases-status'}
+gl.short_line_list = {'Trouble', 'NvimTree', 'vista', 'dbui', 'qf', 'startify', 'fugitive', 'fugitiveblame', 'vim-plug', 'testcases-status'}
+spotify_status:start()
 
 local colors = {
     bg = "none",
@@ -106,7 +108,7 @@ gls.left[3] = {
     FileIcon = {
         provider = 'FileIcon',
         condition = condition.buffer_not_empty,
-        highlight = {require('galaxyline.provider_fileinfo').get_file_icon_color, colors.bg}
+        highlight = {require('galaxyline.providers.fileinfo').get_file_icon_color, colors.bg}
     }
 }
 
@@ -130,7 +132,7 @@ gls.left[4] = {
 }
 
 gls.left[5] = {
-    RainbowRed = {
+    SeperatorLeft = {
         provider = function()
             return ' '
         end,
@@ -179,13 +181,23 @@ gls.left[11] = {
     }
 }
 
-gls.right[1] = {DiffAdd = {provider = 'DiffAdd', condition = condition.hide_in_width, icon = '  ', highlight = {colors.green, colors.bg}}}
-gls.right[2] = {
+
+
+gls.right[1] = {
+    SpotifyStatus = {
+        provider = function()
+            return "  " .. spotify_status.listen() .. "  "
+        end,
+        highlight = {colors.darkblue, colors.bg, 'bold'}
+    }
+}
+gls.right[2] = {DiffAdd = {provider = 'DiffAdd', condition = condition.hide_in_width, icon = '  ', highlight = {colors.green, colors.bg}}}
+gls.right[3] = {
     DiffModified = {provider = 'DiffModified', condition = condition.hide_in_width, icon = ' 柳', highlight = {colors.orange, colors.bg}}
 }
-gls.right[3] = {DiffRemove = {provider = 'DiffRemove', condition = condition.hide_in_width, icon = '  ', highlight = {colors.red, colors.bg}}}
+gls.right[4] = {DiffRemove = {provider = 'DiffRemove', condition = condition.hide_in_width, icon = '  ', highlight = {colors.red, colors.bg}}}
 
-gls.right[4] = {
+gls.right[5] = {
     GitIcon = {
         provider = function()
             return '  '
@@ -195,10 +207,10 @@ gls.right[4] = {
         highlight = {colors.violet, colors.bg, 'bold'}
     }
 }
-gls.right[5] = {GitBranch = {provider = 'GitBranch', condition = condition.check_git_workspace, highlight = {colors.violet, colors.bg}}}
+gls.right[6] = {GitBranch = {provider = 'GitBranch', condition = condition.check_git_workspace, highlight = {colors.violet, colors.bg}}}
 
-gls.right[6] = {
-    RainbowBlue = {
+gls.right[7] = {
+    SeperatorRight = {
         provider = function()
             return ' '
         end,
@@ -206,11 +218,11 @@ gls.right[6] = {
     }
 }
 
-gls.right[7] = {LineInfo = {provider = 'LineColumn', separator_highlight = {'NONE', colors.bg}, highlight = {colors.fg, colors.bg}}}
+gls.right[8] = {LineInfo = {provider = 'LineColumn', separator_highlight = {'NONE', colors.bg}, highlight = {colors.fg, colors.bg}}}
 
-gls.right[8] = {PerCent = {provider = 'LinePercent', separator_highlight = {'NONE', colors.bg}, highlight = {colors.fg, colors.bg, 'bold'}}}
+gls.right[9] = {PerCent = {provider = 'LinePercent', separator_highlight = {'NONE', colors.bg}, highlight = {colors.fg, colors.bg, 'bold'}}}
 
-gls.right[9] = {
+gls.right[10] = {
     FileEncode = {
         provider = function()
             local encode = vim.bo.fenc ~= '' and vim.bo.fenc or vim.o.enc
@@ -223,7 +235,7 @@ gls.right[9] = {
     }
 }
 
-gls.right[10] = {
+gls.right[11] = {
     FileFormat = {
         provider = function()
             return vim.bo.fileformat
@@ -235,7 +247,7 @@ gls.right[10] = {
     }
 }
 
-gls.right[11] = {
+gls.right[12] = {
     RainbowBlue = {
         provider = function()
             return ' '
