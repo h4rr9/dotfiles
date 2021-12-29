@@ -212,11 +212,13 @@ gls.right[1] = {
         provider = function()
             local symbol = string.sub(spotify_status.listen(), 1, 3)
             if string.byte(string.sub(symbol, 2, 2)) == 143 then
-                symbol = "⏸️"
+                symbol = " 🎵 " .. "⏸️"
+            elseif string.byte(string.sub(symbol, 2, 2)) == 150 then
+                symbol = " 🎵 " .. "▶️"
             else
-                symbol = "▶️"
+                symbol = ""
             end
-            return " 🎵 " .. symbol
+            return symbol
         end,
         highlight = {colors.blue, colors.bg}
     }
@@ -225,7 +227,9 @@ gls.right[1] = {
 gls.right[2] = {
     SpotifyStatusText = {
         provider = function()
-            return " " .. string.sub(spotify_status.listen(), 4) .. " 🎵 "
+            local song_status = string.sub(spotify_status.listen(), 4)
+            if song_status == nil or song_status == "" then return "" end
+            return " " .. song_status .. " 🎵 "
         end,
         highlight = {colors.fg, colors.bg, 'bold'}
     }
