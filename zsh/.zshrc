@@ -7,7 +7,12 @@ fi
 
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$PATH
-export PATH="$HOME/neovim/bin:$PATH"
+export PATH="$HOME/builds/neovim/bin:$PATH"
+export PATH="$HOME/builds/nnn/bin:$PATH"
+export PATH="$HOME/builds/sbt/bin:$PATH"
+export PATH="$HOME/builds/tmux/bin:$PATH"
+export PATH="$HOME/.pyenv/bin:$PATH"
+export PATH="/usr/local/go/bin:$PATH"
 # Path to your oh-my-zsh installation.
 export ZSH="/home/h4rr9/.oh-my-zsh"
 
@@ -16,7 +21,7 @@ export ZSH="/home/h4rr9/.oh-my-zsh"
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="powerlevel10k/powerlevel10k"
-test -r "~/.dir_colors" && eval $(dircolors ~/.dir_colors)
+test -r "~/.dircolors" && eval $(dircolors ~/.dircolors)
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
@@ -83,6 +88,9 @@ source $ZSH/oh-my-zsh.sh
 
 autoload -U promptinit; promptinit
 
+# plugin key binds
+bindkey '^@' autosuggest-accept
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -98,6 +106,8 @@ export LC_CTYPE=en_US.UTF-8
 # else
 #   export EDITOR='mvim'
 # fi
+export EDITOR=/home/h4rr9/builds/neovim/bin/nvim
+export VISUAL=topen
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -113,14 +123,17 @@ export LC_CTYPE=en_US.UTF-8
  alias dc='cd'
  alias celar="clear"
  alias cls="clear"
- alias ls="ls -hln --color"
+ alias l="exa"
+ alias ls="exa --long --git"
+ alias ll="exa --long --all --tree --git --level 2"
  alias clipboard='xclip -selection c'
  alias :q="exit"
  alias cfs="cfscrapper.exe"
  alias vim="nvim"
  alias vi="nvim"
-
+alias clip=clip.exe
  export BAT_THEME="gruvbox-dark"
+
 
 
 export NVM_DIR="$HOME/.nvm"
@@ -128,8 +141,11 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 export PATH=$HOME/.local/bin:$PATH
+export PATH="$PATH:/home/h4rr9/.local/share/coursier/bin"
+
 
 fpath=(~/.zsh.d/ $fpath)
+fpath+=~/.zfunc
 
 export GPG_TTY=$TTY
 
@@ -148,3 +164,9 @@ export GPG_AGENT_INFO=${HOME}/.gnupg/S.gpg-agent:0:1
 
 export _ZO_DATA_DIR=$HOME/.local/share
 eval "$(zoxide init zsh)"
+
+export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+export PATH="$JAVA_HOME/bin:$PATH"
+
+export PATH="/usr/local/texlive/2021/bin/x86_64-linux:$PATH"
+

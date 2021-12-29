@@ -51,4 +51,4 @@ require("zen-mode").setup{
 EOF
 
 
-nnoremap <silent> <leader>zn <cmd>lua require("zen-mode").toggle({window = {width = 0.5, backdrop=0.1}})<CR>
+nnoremap <silent> <leader>zn <cmd>lua require("zen-mode").toggle({window = {width = 0.5}})<CR>

@@ -120,5 +120,5 @@ for f in g:vim_config_file_list
     endfor
     
 for f in g:lua_config_file_list
-	    execute 'luafile  ' . g:nvim_config_root . '/lua/' . f
+        execute 'source  ' . g:nvim_config_root . '/lua/' . f
     endfor
