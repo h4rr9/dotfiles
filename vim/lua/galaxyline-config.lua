@@ -1,5 +1,7 @@
 local gl = require('galaxyline')
 local condition = require('galaxyline.condition')
+
+require'nvim-spotify'.setup {status = {format = '%s   %a - %t'}}
 local spotify_status = require('nvim-spotify').status
 local gls = gl.section
 gl.short_line_list = {'Trouble', 'NvimTree', 'vista', 'dbui', 'qf', 'startify', 'fugitive', 'fugitiveblame', 'vim-plug', 'testcases-status'}
@@ -19,6 +21,16 @@ local colors = {
     blue = '#458588',
     red = '#CC241D'
 }
+
+local file_foramat_symbols = function(file_format)
+    if file_format == 'unix' then
+        return ' ' .. ' '
+    elseif file_format == 'mac' then
+        return ' ' .. ' '
+    else
+        return ' ' .. '  '
+    end
+end
 
 local function get_mode()
     local map = {
@@ -193,7 +205,7 @@ gls.left[16] = {
             if tbl[vim.bo.filetype] then return false end
             return true
         end,
-        icon = "  LSP : ",
+        icon = '  LSP : ',
         highlight = {colors.fg, colors.bg, 'bold'}
     }
 }
@@ -212,9 +224,9 @@ gls.right[1] = {
         provider = function()
             local symbol = string.sub(spotify_status.listen(), 1, 3)
             if string.byte(string.sub(symbol, 2, 2)) == 143 then
-                symbol = ' 🎵 ' .. '⏸️'
+                symbol = ' 🎵  ' .. '⏸️' .. ' '
             elseif string.byte(string.sub(symbol, 2, 2)) == 150 then
-                symbol = ' 🎵 ' .. '▶️'
+                symbol = ' 🎵  ' .. '▶️'
             else
                 symbol = ''
             end
@@ -229,13 +241,22 @@ gls.right[2] = {
         provider = function()
             local song_status = string.sub(spotify_status.listen(), 4)
             if song_status == nil or song_status == '' then return '' end
-            return ' ' .. song_status .. ' 🎵 '
+            return ' ' .. song_status
         end,
         highlight = {colors.fg, colors.bg, 'bold'}
     }
 }
 
 gls.right[3] = {
+    SpotifySeperator = {
+        provider = function()
+            return '  🎵 '
+        end,
+        highlight = {colors.blue, colors.bg}
+    }
+}
+
+gls.right[4] = {
     SeperatorRight = {
         provider = function()
             return ' '
@@ -244,11 +265,11 @@ gls.right[3] = {
     }
 }
 
-gls.right[4] = {LineInfo = {provider = 'LineColumn', separator_highlight = {'NONE', colors.bg}, highlight = {colors.fg, colors.bg}}}
+gls.right[5] = {LineInfo = {provider = 'LineColumn', separator_highlight = {'NONE', colors.bg}, highlight = {colors.fg, colors.bg}}}
 
-gls.right[5] = {PerCent = {provider = 'LinePercent', separator_highlight = {'NONE', colors.bg}, highlight = {colors.fg, colors.bg, 'bold'}}}
+gls.right[6] = {PerCent = {provider = 'LinePercent', separator_highlight = {'NONE', colors.bg}, highlight = {colors.fg, colors.bg, 'bold'}}}
 
-gls.right[6] = {
+gls.right[7] = {
     FileEncode = {
         provider = function()
             local encode = vim.bo.fenc ~= '' and vim.bo.fenc or vim.o.enc
@@ -261,10 +282,11 @@ gls.right[6] = {
     }
 }
 
-gls.right[7] = {
+gls.right[8] = {
     FileFormat = {
         provider = function()
-            return vim.bo.fileformat
+            local file_format = vim.bo.fileformat
+            return file_format .. file_foramat_symbols(file_format)
         end,
         condition = condition.hide_in_width,
         separator = ' ',
@@ -273,7 +295,7 @@ gls.right[7] = {
     }
 }
 
-gls.right[13] = {
+gls.right[9] = {
     RainbowBlue = {
         provider = function()
             return ' '

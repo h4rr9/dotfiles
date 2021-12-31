@@ -57,6 +57,7 @@ Plug 'dstein64/vim-startuptime'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-eunuch'
 
 " required
 Plug 'nvim-lua/plenary.nvim'
@@ -97,13 +98,13 @@ let g:vim_config_file_list = [
     \ 'lsp-sumneko-lua-config.vim',
     \ 'lsp-metals.vim',
     \ 'lsp-cmake.vim',
+    \ 'lsp-gopls.vim',
     \ 'lsp-tsserver.vim',
     \ 'treesitter-config.vim',
     \ 'telescope-config.vim',
     \ 'nvim-tree-config.vim',
     \ 'zen-config.vim',
     \ 'gitsigns-config.vim',
-    "\ 'dap_config.vim',
     \ ]
 
 let g:lua_config_file_list = [
@@ -111,7 +112,7 @@ let g:lua_config_file_list = [
     \ 'lsp-signature-config.lua',
     \ 'cmp-config.lua',
     \ 'luasnip-config.lua'
-    \]
+    \ ]
 
 
 

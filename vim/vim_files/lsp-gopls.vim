@@ -2,6 +2,8 @@ lua << EOF
 
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+local cfg = require('lsp-signature-config').cfg
+
 
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 capabilities.textDocument.completion.completionItem.resolveSupport = {
@@ -11,18 +13,29 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
         "additionalTextEdits"
     }
 }
+
 capabilities.textDocument.completion.editsNearCursor = true
 capabilities.offsetEncoding = {"utf-8", "utf-16"}
 
 
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+local capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
-local cfg = require('lsp-signature-config').cfg
-require'lspconfig'.tsserver.setup{
+require'lspconfig'.gopls.setup {
+    cmd = {"gopls", "serve"},
+    settings = {
+      gopls = {
+        analyses = {
+          unusedparams = true,
+        },
+        staticcheck = true,
+      },
+    },
     capabilities = capabilities,
     on_attach = function(client)
         require'lsp_signature'.on_attach(cfg)
         client.resolved_capabilities.document_formatting = false
     end
-}
+  }
+
+
 EOF
