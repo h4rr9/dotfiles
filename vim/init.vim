@@ -25,17 +25,16 @@ Plug 'ray-x/lsp_signature.nvim'
 Plug 'scalameta/nvim-metals'
 Plug 'simrat39/rust-tools.nvim'
 Plug 'rafamadriz/friendly-snippets'
+Plug 'nvim-lua/lsp-status.nvim'
 
-
-" statusline and colorscheme and icons
-Plug 'NTBBloodbath/galaxyline.nvim'
-Plug 'h4rr9/gruvbox.nvim'
+" statusline tabline and colorscheme and icons
+Plug 'feline-nvim/feline.nvim'
+Plug 'rebelot/kanagawa.nvim'
 Plug 'kyazdani42/nvim-web-devicons' 
 
 " navigation
 Plug 'ggandor/lightspeed.nvim'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'kyazdani42/nvim-tree.lua'
 
 " telescope
 Plug 'gbrlsnchs/telescope-lsp-handlers.nvim'
@@ -48,6 +47,7 @@ Plug 'nvim-telescope/telescope-ui-select.nvim'
 " git stuff
 Plug 'lewis6991/gitsigns.nvim'
 Plug 'tpope/vim-fugitive'
+Plug 'sindrets/diffview.nvim'
 
 " startup
 Plug 'mhinz/vim-startify'
@@ -72,12 +72,13 @@ Plug 'mbbill/undotree'
 Plug 'ojroques/nvim-bufdel'
 Plug 'windwp/nvim-autopairs'
 Plug 'gauteh/vim-cppman'
-Plug 'KadoBOT/nvim-spotify', { 'do': 'make' }
+Plug 'folke/which-key.nvim'
 
 " comments
 Plug 'scrooloose/nerdcommenter'
 Plug 'kkoomen/vim-doge', {'do': { -> doge#install({ 'headless': 1 }) }}
 Plug 'folke/todo-comments.nvim'
+Plug 'AckslD/nvim-neoclip.lua'
 
 " Tex
 Plug 'lervag/vimtex'
@@ -102,16 +103,17 @@ let g:vim_config_file_list = [
     \ 'lsp-tsserver.vim',
     \ 'treesitter-config.vim',
     \ 'telescope-config.vim',
-    \ 'nvim-tree-config.vim',
     \ 'zen-config.vim',
     \ 'gitsigns-config.vim',
     \ ]
 
 let g:lua_config_file_list = [
-    \ 'galaxyline-config.lua',
+    \ 'feline-config.lua',
     \ 'lsp-signature-config.lua',
     \ 'cmp-config.lua',
-    \ 'luasnip-config.lua'
+    \ 'luasnip-config.lua',
+    \ 'clip-config.lua',
+    \ 'diffview-config.lua'
     \ ]
 
 

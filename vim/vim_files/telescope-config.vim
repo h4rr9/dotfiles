@@ -75,6 +75,7 @@ require("telescope").load_extension("ui-select")
 require('telescope').load_extension('fzy_native')
 require'telescope'.load_extension('zoxide')
 require('telescope').load_extension('lsp_handlers')
+require('telescope').load_extension('neoclip')
 
 search_dotfiles = function()
     require("telescope.builtin").find_files(
@@ -113,5 +114,8 @@ vim.api.nvim_set_keymap("n", "<leader>fe", [[:lua require('telescope.builtin').f
 vim.api.nvim_set_keymap("n", "<leader>fif", [[:lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>]], {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "<leader>fb", [[:lua require('telescope.builtin').buffers()<CR>]], {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "<leader>fcd", [[:lua require('telescope').extensions.zoxide.list({show_score = false})<CR>]], {noremap = true, silent = true})
+vim.api.nvim_set_keymap("n", "<leader>fp", [[:lua require('telescope').extensions.neoclip.neoclip()<CR>')]], {noremap = true, silent = true})
+
+
 
 EOF

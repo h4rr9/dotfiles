@@ -10,6 +10,8 @@ require("todo-comments").setup{}
 
 require('nvim-autopairs').setup{}
 
+require("which-key").setup {}
+
 EOF
 
 let g:UltiSnipsExpandTrigger = "<tab>"  
@@ -54,3 +56,4 @@ augroup maketab
 autocmd!
 autocmd FileType make setlocal noexpandtab
 augroup END
+

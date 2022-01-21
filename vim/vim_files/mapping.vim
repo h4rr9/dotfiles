@@ -35,10 +35,11 @@ nnoremap <silent> <leader>gh <cmd>lua vim.lsp.buf.signature_help()<CR>
 nnoremap <silent> <leader>gs <cmd>lua vim.lsp.buf.document_symbol()<CR>
 nnoremap <silent> <leader>gS <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
 nnoremap <silent> <leader>K <cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap <silent> <leader>rn :lua vim.lsp.buf.rename()<CR>
-nnoremap <silent> <leader>sd :lua vim.lsp.diagnostic.show_line_diagnostics(); vim.lsp.diagnostic.show_line_diagnostics()<CR>
-nnoremap <silent> <C-n> <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
-nnoremap <silent> <C-p> <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
+nnoremap <silent> <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
+nnoremap <silent> <leader>sd <cmd>lua vim.diagnostic.open_float()<CR>
+nnoremap <silent> <C-n> <cmd>lua vim.api.nvim_win_set_cursor(0, )<CR>
+nnoremap <silent> <C-n> <cmd>lua vim.lsp.diagnostic.goto_prev({float = true, wrap = true})<CR>
+nnoremap <silent> <C-p> <cmd>lua vim.lsp.diagnostic.goto_next({float = true, wrap = true})<CR>
 nnoremap <silent> <leader>ac <cmd>Telescope lsp_code_actions<CR>
 nnoremap <silent> <leader>gx <cmd>TroubleToggle<CR>
 
@@ -87,5 +88,6 @@ nnoremap cn *``cgn
 nnoremap cN *``cgN
 
 nnoremap <silent> <leader>so :Spotify<CR>
+
 
 

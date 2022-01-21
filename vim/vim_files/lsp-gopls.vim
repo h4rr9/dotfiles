@@ -15,7 +15,7 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
 }
 
 capabilities.textDocument.completion.editsNearCursor = true
-capabilities.offsetEncoding = {"utf-8", "utf-16"}
+capabilities.offsetEncoding = {"utf-8"}
 
 
 local capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)

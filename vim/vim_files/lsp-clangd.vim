@@ -11,7 +11,7 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
     }
 }
 capabilities.textDocument.completion.editsNearCursor = true
-capabilities.offsetEncoding = {"utf-8", "utf-16"}
+capabilities.offsetEncoding = {"utf-16"}
 
 
 local function switch_source_header_splitcmd(bufnr, splitcmd)
@@ -60,9 +60,6 @@ require "lspconfig".clangd.setup {
     		description = "Open source/header in a new split";
     	}
     },
---    root_dir = function()
- --       return vim.loop.cwd()
-  --  end,
     on_attach = function(client)
         require'lsp_signature'.on_attach(cfg)
         client.resolved_capabilities.document_formatting = false
