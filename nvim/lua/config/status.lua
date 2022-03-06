@@ -1,12 +1,4 @@
--- Feline statusline definition.
---
--- Note: This statusline does not define any colors. Instead the statusline is
--- built on custom highlight groups that I define. The colors for these
--- highlight groups are pulled from the current colorscheme applied. Check the
--- file: `lua/eden/modules/ui/colors.lua` to see how they are defined.
 local u = {vi = {}}
-
-require('colors')
 
 u.vi.text = {
     n = 'NORMAL',
@@ -94,10 +86,9 @@ u.icons = {
 
 local fmt = string.format
 
--- "┃", "█", "", "", "", "", "", "", "●"
-
-local get_diag = function(str)
-    local count = vim.lsp.diagnostic.get_count(0, str)
+local get_diag = function(severity)
+    local count = 0
+    for _ in pairs(vim.diagnostic.get(0, {severity=severity})) do count = count + 1 end
     return (count > 0) and ' ' .. count .. ' ' or ''
 end
 
@@ -185,7 +176,7 @@ local c = {
     },
     lsp_error = {
         provider = function()
-            local count = get_diag('Error')
+            local count = get_diag(vim.diagnostic.severity.ERROR)
             if count ~= '' then return '' .. count end
             return ''
         end,
@@ -194,7 +185,7 @@ local c = {
     },
     lsp_warn = {
         provider = function()
-            local count = get_diag('Warning')
+            local count = get_diag(vim.diagnostic.severity.WARNING)
             if count ~= '' then return '' .. count end
             return ''
         end,
@@ -204,7 +195,7 @@ local c = {
     },
     lsp_info = {
         provider = function()
-            local count = get_diag('Information')
+            local count = get_diag(vim.diagnostic.severity.INFO)
             if count ~= '' then return '' .. count end
             return ''
         end,
@@ -213,7 +204,7 @@ local c = {
     },
     lsp_hint = {
         provider = function()
-            local count = get_diag('Hint')
+            local count = get_diag(vim.diagnostic.severity.HINT)
             if count ~= '' then return '' .. count end
             return ''
         end,
@@ -222,7 +213,7 @@ local c = {
     },
     git_add = {provider = 'git_diff_added', hl = 'FlnGitAdd', right_sep = {str = '', hl = 'GitSignsAdd', always_visible = false}},
     git_change = {provider = 'git_diff_changed', hl = 'GitSignsChange', right_sep = {str = '', hl = 'GitSignsAdd', always_visible = false}},
-    git_remove = {provider = 'git_diff_removed', hl = 'GitSignsDelete', right_sep = {str = '', hl = 'GitSignsAdd', always_visible = false}},
+    git_remove = {provider = 'git_diff_removed', hl = 'GitSignsDelete', right_sep = {str = ' ', hl = 'GitSignsAdd', always_visible = false}},
 
     in_fileinfo = {provider = 'file_info', hl = 'StatusLine'},
     in_position = {provider = 'position', hl = 'StatusLine'}
@@ -241,21 +232,6 @@ local inactive = {
     {c.in_fileinfo}, -- left
     {c.in_position} -- right
 }
-
--- -- Define autocmd that generates the highlight groups from the new colorscheme
--- -- Then reset the highlights for feline
--- edn.aug.FelineColorschemeReload = {
---   {
---     { "SessionLoadPost", "ColorScheme" },
---     function()
---       require("eden.modules.ui.feline.colors").gen_highlights()
---       -- This does not look like it is required. If this is called I see the ^^^^^^ that
---       -- seperates the two sides of the bar. Since the entire config uses highlight groups
---       -- all that is required is to redefine them.
---       -- require("feline").reset_highlights()
---     end,
---   },
--- }
 
 require('feline').setup({
     components = {active = active, inactive = inactive},

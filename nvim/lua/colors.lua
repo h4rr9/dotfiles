@@ -35,6 +35,7 @@ end
 
 local function term(num, default)
     local key = 'terminal_color_' .. num
+    -- print(vim.inspect(vim.g[key]))
     return vim.g[key] and vim.g[key] or default
 end
 
@@ -43,18 +44,18 @@ local function colors_from_theme()
         bg = fromhl('StatusLine').bg, -- or "#2E3440",
         alt = fromhl('CursorLine').bg, -- or "#475062",
         fg = fromhl('StatusLine').fg, -- or "#8FBCBB",
-        hint = fromhl('DiagnosticHint').bg or '#5E81AC',
-        info = fromhl('DiagnosticInfo').bg or '#81A1C1',
-        warn = fromhl('DiagnosticWarn').bg or '#EBCB8B',
-        err = fromhl('DiagnosticError').bg or '#EC5F67',
-        black = term(0, '#434C5E'),
-        red = term(1, '#EC5F67'),
-        green = term(2, '#8FBCBB'),
-        yellow = term(3, '#EBCB8B'),
-        blue = term(4, '#5E81AC'),
-        magenta = term(5, '#B48EAD'),
-        cyan = term(6, '#88C0D0'),
-        white = term(7, '#ECEFF4')
+        hint = fromhl('DiagnosticHint').bg or '#658594',
+        info = fromhl('DiagnosticInfo').bg or '#6A9589',
+        warn = fromhl('DiagnosticWarn').bg or '#FF9E3B',
+        err = fromhl('DiagnosticError').bg or '#E82424',
+        black = term(0, '#090618'),
+        red = term(1, '#C34043'),
+        green = term(2, '#76946A'),
+        yellow = term(3, '#C0A36E'),
+        blue = term(4, '#7E9CD8'),
+        magenta = term(5, '#957FB8'),
+        cyan = term(6, '#6A9589'),
+        white = term(7, '#C8C093')
     }
 end
 
@@ -109,9 +110,9 @@ M.gen_highlights = function()
         FlnGitSeperator = {fg = c.bg, bg = c.alt},
 
         -- Git diagnostic
-        FlnGitAdd = {fg = fromhl('GitSignsAdd').fg, bg = c.bg},
-        FlnGitChange = {fg = fromhl('GitSignsChange').fg, bg = c.bg},
-        FlnGitRemove = {fg = fromhl('GitSignsDelete').fg, bg = c.bg},
+        FlnGitAdd = {fg = fromhl('GitSignsAdd').fg, bg = c.bg, style = 'bold'},
+        FlnGitChange = {fg = fromhl('GitSignsChange').fg, bg = c.bg, style = 'bold'},
+        FlnGitRemove = {fg = fromhl('GitSignsDelete').fg, bg = c.bg, style = 'bold'}
 
     }
     for k, v in pairs(groups) do highlight(k, v) end

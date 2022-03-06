@@ -1,13 +1,11 @@
-local ls = require "luasnip"
-
-
+local ls = require 'luasnip'
 
 local i = ls.insert_node
 local t = ls.text_node
 
 local fmt = function(code)
     local lines = {}
-    for s in code:gmatch("[^\r\n]+") do table.insert(lines, s) end
+    for s in code:gmatch('[^\r\n]+') do table.insert(lines, s) end
     return lines
 end
 
@@ -128,7 +126,7 @@ template <class H, class... T> void print(const H &h, const T &...t) {
     print(t...);
 }
 
-void solve() {]]), i(0, "CODE HERE"), t(fmt [[}
+void solve() {]]), i(0, 'CODE HERE'), t(fmt [[}
 
 int main() {
     ios::sync_with_stdio(0);
@@ -1113,6 +1111,33 @@ void dijkstra(int n, int start, vt<pii> adj[], vt<ll> &distance) {
                     }
             }
         }
+    }
+}
+]])
+
+snippets.bellman_ford = t(fmt [[
+void bellman_ford(int n, int start, vt<pll> adj[], vt<ll> &distances,
+                  int num_iters = 1) {
+ 
+    if (num_iters > 1) {
+        fill(all(distances), LLONG_MAX);
+        distances[start] = 0;
+    }
+ 
+    FOR(k, num_iters) {
+        bool decreased = false;
+        {
+            FOR(i, n)
+            if (distances[i] != LLONG_MAX)
+                EACH(e, adj[i]) {
+                    if (distances[i] + e.S < distances[e.F]) {
+                        decreased = true;
+                        distances[e.F] = distances[i] + e.S;
+                    }
+                }
+        }
+        if (!decreased)
+            break;
     }
 }
 ]])

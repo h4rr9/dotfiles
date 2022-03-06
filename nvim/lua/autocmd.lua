@@ -1,8 +1,21 @@
-" compile fast
-autocmd filetype cpp nnoremap <F8> :w <bar> !g++ -std=c++17 -Wall -O2 % -o %:r -D _STACK<CR>
-" compile safe
-autocmd filetype cpp nnoremap <F9> :w <bar> !g++ -std=c++17 -Wall -Wextra -Wno-unused-result % -o %:r -g -fsanitize=address -fsanitize=undefined -D _DEBUG -D _STACK<CR>
+vim.cmd [[colorscheme kanagawa]]
+vim.cmd [[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]]
+vim.cmd [[cabbrev wq execute "lua vim.lsp.buf.formatting_seq_sync()" <bar> wq]]
+vim.cmd [[cabbrev x execute "lua vim.lsp.buf.formatting_seq_sync()" <bar> x]]
+vim.cmd [[
+    augroup maketab
+    autocmd!
+    autocmd FileType make setlocal noexpandtab
+    augroup END
+]]
+vim.cmd [[
+    augroup highlight_yank
+    autocmd!
+    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({timeout = 250})
+    augroup END
+]]
 
+vim.cmd [[
 function! MySplit( ex_num )
     let inp_file = expand('%:p:h') . '/in' . a:ex_num
     let out_file = expand('%:p:h') . '/out' . a:ex_num
@@ -65,9 +78,9 @@ endfunction
 
 " provide number of inputfile (of the form in{inputnumber})
 " :Run 1 (to execute test.exe < in1)
-:command -nargs=1 Run call s:ExecuteWithInput(<f-args>)
-:command -nargs=1 Split :call MySplit("<args>")
-:command Execute call s:Execute()
+command -nargs=1 Run call s:ExecuteWithInput(<f-args>)
+command -nargs=1 Split :call MySplit("<args>")
+command Execute call s:Execute()
 
 cabbrev open <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Split' : 'open')<CR>
 cabbrev run <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Run' : 'run')<CR>
@@ -75,3 +88,4 @@ cabbrev exe <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'Exe' : 'exe')<CR>
 
 ca Hash w !cpp -dD -P -fpreprocessed \| tr -d '[:space:]' \
  \| md5sum \| cut -c-6
+]]
