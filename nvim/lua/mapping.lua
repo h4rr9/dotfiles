@@ -27,8 +27,8 @@ vim.keymap.set('n', '<leader>gS', vim.lsp.buf.workspace_symbol)
 vim.keymap.set('n', '<leader>K', vim.lsp.buf.hover)
 vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename)
 vim.keymap.set('n', '<leader>sd', vim.diagnostic.open_float)
-vim.keymap.set('n', '<C-n>', vim.diagnostic.goto_prev)
-vim.keymap.set('n', '<C-p>', vim.diagnostic.goto_next)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_next)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_prev)
 vim.keymap.set('n', '<leader>ac', require('telescope.builtin').lsp_code_actions)
 
 -- quickfix list

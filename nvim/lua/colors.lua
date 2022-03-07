@@ -35,7 +35,6 @@ end
 
 local function term(num, default)
     local key = 'terminal_color_' .. num
-    -- print(vim.inspect(vim.g[key]))
     return vim.g[key] and vim.g[key] or default
 end
 

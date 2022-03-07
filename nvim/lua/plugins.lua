@@ -70,7 +70,12 @@ return require('packer').startup(function(use)
 
     -- statusline / colortheme
     use 'rebelot/kanagawa.nvim'
-    use {'feline-nvim/feline.nvim', requires = 'kyazdani42/nvim-web-devicons', setup = [[require 'colors']], config = [[require 'config.status']]}
+    use {
+        'feline-nvim/feline.nvim',
+        requires = {'kyazdani42/nvim-web-devicons', 'rebelot/kanagawa.nvim'},
+        setup = [[require 'colors']],
+        config = [[require 'config.status']]
+    }
 
     -- navigation
     use 'ggandor/lightspeed.nvim'
