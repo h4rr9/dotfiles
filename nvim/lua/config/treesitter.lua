@@ -16,5 +16,6 @@ require'nvim-treesitter.configs'.setup {
         prev_selection = ',',
         keymaps = {['.'] = 'textsubjects-smart', [';'] = 'textsubjects-container-outer', ['i;'] = 'textsubjects-container-inner'}
     },
-    context_commentstring = {enable = true}
+    context_commentstring = {enable = true},
+    matchup = {enable = true}
 }

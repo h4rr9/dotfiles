@@ -24,8 +24,10 @@ return require('packer').startup(function(use)
     -- telescope
     use {'nvim-telescope/telescope.nvim', requires = {'nvim-lua/plenary.nvim'}, config = [[require 'config.telescope']]}
     use 'nvim-telescope/telescope-ui-select.nvim'
+    use 'nvim-telescope/telescope-media-files.nvim'
     use 'nvim-telescope/telescope-fzy-native.nvim'
     use 'gbrlsnchs/telescope-lsp-handlers.nvim'
+    use 'nvim-telescope/telescope-symbols.nvim'
     use 'nvim-telescope/telescope-file-browser.nvim'
     use {
         'AckslD/nvim-neoclip.lua',
@@ -62,19 +64,31 @@ return require('packer').startup(function(use)
         config = [[require 'config.lsp']]
     }
     use 'p00f/clangd_extensions.nvim'
-    use 'simrat39/rust-tools.nvim'
+    -- use 'simrat39/rust-tools.nvim'
+    use {'matze/rust-tools.nvim', branch = 'fix-upstreamed-inlayhints'}
+
     use 'nvim-lua/lsp-status.nvim'
     use 'ray-x/lsp_signature.nvim'
     use 'lukas-reineke/lsp-format.nvim'
     use 'kosayoda/nvim-lightbulb'
+    use 'jose-elias-alvarez/nvim-lsp-ts-utils'
 
     -- statusline / colortheme
-    use 'rebelot/kanagawa.nvim'
+    use {
+        'rebelot/kanagawa.nvim',
+        config = function()
+            require'kanagawa'.setup({globalStatus = true, dimInactive = true})
+            vim.cmd [[colorscheme kanagawa]]
+        end
+    }
     use {
         'feline-nvim/feline.nvim',
-        requires = {'kyazdani42/nvim-web-devicons', 'rebelot/kanagawa.nvim'},
-        setup = [[require 'colors']],
-        config = [[require 'config.status']]
+        after = 'kanagawa.nvim',
+        requires = {'kyazdani42/nvim-web-devicons'},
+        config = function()
+            require 'colors'
+            require 'config.status'
+        end
     }
 
     -- navigation
@@ -93,8 +107,7 @@ return require('packer').startup(function(use)
         requires = 'nvim-lua/plenary.nvim',
         config = function()
             require('todo-comments').setup {}
-        end,
-        cmd = 'TodoTelescope'
+        end
     }
     use {
         'windwp/nvim-autopairs',
@@ -102,7 +115,15 @@ return require('packer').startup(function(use)
             require('nvim-autopairs').setup {}
         end
     }
-    use {'kkoomen/vim-doge', run = ':call doge#install()', cmd = 'DogeGenerate'}
+    use {
+        'kkoomen/vim-doge',
+        run = ':call doge#install()',
+        cmd = 'DogeGenerate',
+        setup = function()
+            vim.g.doge_mapping_comment_jump_forward = '<C-j>'
+            vim.g.doge_mapping_comment_jump_backward = '<C-k>'
+        end
+    }
     use {
         'lervag/vimtex',
         config = function()
@@ -110,12 +131,15 @@ return require('packer').startup(function(use)
             vim.g.vimtex_view_general_options = '-reuse-instance @pdf'
             vim.g.vimtex_view_general_options_latexmk = '-reuse-instance'
         end,
-        cmd = 'VimtexCompile'
+        ft = 'tex'
     }
     use {
         'lukas-reineke/indent-blankline.nvim',
         config = function()
-            vim.g.indent_blankline_filetype_exclude = {'alpha'}
+            vim.opt.list = true
+            vim.opt.listchars:append('eol:↴')
+            vim.g.indent_blankline_filetype_exclude = {'alpha', 'man'}
+            require'indent_blankline'.setup {show_end_of_line = true, show_current_context = true, show_current_context_start = true}
         end
     }
     use {
@@ -136,6 +160,21 @@ return require('packer').startup(function(use)
     }
     use 'tami5/sqlite.lua'
     use 'dstein64/vim-startuptime'
+    use {
+        'max397574/better-escape.nvim',
+        config = function()
+            require('better_escape').setup()
+        end
+    }
+
+    use 'andymass/vim-matchup'
+
+    -- markdown
+    use {'renerocksai/calendar-vim', cmd = {'Calendar', 'CalendarVR', 'CalendarH', 'CalendarT', 'CalendarSearch'}}
+    use {'iamcco/markdown-preview.nvim', ft = {'markdown', 'telekasten'}, run = ':call mkdp#util#install()'}
+    use {'mzlogin/vim-markdown-toc', ft = {'markdown', 'telekasten'}}
+    use {'dhruvasagar/vim-table-mode', ft = {'markdown', 'telekasten'}}
+    use {'mickael-menu/zk-nvim', config = [[require 'config.zk']]}
 
     -- tpope
 
