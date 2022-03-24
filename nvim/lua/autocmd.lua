@@ -1,4 +1,3 @@
-vim.cmd [[colorscheme kanagawa]]
 vim.cmd [[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]]
 vim.cmd [[cabbrev wq execute "lua vim.lsp.buf.formatting_seq_sync()" <bar> wq]]
 vim.cmd [[cabbrev x execute "lua vim.lsp.buf.formatting_seq_sync()" <bar> x]]

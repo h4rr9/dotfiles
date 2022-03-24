@@ -55,6 +55,7 @@ if ok then
     require('telescope').load_extension('neoclip')
     require('telescope').load_extension('file_browser')
     require('telescope').load_extension('frecency')
+    require('telescope').load_extension('media_files')
 end
 
 local M = {}

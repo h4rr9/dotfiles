@@ -67,8 +67,8 @@ require('clangd_extensions').setup {
             require'lsp_signature'.on_attach(cfg)
             client.resolved_capabilities.document_formatting = false
 
-            vim.api.nvim_set_keymap('n', '<leader>Gh', '<cmd>ClangdSwitchSourceHeader<CR>', {noremap = true, silent = true})
-            vim.api.nvim_set_keymap('n', '<leader>Gvh', '<cmd>ClangdSwitchSourceHeaderVSplit<CR>', {noremap = true, silent = true})
+            vim.keymap.set('n', '<leader>Gh', '<cmd>ClangdSwitchSourceHeader<cr>', {buffer = true})
+            vim.keymap.set('n', '<leader>Gvh', '<cmd>ClangdSwitchSourceHeaderVSplit<cr>', {buffer = true})
 
         end
     },
@@ -77,25 +77,40 @@ require('clangd_extensions').setup {
 
 -- sumneko lua
 
-USER = vim.fn.expand('$USER')
+local runtime_path = vim.split(package.path, ';')
+table.insert(runtime_path, 'lua/?.lua')
+table.insert(runtime_path, 'lua/?/init.lua')
 
-local sumneko_root_path = '/home/' .. USER .. '/.config/nvim/lua-language-server'
-local sumneko_binary = '/home/' .. USER .. '/.config/nvim/lua-language-server/bin/Linux/lua-language-server'
-
-require('lspconfig').sumneko_lua.setup {
-    cmd = {sumneko_binary, '-E', sumneko_root_path .. '/main.lua'},
+require'lspconfig'.sumneko_lua.setup {
     settings = {
         Lua = {
-            runtime = {version = 'LuaJIT', path = vim.split(package.path, ';')},
-            diagnostics = {enable = true, globals = {'vim'}},
-            workspace = {library = {[vim.fn.expand('$VIMRUNTIME/lua')] = true, [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true}}
-        }
-    },
-    on_attach = function(client)
-        require'lsp_signature'.on_attach(cfg)
-        client.resolved_capabilities.document_formatting = false
-    end,
-    capabilities = capabilities
+            runtime = {
+                -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+                version = 'LuaJIT',
+                -- Setup your lua path
+                path = runtime_path
+            },
+            diagnostics = {
+                -- Get the language server to recognize the `vim` global
+                globals = {'vim'}
+            },
+            workspace = {
+                -- Make the server aware of Neovim runtime files
+                library = vim.api.nvim_get_runtime_file('', true)
+            },
+            -- Do not send telemetry data containing a randomized but unique identifier
+            telemetry = {enable = false},
+            IntelliSense = {traceLocalSet = true, traceReturn = true, traceBeSetted = true, traceFieldInject = true},
+            hint = {enable = true}
+        },
+
+        on_attach = function(client)
+            require'lsp_signature'.on_attach(cfg)
+            client.resolved_capabilities.document_formatting = false
+
+        end,
+        capabilities = capabilities
+    }
 }
 
 -- rust
@@ -103,23 +118,25 @@ require('lspconfig').sumneko_lua.setup {
 require('rust-tools').setup({
     tools = {
         runnables = {use_telescope = true},
-        inlay_hints = {
-            show_parameter_hints = true,
-            parameter_hints_prefix = ' ⇚ ',
-            other_hints_prefix = ' » ',
-            max_len_align = true,
-            max_len_align_padding = 20
-        }
+        inlay_hints = {show_parameter_hints = true, parameter_hints_prefix = ' ⇚ ', other_hints_prefix = ' » ', max_len_align = false}
     },
     server = {
         settings = {
-            ['rust-analyzer'] = {
-                assist = {importGranularity = 'module', importPrefix = 'by_crate'},
-                cargo = {loadOutDirsFromCheck = true},
-                procMacro = {enable = true},
-                checkOnSave = {
-                    allFeatures = true,
-                    overrideCommand = {'cargo', 'clippy', '--workspace', '--message-format=json', '--all-targets', '--all-features'}
+            assist = {allowMergingIntoGlobImports = false, importGranularity = 'module'},
+            cargo = {allFeatures = true},
+            checkOnSave = {
+                command = 'clippy',
+                extraArgs = {
+                    '--workspace', '--all-targets', '--all-features', '--', '--warn', 'rust_2018_idioms', '--warn', 'clippy::pedantic', '--warn',
+                    'clippy::pattern_type_mismatch', -- Too noisy because it warns the whole function.
+                    '--allow', 'clippy::too_many_lines'
+                }
+            },
+            diagnostics = {
+                warningsAsHelp = {'clippy::pedantic', 'clippy::pattern_type_mismatch'},
+                warningsAsInfo = {
+                    -- I am not a big fan of this lint.
+                    'clippy::type_complexity'
                 }
             }
         },
@@ -175,11 +192,22 @@ require'lspconfig'.cmake.setup {
 -- tsserver
 
 require'lspconfig'.tsserver.setup {
+    init_options = require('nvim-lsp-ts-utils').init_options,
+
     capabilities = capabilities,
     on_attach = function(client)
         require'lsp_signature'.on_attach(cfg)
         client.resolved_capabilities.document_formatting = false
+
+        local ts_utils = require('nvim-lsp-ts-utils')
+        ts_utils.setup({})
+        ts_utils.setup_client(client)
+
+        vim.keymap.set('n', '<leader>GS', ':TSLspOrganize<CR>', {buffer = true})
+        vim.keymap.set('n', '<leader>GR', ':TSLspRenameFile<CR>', {buffer = true})
+        vim.keymap.set('n', '<leader>GI', ':TSLspImportAll<CR>', {buffer = true})
     end
+
 }
 
 -- latex
@@ -208,11 +236,36 @@ require'lspconfig'.texlab.setup {
             latexindent = {modifyLineBreaks = false}
         }
     },
-    on_attach = function()
+    on_attach = function(client)
+        require'lsp-format'.on_attach(client)
         require'lsp_signature'.on_attach(cfg)
     end,
     capabilities = capabilities,
     single_file_support = true
+}
+
+-- html
+
+require'lspconfig'.html.setup {capabilities = capabilities}
+
+--[[ -- markdown
+require'lspconfig'.zeta_note.setup {
+    cmd = {'/home/h4rr9/.local/bin/zeta-note'},
+    capabilities = capabilities,
+    on_attach = function(client)
+        client.resolved_capabilities.document_formatting = false
+        require'lsp_signature'.on_attach(cfg)
+    end
+} ]]
+
+-- haskell
+
+require'lspconfig'.hls.setup {
+    capabilities = capabilities,
+    on_attach = function(client)
+        require'lsp_signature'.on_attach(cfg)
+        client.resolved_capabilities.document_formatting = false
+    end
 }
 
 -- efm
@@ -222,7 +275,7 @@ require'lspconfig'.efm.setup {
     root_dir = function()
         return vim.loop.cwd()
     end,
-    filetypes = {'c', 'cpp', 'lua', 'python', 'rust', 'javascript', 'typescript', 'go'},
+    filetypes = {'c', 'cpp', 'lua', 'python', 'rust', 'javascript', 'typescript', 'go', 'haskell'},
     settings = {
         languages = {
 
@@ -254,7 +307,15 @@ require'lspconfig'.efm.setup {
                     lintFormats = {'%f:%l:%c: %m'}
                 }
             },
-            go = {{formatCommand = 'gofmt', formatStdin = true}}
+            html = {
+                {
+                    formatCommand = 'prettier --config ~/.config/nvim/.prettierrc   ${--tab-width:tabWidth} ${--single-quote:singleQuote} --parser html  ${INPUT}',
+                    formatStdin = true
+                }
+            },
+            go = {{formatCommand = 'gofmt', formatStdin = true}},
+            haskell = {{formatCommand = 'ormolu', formatStdin = true}}
+
         }
     },
     on_attach = require'lsp-format'.on_attach

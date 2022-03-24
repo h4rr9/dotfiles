@@ -25,7 +25,7 @@ opt.ttimeoutlen = 10
 
 -- status, tab, number, signline
 opt.ruler = false
-opt.laststatus = 2
+opt.laststatus = 3 -- global statusline
 opt.showtabline = 1
 opt.number = true
 opt.numberwidth = 1
@@ -59,6 +59,9 @@ opt.ignorecase = true
 opt.smartcase = true
 opt.hlsearch = false
 
+-- shell
+opt.shell = '/usr/bin/zsh'
+
 -- cursor
 opt.cursorline = true
 
@@ -74,10 +77,6 @@ g.clipboard = {
 -- cmp
 opt.completeopt = {'menu', 'menuone', 'noselect'}
 g.completion_matching_strategy_list = {'exact', 'substring', 'fuzzy'}
-
--- python
-g.python3_host_prog = '/usr/bin/python3'
-g.python_host_prog = '/use/bin/python'
 
 -- disable inbuilt vim plugins
 local built_ins = {

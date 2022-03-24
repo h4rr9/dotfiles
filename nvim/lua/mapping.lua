@@ -6,6 +6,10 @@ vim.g.mapleader = ' '
 vim.keymap.set('v', '<Tab>', '>gv')
 vim.keymap.set('v', '<S-Tab>', '<gv')
 
+-- quick exit from insert mode
+vim.keymap.set('i', 'jj', '<Esc>')
+-- this is a comment
+
 -- sort
 vim.keymap.set('v', '<leader>s', '<cmd>sort<cr>')
 
@@ -109,4 +113,36 @@ vim.keymap.set('n', '<leader>td', require'gitsigns'.toggle_deleted)
 
 -- runner
 vim.keymap.set('n', '<leader>rr', require('runner').get_results)
+
+-- luasnip
+vim.keymap.set({'i', 's'}, '<C-j>', function()
+    if require'luasnip'.jumpable(1) then require('luasnip').jump(1) end
+end)
+vim.keymap.set({'i', 's'}, '<C-k>', function()
+    if require'luasnip'.jumpable(-1) then require('luasnip').jump(-1) end
+end)
+
+vim.keymap.set({'i', 's'}, '<C-l>', function()
+    if require('luasnip').choice_active() then require('luasnip').change_choice(1) end
+end)
+vim.keymap.set({'i', 's'}, '<C-h>', function()
+    if require('luasnip').choice_active() then require('luasnip').change_choice(-1) end
+end)
+
+-- telekasten
+vim.keymap.set('n', '<leader>zf', function()
+    require('telekasten').find_notes()
+end)
+vim.keymap.set('n', '<leader>zd', function()
+    require('telekasten').find_daily_notes()
+end)
+vim.keymap.set('n', '<leader>zg', function()
+    require('telekasten').search_notes()
+end)
+vim.keymap.set('n', '<leader>zz', function()
+    require('telekasten').follow_link()
+end)
+vim.keymap.set('n', '<leader>z', function()
+    require('telekasten').panel()
+end)
 

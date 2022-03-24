@@ -36,5 +36,7 @@ snippets.rust = make(require('snippets.rust'))
 
 require('luasnip/loaders/from_vscode').lazy_load()
 
+require'luasnip'.filetype_extend('telekasten', {'markdown'})
+
 ls.snippets = snippets
 
