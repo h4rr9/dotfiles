@@ -9,7 +9,9 @@ import XMonad
 import XMonad.Actions.Navigation2D
 import XMonad.Actions.WindowNavigation
 
-import XMonad.Util.Dzen
+import XMonad.Util.Font
+import XMonad.Util.Loggers
+import XMonad.Util.NamedScratchpad
 import XMonad.Util.Paste as P
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Ungrab
@@ -20,6 +22,7 @@ import qualified XMonad.Layout.BoringWindows as BW
 import XMonad.Layout.Fullscreen
 import XMonad.Layout.Gaps
 import XMonad.Layout.Hidden
+import XMonad.Layout.IfMaxAlt
 import XMonad.Layout.LimitWindows
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
@@ -44,9 +47,11 @@ import Graphics.X11.ExtraTypes.XF86
 import System.Exit
 
 import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.DynamicProperty
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.InsertPosition
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.StatusBar.PP
 import XMonad.Hooks.UrgencyHook
 import XMonad.Hooks.WindowSwallowing
 
@@ -76,8 +81,8 @@ myClickJustFocuses = False
 -- sizes
 --
 gap = 10
-bargap = 20
-topbar = 10
+bargap = 16
+topbar = 6
 border = 0
 
 -- theme
@@ -265,6 +270,8 @@ myKeys conf@(XConfig{XMonad.modMask = modm}) =
           ((modm, xK_q), spawn "xmonad --recompile; xmonad --restart")
         , -- Run xmessage with a summary of the default keybindings (useful for beginners)
           ((modm .|. shiftMask, xK_slash), spawn ("echo \"" ++ help ++ "\" | xmessage -file -"))
+        , -- terminal scratchpad
+          ((modm .|. shiftMask, xK_Return), namedScratchpadAction myScratchPads "terminal")
         ]
             ++
             --
@@ -334,24 +341,17 @@ myLayout =
         fullscreenFloat $
             fullScreenToggle $
                 BW.boringWindows $
-                    ( fullBarToggle $
-                        reflectToggle $
-                            mirrorToggle $
-                                flex
-                    )
-                        ||| tabs
+                    flex ||| tabs
   where
-    -- floatWorkSpace = simpleFloat
     fullBarToggle = mkToggle (single FULLBAR)
     fullScreenToggle = mkToggle (single FULL)
     mirrorToggle = mkToggle (single MIRROR)
     reflectToggle = mkToggle (single REFLECTX)
-    smallMonResWidth = 1920
     showWorkspaceName = showWName' myShowWNameTheme
 
     named n = renamed [(XMonad.Layout.Renamed.Replace n)]
 
-    addTopBar = noFrillsDeco shrinkText topBarTheme
+    addTopBar n = named "flex" $ IfMaxAlt 1 (n) (noFrillsDeco shrinkText topBarTheme $ n)
 
     mySpacing = spacingWithEdge gap
     myGaps = gaps [(U, bargap), (D, bargap)]
@@ -364,22 +364,42 @@ myLayout =
     mySubLayout = subLayout [] ((named "tab" $ Simplest) ||| (named "acc" $ Accordion))
 
     flex =
-        -- don't forget: even though we are using X.A.Navigation2D
-        -- we need windowNavigation for merging to sublayouts
-        windowNavigation $
-            addTopBar $
-                addTabs shrinkText myTabTheme
-                -- subLayout [] (Simplest ||| (mySpacing $ Accordion))
-                $
-                    mySubLayout $
-                        standardLayouts
+        addTopBar $
+            addTabs shrinkText myTabTheme $
+                myGaps $
+                    mySpacing $
+                        fullBarToggle $
+                            reflectToggle $
+                                mirrorToggle $ (tall ||| tcol)
       where
-        --  ||| fullTabs
-        standardLayouts =
-            myGaps $
-                mySpacing $
-                    (named "tall" $ ResizableTall 1 (1 / 20) (1 / 2) [])
-                        ||| (named "tcol" $ ThreeColMid 1 (1 / 20) (1 / 2))
+        tall =
+            named "tall" $
+                windowNavigation $
+                    mySubLayout $
+                        (named "tall" $ ResizableTall 1 (1 / 20) (2 / 3) [])
+
+        tcol =
+            named "tcol" $
+                windowNavigation $
+                    mySubLayout $
+                        (named "tcol" $ ThreeColMid 1 (1 / 20) (1 / 2))
+
+------------------------------------------------------------------------
+-- Named Scatch Pads
+--
+myScratchPads :: [NamedScratchpad]
+myScratchPads =
+    [ NS "terminal" spawnTerm findTerm manageTerm
+    ]
+  where
+    spawnTerm = myTerminal ++ " -t scratchpad"
+    findTerm = title =? "scratchpad"
+    manageTerm = customFloating $ W.RationalRect l t w h
+      where
+        h = 0.9
+        w = 0.9
+        t = 0.95 - h
+        l = 0.95 - w
 
 ------------------------------------------------------------------------
 -- Window rules:
@@ -405,7 +425,9 @@ myManageHook =
         , appName =? "polybar" --> doIgnore
         , resource =? "desktop_window" --> doIgnore
         , resource =? "kdesktop" --> doIgnore
+        , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat
         ]
+        <+> namedScratchpadManageHook myScratchPads
         <+> insertPosition End Newer
 
 ---------------------------------------------------------------------- Event handling
@@ -417,7 +439,9 @@ myManageHook =
 -- return (All True) if the default handler is to be run afterwards. To
 -- combine event hooks use mappend or mconcat from Data.Monoid.
 --
-myEventHook = swallowEventHook (className =? "Alacritty" <||> className =? "Termite") (return True)
+myEventHook = mySpotifyCompose <+> swallowEventHook (className =? "Alacritty") (return True)
+  where
+    mySpotifyCompose = dynamicPropertyChange "WM_NAME" (title =? "Spotify" --> doShift (myWorkspaces !! 6))
 
 ------------------------------------------------------------------------
 -- Status bars and logging
@@ -425,6 +449,12 @@ myEventHook = swallowEventHook (className =? "Alacritty" <||> className =? "Term
 -- Perform an arbitrary action on each internal state change or X event.
 -- See the 'XMonad.Hooks.DynamicLog' extension for examples.
 --
+--
+--
+
+windowCount :: X (Maybe String)
+windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
+
 myLogHook :: D.Client -> PP
 myLogHook dbus =
     def
@@ -432,10 +462,17 @@ myLogHook dbus =
         , ppCurrent = wrap ("%{B" ++ active ++ "}") "%{B-}"
         , ppVisible = wrap ("%{B" ++ bg2 ++ "}") "%{B-}"
         , ppUrgent = wrap ("%{F" ++ red ++ "}") "%{F-}"
+        , ppHidden = wrap "" ""
         , ppHiddenNoWindows = wrap "" ""
         , ppWsSep = ""
-        , ppOrder = \(ws : l : t : ex) -> [ws]
+        , ppLayout = wrap "| " " "
+        , ppSep = ""
+        , ppExtras = myWindowCount ++ myTitle
+        , ppOrder = \(ws : l : t : ex) -> [ws, l] ++ ex
         }
+  where
+    myWindowCount = [logConst " ", windowCount, logConst " "]
+    myTitle = [wrapL " " " " $ fixedWidthL AlignLeft " " 10 $ shortenL 10 $ logTitle]
 
 dbusOutput :: D.Client -> String -> IO ()
 dbusOutput dbus str = do
@@ -480,7 +517,7 @@ main = do
                 . ewmhFullscreen
                 . ewmh
                 $ defaults
-                    { logHook = dynamicLogWithPP (myLogHook dbus)
+                    { logHook = dynamicLogWithPP . filterOutWsPP ["NSP"] $ (myLogHook dbus)
                     }
 
 -- A structure containing your configuration settings, overriding
