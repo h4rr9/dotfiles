@@ -1,19 +1,43 @@
+{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeSynonymInstances #-}
+
 import XMonad
 
+import XMonad.Actions.Navigation2D
+import XMonad.Actions.WindowNavigation
+
 import XMonad.Util.Dzen
+import XMonad.Util.Paste as P
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Ungrab
 
+import XMonad.Layout.Accordion
+import XMonad.Layout.BinarySpacePartition
+import qualified XMonad.Layout.BoringWindows as BW
 import XMonad.Layout.Fullscreen
 import XMonad.Layout.Gaps
+import XMonad.Layout.Hidden
 import XMonad.Layout.LimitWindows
+import XMonad.Layout.MultiToggle
+import XMonad.Layout.MultiToggle.Instances
 import XMonad.Layout.NoBorders
+import XMonad.Layout.NoFrillsDecoration
+import XMonad.Layout.PerScreen
+import XMonad.Layout.PerWorkspace
+import XMonad.Layout.Reflect
 import XMonad.Layout.Renamed
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.ShowWName
+import XMonad.Layout.Simplest
 import XMonad.Layout.Spacing
+import XMonad.Layout.SubLayouts
+import XMonad.Layout.Tabbed
 import XMonad.Layout.ThreeColumns
 import XMonad.Layout.ToggleLayouts
+import XMonad.Layout.WindowNavigation
 
 import Data.Monoid
 import Graphics.X11.ExtraTypes.XF86
@@ -23,6 +47,7 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.InsertPosition
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.UrgencyHook
 import XMonad.Hooks.WindowSwallowing
 
 import qualified Codec.Binary.UTF8.String as UTF8
@@ -31,7 +56,16 @@ import qualified DBus.Client as D
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
+-- globals
+
+myTerminal :: String
 myTerminal = "alacritty"
+
+myBrowser :: String
+myBrowser = "firefox"
+
+myLauncher :: String
+myLauncher = "~/.local/bin/myrofi"
 
 myFocusFollowsMouse :: Bool
 myFocusFollowsMouse = False
@@ -39,31 +73,111 @@ myFocusFollowsMouse = False
 myClickJustFocuses :: Bool
 myClickJustFocuses = False
 
-myBorderWidth = 4
+-- sizes
+--
+gap = 10
+bargap = 20
+topbar = 10
+border = 0
+
+-- theme
+--
+yellow = "#c0a36e"
+orange = "#FFA066"
+red = "#c34043"
+magenta = "#957fb8"
+violet = "#938AA9"
+blue = "#7e9cd8"
+cyan = "#6a9589"
+green = "#76946a"
+
+bg1 = "#1f1f28"
+bg2 = "#2d4f67"
+
+base00 = "#1F1F28"
+base01 = "#2A2A37"
+base02 = "#223249"
+base03 = "#727169"
+base04 = "#C8C093"
+base05 = "#DCD7BA"
+base06 = "#938AA9"
+base07 = "#363646"
+base08 = "#C34043"
+base09 = "#FFA066"
+base0A = "#DCA561"
+base0B = "#98BB6C"
+base0C = "#7FB4CA"
+base0D = "#7E9CD8"
+base0E = "#957FB8"
+base0F = "#D27E99"
+
+active = blue
+activeWarn = red
+inactive = base02
+focusColor = blue
+unfocusColor = base02
+
+myBorderWidth = border
 
 myModMask = mod4Mask
 
 myWorkspaces = [" dev ", " www ", " sys ", " doc ", " vbox ", " chat ", " mus ", " vid ", " gfx "]
 
-myNormalBorderColor = "#727168"
-myFocusedBorderColor = "#7fb4ca"
+myNormalBorderColor = "#000000"
+myFocusedBorderColor = active
 
-fg = "#ebdbb2"
-bg = "#282828"
-gray = "#a89984"
-bg1 = "#3c3836"
-bg2 = "#504945"
-bg3 = "#665c54"
-bg4 = "#7c6f64"
+myFont :: String
+myFont = "xft:mononoki Nerd Font:style=Regular:pixelsize=15:hinting=true"
 
-green = "#b8bb26"
-darkgreen = "#98971a"
-red = "#fb4934"
-darkred = "#cc241d"
-yellow = "#fabd2f"
-blue = "#83a598"
-purple = "#d3869b"
-aqua = "#8ec07c"
+topBarTheme =
+    def
+        { fontName = myFont
+        , inactiveBorderColor = base03
+        , inactiveColor = base03
+        , inactiveTextColor = base03
+        , activeBorderColor = active
+        , activeColor = active
+        , activeTextColor = active
+        , urgentBorderColor = red
+        , urgentTextColor = yellow
+        , decoHeight = topbar
+        }
+
+myTabTheme =
+    def
+        { fontName = myFont
+        , activeColor = active
+        , inactiveColor = base02
+        , activeBorderColor = active
+        , inactiveBorderColor = base02
+        , activeTextColor = base03
+        , inactiveTextColor = base00
+        }
+
+myShowWNameTheme =
+    def
+        { swn_font = myFont
+        , swn_fade = 0.5
+        , swn_bgcolor = "#000000"
+        , swn_color = "#FFFFFF"
+        }
+
+myNav2DConf =
+    def
+        { defaultTiledNavigation = centerNavigation
+        , floatNavigation = centerNavigation
+        , screenNavigation = lineNavigation
+        , layoutNavigation =
+            [ ("Full", centerNavigation)
+            -- line/center same results   ,("Simple Tabs", lineNavigation)
+            --                            ,("Simple Tabs", centerNavigation)
+            ]
+        , unmappedWindowRect =
+            [ ("Full", singleWindowRect)
+            -- works but breaks tab deco  ,("Simple Tabs", singleWindowRect)
+            -- doesn't work but deco ok   ,("Simple Tabs", fullScreenRect)
+            ]
+        }
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -71,9 +185,9 @@ aqua = "#8ec07c"
 myKeys conf@(XConfig{XMonad.modMask = modm}) =
     M.fromList $
         -- launch terminal
-        [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
+        [ ((modm, xK_Return), spawn myTerminal)
         , -- launch firefox
-          ((modm, xK_b), spawn "firefox")
+          ((modm, xK_b), spawn myBrowser)
         , -- volume control
           ((0, xK_F2), spawn "pamixer -d 5")
         , ((0, xK_F3), spawn "pamixer -i 5")
@@ -84,33 +198,57 @@ myKeys conf@(XConfig{XMonad.modMask = modm}) =
         , -- take screenshot
           ((0, xK_Print), unGrab *> spawn "scrot -s")
         , -- launch rofi
-          ((modm, xK_p), spawn "~/.local/bin/myrofi")
+          ((modm, xK_p), spawn myLauncher)
         , -- lock screen
           ((modm, xK_x), spawn "slock")
         , -- kill focused window
           ((modm .|. shiftMask, xK_c), kill)
-        , -- Rotate through the available layout algorithms
-          ((modm, xK_space), sendMessage NextLayout >> (curLayout >>= \d -> spawn $ "echo " ++ d ++ " | dzen2 -p 1 -w 40 -h 30 -x 940 -y 525"))
+        , -- Rotate through available layouts
+          ((modm, xK_space), sendMessage NextLayout)
+        , -- Rotate through sublayouts
+          ((modm .|. controlMask, xK_space), toSubl NextLayout)
         , -- Toggle full screen
-          ((modm, xK_f), sendMessage ToggleLayout)
+
+            ( (modm, xK_f)
+            , sequence_
+                [ (withFocused $ windows . W.sink)
+                , (sendMessage $ XMonad.Layout.MultiToggle.Toggle FULL)
+                ]
+            )
+        , -- Toggle Reflect
+          ((modm, xK_y), sendMessage $ XMonad.Layout.MultiToggle.Toggle MIRROR)
+        , -- Toggle Mirror
+          ((modm .|. shiftMask, xK_y), sendMessage $ XMonad.Layout.MultiToggle.Toggle REFLECTX)
         , --  Reset the layouts on the current workspace to default
           ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
         , -- Resize viewed windows to the correct size
           ((modm, xK_n), refresh)
-        , -- Move focus to the next window
-          ((modm, xK_Tab), windows W.focusDown)
-        , -- Move focus to the next window
-          ((modm, xK_j), windows W.focusDown)
+        , -- Move focus to the next windog
+          ((modm, xK_j), BW.focusDown)
         , -- Move focus to the previous window
-          ((modm, xK_k), windows W.focusUp)
+          ((modm, xK_k), BW.focusUp)
         , -- Move focus to the master window
-          ((modm, xK_m), windows W.focusMaster)
+          ((modm, xK_m), BW.focusMaster)
+        , -- Move focus to the unrgent window
+          ((modm, xK_u), focusUrgent)
         , -- Swap the focused window and the master window
-          ((modm, xK_Return), windows W.swapMaster)
+          ((modm .|. shiftMask, xK_m), windows W.swapMaster)
         , -- Swap the focused window with the next window
           ((modm .|. shiftMask, xK_j), windows W.swapDown)
         , -- Swap the focused window with the previous window
           ((modm .|. shiftMask, xK_k), windows W.swapUp)
+        , -- Sublayout merge
+          ((modm .|. controlMask, xK_j), sendMessage $ pullGroup D)
+        , ((modm .|. controlMask, xK_k), sendMessage $ pullGroup U)
+        , ((modm .|. controlMask, xK_h), sendMessage $ pullGroup L)
+        , ((modm .|. controlMask, xK_l), sendMessage $ pullGroup R)
+        , -- Un-merge from sublayout
+          ((modm .|. controlMask, xK_u), withFocused (sendMessage . UnMerge))
+        , -- Merge all into sublayout
+          ((modm .|. controlMask, xK_m), withFocused (sendMessage . MergeAll))
+        , -- Sublayout Focus
+          ((modm .|. controlMask, xK_period), onGroup W.focusUp')
+        , ((modm .|. controlMask, xK_comma), onGroup W.focusDown')
         , -- Shrink the master area
           ((modm, xK_h), sendMessage Shrink)
         , -- Expand the master area
@@ -139,7 +277,7 @@ myKeys conf@(XConfig{XMonad.modMask = modm}) =
             ]
             ++
             --
-            -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
+            -- mod-, Switch to physical/Xinerama screens 1, 2, or 3
             -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
             --
             [ ((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
@@ -184,51 +322,64 @@ myMouseBindings (XConfig{XMonad.modMask = modm}) =
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
+--
+data FULLBAR = FULLBAR deriving (Read, Show, Eq, Typeable)
+instance Transformer FULLBAR Window where
+    transform FULLBAR x k = k barFull (\_ -> x)
 
-curLayout :: X String
-curLayout = gets windowset >>= return . description . W.layout . W.workspace . W.current
+barFull = avoidStruts $ Simplest
 
-tall =
-    renamed [Replace "tall"] $
-        spacingWithEdge 10 $
-            gaps [(U, 15), (D, 15)] $
-                smartBorders $
-                    limitWindows 12 $
-                        ResizableTall 1 (3 / 100) (1 / 2) []
+myLayout =
+    showWorkspaceName $
+        fullscreenFloat $
+            fullScreenToggle $
+                BW.boringWindows $
+                    ( fullBarToggle $
+                        reflectToggle $
+                            mirrorToggle $
+                                flex
+                    )
+                        ||| tabs
+  where
+    -- floatWorkSpace = simpleFloat
+    fullBarToggle = mkToggle (single FULLBAR)
+    fullScreenToggle = mkToggle (single FULL)
+    mirrorToggle = mkToggle (single MIRROR)
+    reflectToggle = mkToggle (single REFLECTX)
+    smallMonResWidth = 1920
+    showWorkspaceName = showWName' myShowWNameTheme
 
-long =
-    renamed [Replace "long"] $
-        spacingWithEdge 10 $
-            gaps [(U, 15), (D, 15)] $
-                smartBorders $
-                    limitWindows 12 $
-                        Mirror $
-                            ResizableTall 1 (3 / 100) (1 / 2) []
+    named n = renamed [(XMonad.Layout.Renamed.Replace n)]
 
-threeCol =
-    renamed [Replace "tcol"] $
-        spacingWithEdge 10 $
-            gaps [(U, 15), (D, 15)] $
-                smartBorders $
-                    limitWindows 5 $
-                        ThreeColMid 1 (3 / 100) (1 / 2)
+    addTopBar = noFrillsDeco shrinkText topBarTheme
 
-threeRow =
-    renamed [Replace "trow"] $
-        spacingWithEdge 10 $
-            gaps [(U, 15), (D, 15)] $
-                smartBorders $
-                    limitWindows 5 $
-                        Mirror $
-                            ThreeColMid 1 (3 / 100) (1 / 2)
+    mySpacing = spacingWithEdge gap
+    myGaps = gaps [(U, bargap), (D, bargap)]
 
-full =
-    renamed [Replace "full"] $
-        smartBorders $
-            limitWindows 12 $
-                noBorders $ Full
+    tabs =
+        named "Tabs" $
+            addTabs shrinkText myTabTheme $
+                Simplest
 
-myLayout = toggleLayouts full $ showWName $ tall ||| threeCol ||| long ||| threeRow
+    mySubLayout = subLayout [] ((named "tab" $ Simplest) ||| (named "acc" $ Accordion))
+
+    flex =
+        -- don't forget: even though we are using X.A.Navigation2D
+        -- we need windowNavigation for merging to sublayouts
+        windowNavigation $
+            addTopBar $
+                addTabs shrinkText myTabTheme
+                -- subLayout [] (Simplest ||| (mySpacing $ Accordion))
+                $
+                    mySubLayout $
+                        standardLayouts
+      where
+        --  ||| fullTabs
+        standardLayouts =
+            myGaps $
+                mySpacing $
+                    (named "tall" $ ResizableTall 1 (1 / 20) (1 / 2) [])
+                        ||| (named "tcol" $ ThreeColMid 1 (1 / 20) (1 / 2))
 
 ------------------------------------------------------------------------
 -- Window rules:
@@ -278,13 +429,12 @@ myLogHook :: D.Client -> PP
 myLogHook dbus =
     def
         { ppOutput = dbusOutput dbus
-        , ppCurrent = wrap ("%{B" ++ bg2 ++ "}") "%{B-}"
-        , ppVisible = wrap ("%{B" ++ bg1 ++ "}") "%{B-}"
+        , ppCurrent = wrap ("%{B" ++ active ++ "}") "%{B-}"
+        , ppVisible = wrap ("%{B" ++ bg2 ++ "}") "%{B-}"
         , ppUrgent = wrap ("%{F" ++ red ++ "}") "%{F-}"
         , ppHiddenNoWindows = wrap "" ""
         , ppWsSep = ""
-        , -- , ppSep = " | "
-          ppOrder = \(ws : l : t : ex) -> [ws]
+        , ppOrder = \(ws : l : t : ex) -> [ws]
         }
 
 dbusOutput :: D.Client -> String -> IO ()
