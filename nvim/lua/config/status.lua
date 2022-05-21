@@ -1,3 +1,5 @@
+require('feline').reset_highlights()
+
 local u = {vi = {}}
 
 u.vi.text = {
@@ -84,11 +86,15 @@ u.icons = {
     circle = '●'
 }
 
+local gps = require('nvim-gps')
+
+gps.setup({separator = ' ' .. u.icons['right_rounded_thin'] .. ' '})
+
 local fmt = string.format
 
 local get_diag = function(severity)
     local count = 0
-    for _ in pairs(vim.diagnostic.get(0, {severity=severity})) do count = count + 1 end
+    for _ in pairs(vim.diagnostic.get(0, {severity = severity})) do count = count + 1 end
     return (count > 0) and ' ' .. count .. ' ' or ''
 end
 
@@ -215,12 +221,37 @@ local c = {
     git_change = {provider = 'git_diff_changed', hl = 'GitSignsChange', right_sep = {str = '', hl = 'GitSignsAdd', always_visible = false}},
     git_remove = {provider = 'git_diff_removed', hl = 'GitSignsDelete', right_sep = {str = ' ', hl = 'GitSignsAdd', always_visible = false}},
 
-    in_fileinfo = {provider = 'file_info', hl = 'StatusLine'},
-    in_position = {provider = 'position', hl = 'StatusLine'}
+    in_fileinfo = {
+        provider = 'file_info',
+        hl = 'FlnStatus',
+        right_sep = {hl = 'FlnStatus', always_visible = false, str = ' ' .. u.icons['right_rounded_thin']},
+        left_sep = {always_visible = false, str = ' ', hl = 'FlnStatus'}
+    },
+    inactive_in_fileinfo = {
+        provider = 'file_info',
+        hl = 'FlnAltStatus',
+        right_sep = {hl = 'FlnAltStatus', always_visible = false, str = ' ' .. u.icons['right_rounded_thin']},
+        left_sep = {always_visible = false, str = ' ', hl = 'FlnAltStatus'}
+    },
+    in_position = {provider = 'position', hl = 'StatusLine'},
+    gps = {
+        provider = function()
+            return gps.is_available() and gps.get_location() or ''
+        end,
+        hl = 'FlnStatus',
+        right_sep = {hl = 'FlnAltStatus', str = u.icons['right_rounded'], always_visible = true},
+        left_sep = {str = ' ', always_visible = false, hl = 'FlnStatus'}
+    },
+    inactive_gps = {
+        provider = function()
+            return gps.is_available() and gps.get_location() or ''
+        end,
+        hl = 'FlnAltStatus',
+        left_sep = {str = ' ', always_visible = false, hl = 'FlnAltStatus'}
+    }
 }
 
 local active = {
-
     { -- left
         c.vimode, c.gitbranch, c.git_add, c.git_change, c.git_remove, c.fileinfo, c.default -- must be last
     }, { -- right
@@ -233,6 +264,9 @@ local inactive = {
     {c.in_position} -- right
 }
 
+local winbar_active = {{c.in_fileinfo, c.gps, c.default}}
+local winbar_inactive = {{c.inactive_in_fileinfo, c.inactive_gps, c.default}}
+
 require('feline').setup({
     components = {active = active, inactive = inactive},
     highlight_reset_triggers = {},
@@ -244,5 +278,22 @@ require('feline').setup({
         buftypes = {'terminal'},
         bufnames = {}
     },
-    disable = {filetypes = {'dashboard', 'startify', 'testcases-status', 'vim-plug'}}
+    disable = {filetypes = {'alpha', 'dashboard', 'startify', 'testcases-status', 'vim-plug'}}
 })
+
+require('feline').winbar.setup({
+    force_inactive = {
+        filetypes = {
+            'NvimTree', 'packer', 'dap-repl', 'dapui_scopes', 'dapui_stacks', 'dapui_watches', 'dapui_repl', 'LspTrouble', 'qf', 'help', 'fugitive',
+            'fugitiveblame', 'Trouble'
+        },
+        buftypes = {'terminal'},
+        bufnames = {}
+    },
+    disable = {filetypes = {'alpha', 'dashboard', 'startify', 'testcases-status', 'vim-plug'}},
+    components = {active = winbar_active, inactive = winbar_inactive}
+})
+
+-- remove this once https://github.com/neovim/neovim/pull/18646 gets merged 
+vim.api.nvim_create_autocmd('CursorHold', {pattern = '*', command = 'set winbar=%{%v:lua.require(\'feline\').generate_winbar()%}'})
+

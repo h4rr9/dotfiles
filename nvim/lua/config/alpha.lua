@@ -36,7 +36,7 @@ local buttons = {
 local section = {header = default_header, buttons = buttons, footer = footer}
 
 local config = {
-    layout = {{type = 'padding', val = 15}, section.header, {type = 'padding', val = 5}, section.buttons, section.footer},
+    layout = {{type = 'padding', val = 10}, section.header, {type = 'padding', val = 5}, section.buttons, section.footer},
     opts = {margin = 5, noautocmd = true}
 }
 

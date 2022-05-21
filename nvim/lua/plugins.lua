@@ -52,6 +52,13 @@ return require('packer').startup(function(use)
     use 'hrsh7th/cmp-nvim-lsp'
     use 'saadparwaiz1/cmp_luasnip'
     use 'hrsh7th/cmp-path'
+    use {
+        'petertriho/cmp-git',
+        requires = 'nvim-lua/plenary.nvim',
+        config = function()
+            require('cmp_git').setup()
+        end
+    }
     use 'hrsh7th/cmp-nvim-lua'
     use {'L3MON4D3/LuaSnip', config = [[require'config.luasnip']]}
     use 'rafamadriz/friendly-snippets'
@@ -63,9 +70,8 @@ return require('packer').startup(function(use)
         requires = {'ray-x/lsp_signature.nvim', 'lukas-reineke/lsp-format.nvim', 'p00f/clangd_extensions.nvim'},
         config = [[require 'config.lsp']]
     }
-    use 'p00f/clangd_extensions.nvim'
-    -- use 'simrat39/rust-tools.nvim'
-    use {'matze/rust-tools.nvim', branch = 'fix-upstreamed-inlayhints'}
+    use 'https://git.sr.ht/~p00f/clangd_extensions.nvim'
+    use 'simrat39/rust-tools.nvim'
 
     use 'nvim-lua/lsp-status.nvim'
     use 'ray-x/lsp_signature.nvim'
@@ -74,22 +80,9 @@ return require('packer').startup(function(use)
     use 'jose-elias-alvarez/nvim-lsp-ts-utils'
 
     -- statusline / colortheme
-    use {
-        'rebelot/kanagawa.nvim',
-        config = function()
-            require'kanagawa'.setup({globalStatus = true, dimInactive = true})
-            vim.cmd [[colorscheme kanagawa]]
-        end
-    }
-    use {
-        'feline-nvim/feline.nvim',
-        after = 'kanagawa.nvim',
-        requires = {'kyazdani42/nvim-web-devicons'},
-        config = function()
-            require 'colors'
-            require 'config.status'
-        end
-    }
+    use {'rebelot/kanagawa.nvim', config = [[require 'config.colors']]}
+    use {'feline-nvim/feline.nvim', after = 'kanagawa.nvim', requires = {'kyazdani42/nvim-web-devicons'}, config = [[require 'config.status']]}
+    use {'SmiteshP/nvim-gps', requires = 'nvim-treesitter/nvim-treesitter'}
 
     -- navigation
     use 'ggandor/lightspeed.nvim'
@@ -102,6 +95,7 @@ return require('packer').startup(function(use)
             require('bufdel').setup {next = 'alternate'}
         end
     }
+    use 'wellle/targets.vim'
     use {
         'folke/todo-comments.nvim',
         requires = 'nvim-lua/plenary.nvim',
@@ -166,8 +160,17 @@ return require('packer').startup(function(use)
             require('better_escape').setup()
         end
     }
-
     use 'andymass/vim-matchup'
+    use {
+        'folke/twilight.nvim',
+        config = function()
+            require('twilight').setup {
+                -- your configuration comes here
+                -- or leave it empty to use the default settings
+                -- refer to the configuration section below
+            }
+        end
+    }
 
     -- markdown
     use {'renerocksai/calendar-vim', cmd = {'Calendar', 'CalendarVR', 'CalendarH', 'CalendarT', 'CalendarSearch'}}
@@ -177,7 +180,6 @@ return require('packer').startup(function(use)
     use {'mickael-menu/zk-nvim', config = [[require 'config.zk']]}
 
     -- tpope
-
     use 'tpope/vim-repeat'
     use 'tpope/vim-surround'
     use 'tpope/vim-unimpaired'

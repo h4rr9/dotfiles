@@ -45,6 +45,8 @@ local function colors_from_theme()
     }
 end
 
+vim.cmd [[colorscheme kanagawa]]
+
 local c = colors_from_theme()
 local sfg = vim.o.background == 'dark' and c.black or c.white
 local sbg = vim.o.background == 'dark' and c.white or c.black
@@ -98,9 +100,7 @@ local groups = {
 }
 
 local colors = require'kanagawa.colors'.setup()
-
-local my_colors = {bg = colors.bg_dim, bg_dim = colors.bg_dim}
-
+local my_colors = {bg = colors.bg_dim, bg_dim = colors.bg}
 require'kanagawa'.setup({colors = my_colors, overrides = groups, globalStatus = true, dimInactive = true})
 vim.cmd [[colorscheme kanagawa]]
 

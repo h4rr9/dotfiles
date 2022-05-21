@@ -139,7 +139,7 @@ function mnml_ssh {
 function mnml_pyenv {
     if [ -n "$VIRTUAL_ENV" ]; then
         _venv="$(basename $VIRTUAL_ENV)"
-        printf '%b' "${_venv%%.*}"
+        printf '%b' "[${_venv%%.*}]"
     fi
 }
 

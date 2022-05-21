@@ -50,6 +50,9 @@ opt.whichwrap:append '<>[]hl'
 opt.wrap = false
 opt.shiftround = true
 opt.textwidth = 79
+opt.foldmethod = 'expr'
+opt.foldexpr = 'nvim_treesitter#foldexpr()'
+opt.foldenable = false
 
 -- remove intro
 opt.shortmess:append 'sI'
@@ -74,6 +77,9 @@ g.clipboard = {
     cache_enable = 0
 }
 
+-- python virtualenv
+g.python3_host_prog = '/home/h4rr9/.pyenv/versions/neovim/bin/python'
+
 -- cmp
 opt.completeopt = {'menu', 'menuone', 'noselect'}
 g.completion_matching_strategy_list = {'exact', 'substring', 'fuzzy'}
@@ -83,5 +89,12 @@ local built_ins = {
     '2html_plugin', 'getscript', 'getscriptPlugin', 'gzip', 'logipat', 'netrw', 'netrwPlugin', 'netrwSettings', 'netrwFileHandlers', 'matchit', 'tar',
     'tarPlugin', 'rrhelper', 'spellfile_plugin', 'vimball', 'vimballPlugin', 'zip', 'zipPlugin'
 }
+
+vim.api.nvim_exec([[
+    let &t_Ts = "\e[9m"   " Strikethrough
+    let &t_Te = "\e[29m"
+    let &t_Cs = "\e[4:3m" " Undercurl
+    let &t_Ce = "\e[4:0m"
+]], false)
 
 for _, plugin in pairs(built_ins) do g['loaded_' .. plugin] = 1 end

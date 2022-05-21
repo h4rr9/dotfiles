@@ -22,21 +22,18 @@ end
 ls.config.set_config({
     history = true,
     updateevents = 'TextChanged,TextChangedI',
-    ext_opts = {[types.choiceNode] = {active = {virt_text = {{'choiceNode', 'Comment'}}}}},
+    ext_opts = {[types.choiceNode] = {active = {virt_text = {{'<- Current Choice', 'SpecialComment'}}}}},
     ext_base_prio = 300,
     ext_prio_increase = 1,
     enable_autosnippets = true
 })
 
-local snippets = {}
-
-snippets.cpp = make(require('snippets.cpp'))
-snippets.lua = make(require('snippets.lua'))
-snippets.rust = make(require('snippets.rust'))
+ls.add_snippets('cpp', make(require('snippets.cpp')))
+ls.add_snippets('lua', make(require('snippets.lua')))
+ls.add_snippets('rust', make(require('snippets.rust')))
+ls.add_snippets('all', make(require('snippets.all')))
 
 require('luasnip/loaders/from_vscode').lazy_load()
 
 require'luasnip'.filetype_extend('telekasten', {'markdown'})
-
-ls.snippets = snippets
 

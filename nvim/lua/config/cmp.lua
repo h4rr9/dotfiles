@@ -9,7 +9,8 @@ cmp.setup({
             require('luasnip').lsp_expand(args.body)
         end
     },
-    mapping = {
+    window = {completion = cmp.config.window.bordered(), documentation = cmp.config.window.bordered()},
+    mapping = cmp.mapping.preset.insert({
         ['<C-u>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), {'i', 'c'}),
         ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(4), {'i', 'c'}),
         ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), {'i', 'c'}),
@@ -24,9 +25,12 @@ cmp.setup({
                 end
             end
         })
-    },
+    }),
 
-    sources = {{name = 'nvim_lsp'}, {name = 'nvim_lua'}, {name = 'luasnip'}, {name = 'buffer'}, {name = 'path'}, {name = 'calc'}},
+    sources = cmp.config.sources({
+        {name = 'orgmode'}, {name = 'nvim_lsp'}, {name = 'cmp_git'}, {name = 'nvim_lua'}, {name = 'luasnip'}, {name = 'buffer'}, {name = 'path'},
+        {name = 'calc'}
+    }),
     sorting = {
         comparators = {
             cmp.config.compare.offset, cmp.config.compare.exact, cmp.config.compare.score, require'cmp-under-comparator'.under,
@@ -42,11 +46,11 @@ cmp.setup({
         })
 
     },
-    experimental = {native_menu = false, ghost_text = true}
+    experimental = {ghost_text = true}
+
 })
 
 cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({map_char = {tex = ''}}))
 
-cmp.setup.cmdline('/', {completion = {autocomplete = true}, sources = {{name = 'buffer'}}})
+cmp.setup.cmdline('/', {completion = {autocomplete = true}, sources = {{name = 'buffer'}}, view = {entries = {name = 'wildmenu', separator = '|'}}})
 cmp.setup.cmdline(':', {completion = {autocomplete = true}, sources = {{name = 'path'}, {name = 'cmdline'}}})
-

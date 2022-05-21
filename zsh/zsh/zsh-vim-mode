@@ -11,6 +11,13 @@ bindkey -M menuselect '^j' vi-down-line-or-history
 bindkey -M menuselect '^[[Z' vi-up-line-or-history
 bindkey -v '^?' backward-delete-char
 
+# yank to system clipboard
+function vi-yank-xclip {
+    zle vi-yank
+   echo "$CUTBUFFER" | clip.exe
+}
+
+
 # Change cursor shape for different vi modes.
 function zle-keymap-select () {
     case $KEYMAP in
@@ -18,11 +25,21 @@ function zle-keymap-select () {
         viins|main) echo -ne '\e[2 q';; # block
     esac
 }
-zle -N zle-keymap-select
+
 zle-line-init() {
     zle -K viins # initiate `vi insert` as keymap (can be removed if `bindkey -V` has been set elsewhere)
     echo -ne "\e[2 q"
 }
+
+
+zle -N zle-keymap-select
+zle -N vi-yank-xclip
 zle -N zle-line-init
+
+
+# bind yank key
+bindkey -M vicmd 'y' vi-yank-xclip
+
 echo -ne '\e[2 q' # Use block shape cursor on startup.
+
 preexec() { echo -ne '\e[2 q' ;} # Use block shape cursor for each new prompt.

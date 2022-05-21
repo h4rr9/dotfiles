@@ -18,8 +18,18 @@ unsetopt BEEP
 
 # completions
 autoload -Uz compinit
+
+() {
+  if [[ $# -gt 0 ]]; then
+    compinit
+  else
+    compinit -C
+  fi
+} ${ZDOTDIR:-$HOME}/.zcompdump(N.mh+24)
+
+
+# autoload -U +X compinit && compinit
 zstyle ':completion:*' menu select
-# zstyle ':completion::complete:lsof:*' menu yes select
 zmodload zsh/complist
 # compinit
 _comp_options+=(globdots)		# Include hidden files.
@@ -45,10 +55,8 @@ zsh_add_file "zsh-prompt"
 # Plugins
 zsh_add_plugin "zsh-users/zsh-autosuggestions"
 zsh_add_plugin "zsh-users/zsh-syntax-highlighting"
-zsh_add_plugin "hlissner/zsh-autopair"
 zsh_add_plugin "zsh-users/zsh-completions" 
-
-
+zsh_add_plugin "hlissner/zsh-autopair"
 
 
 bindkey '^[[P' delete-char
@@ -61,7 +69,6 @@ bindkey -r "^d"
 bindkey '^@' autosuggest-accept
 
 # FZF 
-# TODO update for mac
 [ -f /usr/share/fzf/completion.zsh ] && source /usr/share/fzf/completion.zsh
 [ -f /usr/share/fzf/key-bindings.zsh ] && source /usr/share/fzf/key-bindings.zsh
 [ -f /usr/share/doc/fzf/examples/completion.zsh ] && source /usr/share/doc/fzf/examples/completion.zsh
@@ -72,3 +79,4 @@ compinit
 
 # inline vim edit
 autoload edit-command-line; zle -N edit-command-line
+

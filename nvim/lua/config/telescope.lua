@@ -61,7 +61,7 @@ end
 local M = {}
 
 M.project_files = function()
-    local opts = {find_command = {'rg', '--files', '--hidden', '-g', '!.git'}}
+    local opts = {find_command = {'rg', '--files', '--hidden', '-g', '!.git'}, show_untracked = false, recurse_submodules = true}
     local t_ok = pcall(require'telescope.builtin'.git_files, opts)
     if not t_ok then require'telescope.builtin'.find_files(opts) end
 end
@@ -79,4 +79,3 @@ M.search_cp = function()
 end
 
 return M
-
