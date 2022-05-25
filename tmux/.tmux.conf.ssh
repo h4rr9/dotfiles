@@ -46,13 +46,13 @@ bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel cli
 #if-shell -b 'test -n "$WSLENV"' 'bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel clip.exe'
 
 # easy resize panels
-bind H resize-pane -L 10
-bind L resize-pane -R 10
-bind J resize-pane -D 10
-bind K resize-pane -U 10
+bind -r H resize-pane -L 10
+bind -r L resize-pane -R 10
+bind -r J resize-pane -D 10
+bind -r K resize-pane -U 10
 
-bind l next-window
-bind h previous-window
+bind -r l next-window
+bind -r h previous-window
 
 
 bind -n M-h select-pane -L 
