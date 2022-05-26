@@ -288,12 +288,9 @@ require('feline').winbar.setup({
             'fugitiveblame', 'Trouble'
         },
         buftypes = {'terminal'},
-        bufnames = {}
+        bufnames = {''}
     },
     disable = {filetypes = {'alpha', 'dashboard', 'startify', 'testcases-status', 'vim-plug'}},
     components = {active = winbar_active, inactive = winbar_inactive}
 })
-
--- remove this once https://github.com/neovim/neovim/pull/18646 gets merged 
-vim.api.nvim_create_autocmd('CursorHold', {pattern = '*', command = 'set winbar=%{%v:lua.require(\'feline\').generate_winbar()%}'})
 
