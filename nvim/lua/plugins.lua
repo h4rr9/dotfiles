@@ -74,7 +74,21 @@ return require('packer').startup(function(use)
     use 'simrat39/rust-tools.nvim'
 
     use 'nvim-lua/lsp-status.nvim'
-    use 'ray-x/lsp_signature.nvim'
+    use {
+        'ray-x/lsp_signature.nvim',
+        config = function()
+            require('lsp_signature').setup({
+                doc_lines = 2,
+                floating_window = true,
+                hint_enable = true,
+                hint_prefix = '↗️ ',
+                hint_scheme = 'String',
+                max_width = 120,
+                handler_opts = {border = 'single'}
+            })
+
+        end
+    }
     use 'lukas-reineke/lsp-format.nvim'
     use 'kosayoda/nvim-lightbulb'
     use 'jose-elias-alvarez/nvim-lsp-ts-utils'

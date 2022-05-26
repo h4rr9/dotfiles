@@ -77,6 +77,7 @@ local groups = {
     FlnError = {fg = c.black, bg = c.err, style = 'bold'},
     FlnStatus = {fg = sfg, bg = sbg, style = 'bold'},
     FlnAltStatus = {fg = sbg, bg = sfg, style = 'bold'},
+    FlnSigStatus = {fg = c.red, bg = sbg, style = 'bold'},
 
     -- Dianostic Seperators
     FlnBgHint = {fg = ct.sel.bg, bg = c.hint},

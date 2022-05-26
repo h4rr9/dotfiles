@@ -1,6 +1,7 @@
 require('feline').reset_highlights()
 
 local u = {vi = {}}
+local sig_width = 80
 
 u.vi.text = {
     n = 'NORMAL',
@@ -239,8 +240,48 @@ local c = {
             return gps.is_available() and gps.get_location() or ''
         end,
         hl = 'FlnStatus',
-        right_sep = {hl = 'FlnAltStatus', str = u.icons['right_rounded'], always_visible = true},
         left_sep = {str = ' ', always_visible = false, hl = 'FlnStatus'}
+    },
+    sig_left = {
+        provider = function()
+            if not pcall(require, 'lsp_signature') then return '' end
+            local sig = require('lsp_signature').status_line(sig_width)
+            if sig == nil or sig.label == nil or sig.range == nil then return '' end
+            if sig.range.start and sig.range['end'] and #sig.hint ~= 0 then
+                return sig.label:sub(1, sig.range['start'] - 1)
+            else
+                return ''
+
+            end
+        end,
+        hl = 'FlnStatus',
+        left_sep = {hl = 'FlnStatus', str = ' ' .. u.icons['right_rounded_thin'] .. ' '}
+
+    },
+    sig_hint = {
+        provider = function()
+            if not pcall(require, 'lsp_signature') then return '' end
+            local sig = require('lsp_signature').status_line(sig_width)
+            if sig == nil or sig.label == nil or sig.range == nil then return '' end
+            return sig.hint
+        end,
+        hl = 'FlnSigStatus'
+    },
+
+    sig_right = {
+        provider = function()
+            if not pcall(require, 'lsp_signature') then return '' end
+            local sig = require('lsp_signature').status_line(sig_width)
+            if sig == nil or sig.label == nil or sig.range == nil then return '' end
+            if sig.range.start and sig.range['end'] and #sig.hint ~= 0 then
+                return sig.label:sub(sig.range['end'] + 1, #sig.label)
+            else
+                return ''
+
+            end
+        end,
+        hl = 'FlnStatus',
+        right_sep = {hl = 'FlnAltStatus', str = u.icons['right_rounded'], always_visible = true}
     },
     inactive_gps = {
         provider = function()
@@ -264,7 +305,7 @@ local inactive = {
     {c.in_position} -- right
 }
 
-local winbar_active = {{c.in_fileinfo, c.gps, c.default}}
+local winbar_active = {{c.in_fileinfo, c.gps, c.sig_left, c.sig_hint, c.sig_right, c.default}}
 local winbar_inactive = {{c.inactive_in_fileinfo, c.inactive_gps, c.default}}
 
 require('feline').setup({
@@ -288,7 +329,7 @@ require('feline').winbar.setup({
             'fugitiveblame', 'Trouble'
         },
         buftypes = {'terminal'},
-        bufnames = {''}
+        bufnames = {}
     },
     disable = {filetypes = {'alpha', 'dashboard', 'startify', 'testcases-status', 'vim-plug'}},
     components = {active = winbar_active, inactive = winbar_inactive}

@@ -4,16 +4,6 @@ local util = require('lspconfig').util
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-local cfg = {
-    doc_lines = 2,
-    floating_window = true,
-    hint_enable = true,
-    hint_prefix = '↗️ ',
-    hint_scheme = 'String',
-    max_width = 120,
-    handler_opts = {border = 'single'}
-}
-
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 capabilities.textDocument.completion.completionItem.resolveSupport = {properties = {'documentation', 'detail', 'additionalTextEdits'}}
 capabilities.textDocument.completion.editsNearCursor = true
@@ -65,7 +55,6 @@ require('clangd_extensions').setup {
             }
         },
         on_attach = function(client)
-            require'lsp_signature'.on_attach(cfg)
             client.server_capabilities.document_formatting = false
             vim.keymap.set('n', '<leader>Gh', '<cmd>ClangdSwitchSourceHeader<cr>', {buffer = true})
             vim.keymap.set('n', '<leader>Gvh', '<cmd>ClangdSwitchSourceHeaderVSplit<cr>', {buffer = true})
@@ -87,7 +76,6 @@ require'lspconfig'.sumneko_lua.setup {
         },
 
         on_attach = function(client)
-            require'lsp_signature'.on_attach(cfg)
             client.server_capabilities.document_formatting = false
 
         end,
@@ -122,7 +110,6 @@ require('rust-tools').setup({
             diagnostics = {warningsAsHelp = {'clippy::pedantic', 'clippy::pattern_type_mismatch'}}
         },
         on_attach = function(client)
-            require'lsp_signature'.on_attach(cfg)
             client.server_capabilities.document_formatting = false
         end,
         capabilities = capabilities
@@ -140,7 +127,6 @@ require'lspconfig'.pylsp.setup {
     end,
     on_attach = function(client)
         client.server_capabilities.document_formatting = false
-        require'lsp_signature'.on_attach(cfg)
     end,
     capabilities = capabilities
 }
@@ -148,7 +134,6 @@ require'lspconfig'.pylsp.setup {
 -- require'lspconfig'.pyright.setup {
 --     on_attach = function(client)
 --         client.server_capabilities.document_formatting = false
---         require'lsp_signature'.on_attach(cfg)
 --     end,
 --     capabilities = capabilities
 -- }
@@ -160,7 +145,6 @@ require'lspconfig'.gopls.setup {
     settings = {gopls = {analyses = {unusedparams = true}, staticcheck = true}},
     capabilities = capabilities,
     on_attach = function(client)
-        require'lsp_signature'.on_attach(cfg)
         client.server_capabilities.document_formatting = false
     end
 }
@@ -185,7 +169,6 @@ require'lspconfig'.tsserver.setup {
 
     capabilities = capabilities,
     on_attach = function(client)
-        require'lsp_signature'.on_attach(cfg)
         client.server_capabilities.document_formatting = false
 
         local ts_utils = require('nvim-lsp-ts-utils')
@@ -227,7 +210,6 @@ require'lspconfig'.texlab.setup {
     },
     on_attach = function(client)
         require'lsp-format'.on_attach(client)
-        require'lsp_signature'.on_attach(cfg)
     end,
     capabilities = capabilities,
     single_file_support = true
@@ -243,7 +225,6 @@ require'lspconfig'.zeta_note.setup {
     capabilities = capabilities,
     on_attach = function(client)
         client.server_capabilities.document_formatting = false
-        require'lsp_signature'.on_attach(cfg)
     end
 } ]]
 
@@ -252,7 +233,6 @@ require'lspconfig'.zeta_note.setup {
 require'lspconfig'.hls.setup {
     capabilities = capabilities,
     on_attach = function(client)
-        require'lsp_signature'.on_attach(cfg)
         client.server_capabilities.document_formatting = false
     end
 }
