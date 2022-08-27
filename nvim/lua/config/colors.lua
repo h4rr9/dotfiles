@@ -52,32 +52,32 @@ local sfg = vim.o.background == 'dark' and c.black or c.white
 local sbg = vim.o.background == 'dark' and c.white or c.black
 local ct = {tabl = fromhl('TabLine'), norm = fromhl('Normal'), sel = fromhl('TabLineSel'), fill = fromhl('TabLineFill')}
 local groups = {
-    FlnViBlack = {fg = c.white, bg = c.black, style = 'bold'},
-    FlnViRed = {fg = c.bg, bg = c.red, style = 'bold'},
-    FlnViGreen = {fg = c.bg, bg = c.green, style = 'bold'},
-    FlnViYellow = {fg = c.bg, bg = c.yellow, style = 'bold'},
-    FlnViBlue = {fg = c.bg, bg = c.blue, style = 'bold'},
-    FlnViMagenta = {fg = c.bg, bg = c.magenta, style = 'bold'},
-    FlnViCyan = {fg = c.bg, bg = c.cyan, style = 'bold'},
-    FlnViWhite = {fg = c.bg, bg = c.white, style = 'bold'},
+    FlnViBlack = {fg = c.white, bg = c.black, bold = true},
+    FlnViRed = {fg = c.bg, bg = c.red, bold = true},
+    FlnViGreen = {fg = c.bg, bg = c.green, bold = true},
+    FlnViYellow = {fg = c.bg, bg = c.yellow, bold = true},
+    FlnViBlue = {fg = c.bg, bg = c.blue, bold = true},
+    FlnViMagenta = {fg = c.bg, bg = c.magenta, bold = true},
+    FlnViCyan = {fg = c.bg, bg = c.cyan, bold = true},
+    FlnViWhite = {fg = c.bg, bg = c.white, bold = true},
 
-    FlnBlack = {fg = c.black, bg = c.white, style = 'bold'},
-    FlnRed = {fg = c.red, bg = c.bg, style = 'bold'},
-    FlnGreen = {fg = c.green, bg = c.bg, style = 'bold'},
-    FlnYellow = {fg = c.yellow, bg = c.bg, style = 'bold'},
-    FlnBlue = {fg = c.blue, bg = c.bg, style = 'bold'},
-    FlnMagenta = {fg = c.magenta, bg = c.bg, style = 'bold'},
-    FlnCyan = {fg = c.cyan, bg = c.bg, style = 'bold'},
-    FlnWhite = {fg = c.white, bg = c.bg, style = 'bold'},
+    FlnBlack = {fg = c.black, bg = c.white, bold = true},
+    FlnRed = {fg = c.red, bg = c.bg, bold = true},
+    FlnGreen = {fg = c.green, bg = c.bg, bold = true},
+    FlnYellow = {fg = c.yellow, bg = c.bg, bold = true},
+    FlnBlue = {fg = c.blue, bg = c.bg, bold = true},
+    FlnMagenta = {fg = c.magenta, bg = c.bg, bold = true},
+    FlnCyan = {fg = c.cyan, bg = c.bg, bold = true},
+    FlnWhite = {fg = c.white, bg = c.bg, bold = true},
 
     -- Diagnostics
-    FlnHint = {fg = c.black, bg = c.hint, style = 'bold'},
-    FlnInfo = {fg = c.black, bg = c.info, style = 'bold'},
-    FlnWarn = {fg = c.black, bg = c.warn, style = 'bold'},
-    FlnError = {fg = c.black, bg = c.err, style = 'bold'},
-    FlnStatus = {fg = sfg, bg = sbg, style = 'bold'},
-    FlnAltStatus = {fg = sbg, bg = sfg, style = 'bold'},
-    FlnSigStatus = {fg = c.red, bg = sbg, style = 'bold'},
+    FlnHint = {fg = c.black, bg = c.hint, bold = true},
+    FlnInfo = {fg = c.black, bg = c.info, bold = true},
+    FlnWarn = {fg = c.black, bg = c.warn, bold = true},
+    FlnError = {fg = c.black, bg = c.err, bold = true},
+    FlnStatus = {fg = sfg, bg = sbg, bold = true},
+    FlnAltStatus = {fg = sbg, bg = sfg, bold = true},
+    FlnSigStatus = {fg = c.red, bg = sbg, bold = true},
 
     -- Dianostic Seperators
     FlnBgHint = {fg = ct.sel.bg, bg = c.hint},
@@ -94,9 +94,9 @@ local groups = {
     FlnGitSeperator = {fg = c.bg, bg = c.alt},
 
     -- Git diagnostic
-    FlnGitAdd = {fg = fromhl('GitSignsAdd').fg, bg = c.bg, style = 'bold'},
-    FlnGitChange = {fg = fromhl('GitSignsChange').fg, bg = c.bg, style = 'bold'},
-    FlnGitRemove = {fg = fromhl('GitSignsDelete').fg, bg = c.bg, style = 'bold'}
+    FlnGitAdd = {fg = fromhl('GitSignsAdd').fg, bg = c.bg, bold = true},
+    FlnGitChange = {fg = fromhl('GitSignsChange').fg, bg = c.bg, bold = true},
+    FlnGitRemove = {fg = fromhl('GitSignsDelete').fg, bg = c.bg, bold = true}
 
 }
 

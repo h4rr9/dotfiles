@@ -88,19 +88,19 @@ scrolling:
 font:
   
   normal:
-    family: JetBrainsMono Nerd Font
+    family: Liga SFMono Nerd Font
     style:  Medium
 
   bold:
-    family: JetBrainsMono Nerd Font
+    family: Liga SFMono Nerd Font
     style:  Bold
 
   italic:
-    family: JetBrainsMono Nerd Font
+    family: Liga SFMono Nerd Font
     style:  Italic
 
   bold_italic:
-    family: JetBrainsMono Nerd Font 
+    family: Liga SFMono Nerd Font 
     style:  Bold Italic
 
   # Point size
@@ -249,16 +249,12 @@ dynamic_title: true
 #   - (macOS) /bin/bash --login
 #   - (Linux/BSD) user login shell
 #   - (Windows) powershell
-shell:
-  program: C:\windows\system32\wsl.exe ~/builds/tmux/bin/tmux
-  args:
-    - new-session -A -s main
 
 # Startup directory
 #
 # Directory the shell is started in. If this is unset, or `None`, the working
 # directory of the parent process will be used.
-working_directory: '\\wsl$\Debian\home\h4rr9'
+# working_directory: '\\wsl$\Debian\home\h4rr9'
 
 # WinPTY backend (Windows only)
 #

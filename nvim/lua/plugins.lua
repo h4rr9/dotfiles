@@ -5,7 +5,7 @@ return require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
 
     -- treesitter
-    use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate', config = [[require 'config.treesitter']]}
+    use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate', config = [[require 'config.treesitter']] }
     use 'RRethy/nvim-treesitter-textsubjects'
     use 'nvim-treesitter/nvim-treesitter-textobjects'
     use 'JoosepAlviste/nvim-ts-context-commentstring'
@@ -13,16 +13,17 @@ return require('packer').startup(function(use)
     -- git
     use {
         'lewis6991/gitsigns.nvim',
-        requires = {'nvim-lua/plenary.nvim'},
+        requires = { 'nvim-lua/plenary.nvim' },
         config = function()
             require('gitsigns').setup()
         end
     }
-    use {'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim'}
-    use {'tpope/vim-fugitive', cmd = 'Git'}
+    use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
+    use { 'tpope/vim-fugitive' }
 
     -- telescope
-    use {'nvim-telescope/telescope.nvim', requires = {'nvim-lua/plenary.nvim'}, config = [[require 'config.telescope']]}
+    use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' },
+        config = [[require 'config.telescope']] }
     use 'nvim-telescope/telescope-ui-select.nvim'
     use 'nvim-telescope/telescope-media-files.nvim'
     use 'nvim-telescope/telescope-fzy-native.nvim'
@@ -31,7 +32,7 @@ return require('packer').startup(function(use)
     use 'nvim-telescope/telescope-file-browser.nvim'
     use {
         'AckslD/nvim-neoclip.lua',
-        requires = {{'tami5/sqlite.lua', module = 'sqlite'}, {'nvim-telescope/telescope.nvim'}},
+        requires = { { 'tami5/sqlite.lua', module = 'sqlite' }, { 'nvim-telescope/telescope.nvim' } },
         config = function()
             require('neoclip').setup()
         end
@@ -39,13 +40,13 @@ return require('packer').startup(function(use)
     use {
         'nvim-telescope/telescope-frecency.nvim',
         config = function()
-            require'telescope'.load_extension('frecency')
+            require 'telescope'.load_extension('frecency')
         end,
-        requires = {'tami5/sqlite.lua'}
+        requires = { 'tami5/sqlite.lua' }
     }
 
     -- completion / snippets
-    use {'hrsh7th/nvim-cmp', requires = 'onsails/lspkind-nvim', config = [[require 'config.cmp']]}
+    use { 'hrsh7th/nvim-cmp', requires = 'onsails/lspkind-nvim', config = [[require 'config.cmp']] }
     use 'hrsh7th/cmp-buffer'
     use 'hrsh7th/cmp-calc'
     use 'hrsh7th/cmp-cmdline'
@@ -60,14 +61,14 @@ return require('packer').startup(function(use)
         end
     }
     use 'hrsh7th/cmp-nvim-lua'
-    use {'L3MON4D3/LuaSnip', config = [[require'config.luasnip']]}
+    use { 'L3MON4D3/LuaSnip', config = [[require'config.luasnip']] }
     use 'rafamadriz/friendly-snippets'
     use 'lukas-reineke/cmp-under-comparator'
 
     -- lsp
     use {
         'neovim/nvim-lspconfig',
-        requires = {'ray-x/lsp_signature.nvim', 'lukas-reineke/lsp-format.nvim', 'p00f/clangd_extensions.nvim'},
+        requires = { 'ray-x/lsp_signature.nvim', 'lukas-reineke/lsp-format.nvim', 'p00f/clangd_extensions.nvim' },
         config = [[require 'config.lsp']]
     }
     use 'https://git.sr.ht/~p00f/clangd_extensions.nvim'
@@ -84,7 +85,7 @@ return require('packer').startup(function(use)
                 hint_prefix = '↗️ ',
                 hint_scheme = 'String',
                 max_width = 120,
-                handler_opts = {border = 'single'}
+                handler_opts = { border = 'single' }
             })
 
         end
@@ -94,19 +95,21 @@ return require('packer').startup(function(use)
     use 'jose-elias-alvarez/nvim-lsp-ts-utils'
 
     -- statusline / colortheme
-    use {'rebelot/kanagawa.nvim', config = [[require 'config.colors']]}
-    use {'feline-nvim/feline.nvim', after = 'kanagawa.nvim', requires = {'kyazdani42/nvim-web-devicons'}, config = [[require 'config.status']]}
-    use {'SmiteshP/nvim-gps', requires = 'nvim-treesitter/nvim-treesitter'}
+    use { 'rebelot/kanagawa.nvim', config = [[require 'config.colors']] }
+    use { 'feline-nvim/feline.nvim', after = 'kanagawa.nvim', requires = { 'kyazdani42/nvim-web-devicons' },
+        config = [[require 'config.status']] }
+    use { 'SmiteshP/nvim-gps', requires = 'nvim-treesitter/nvim-treesitter' }
 
     -- navigation
     use 'ggandor/lightspeed.nvim'
-    use 'christoomey/vim-tmux-navigator'
+    -- use 'christoomey/vim-tmux-navigator'
+    use { 'knubie/vim-kitty-navigator' }
 
     -- nice things
     use {
         'ojroques/nvim-bufdel',
         config = function()
-            require('bufdel').setup {next = 'alternate'}
+            require('bufdel').setup { next = 'alternate' }
         end
     }
     use 'wellle/targets.vim'
@@ -124,13 +127,10 @@ return require('packer').startup(function(use)
         end
     }
     use {
-        'kkoomen/vim-doge',
-        run = ':call doge#install()',
-        cmd = 'DogeGenerate',
-        setup = function()
-            vim.g.doge_mapping_comment_jump_forward = '<C-j>'
-            vim.g.doge_mapping_comment_jump_backward = '<C-k>'
-        end
+        "danymat/neogen",
+        config = [[require 'config.docgen']],
+        requires = "nvim-treesitter/nvim-treesitter",
+        tag = "*"
     }
     use {
         'lervag/vimtex',
@@ -146,24 +146,25 @@ return require('packer').startup(function(use)
         config = function()
             vim.opt.list = true
             vim.opt.listchars:append('eol:↴')
-            vim.g.indent_blankline_filetype_exclude = {'alpha', 'man'}
-            require'indent_blankline'.setup {show_end_of_line = true, show_current_context = true, show_current_context_start = true}
+            vim.g.indent_blankline_filetype_exclude = { 'alpha', 'man' }
+            require 'indent_blankline'.setup { show_end_of_line = true, show_current_context = true,
+                show_current_context_start = true }
         end
     }
     use {
         'numToStr/Comment.nvim',
         config = function()
-            require('Comment').setup({mappings = {extended = true}})
+            require('Comment').setup({ mappings = { extended = true } })
         end
     }
 
-    use {'mbbill/undotree', cmd = 'UndotreeToggle'}
+    use { 'mbbill/undotree', cmd = 'UndotreeToggle' }
 
-    use {'goolord/alpha-nvim', config = [[require 'config.alpha']]}
+    use { 'goolord/alpha-nvim', config = [[require 'config.alpha']] }
     use {
         'Shatur/neovim-session-manager',
         config = function()
-            require'session_manager'.setup({autoload_mode = require('session_manager.config').AutoloadMode.Disabled})
+            require 'session_manager'.setup({ autoload_mode = require('session_manager.config').AutoloadMode.Disabled })
         end
     }
     use 'tami5/sqlite.lua'
@@ -187,11 +188,11 @@ return require('packer').startup(function(use)
     }
 
     -- markdown
-    use {'renerocksai/calendar-vim', cmd = {'Calendar', 'CalendarVR', 'CalendarH', 'CalendarT', 'CalendarSearch'}}
-    use {'iamcco/markdown-preview.nvim', ft = {'markdown', 'telekasten'}, run = ':call mkdp#util#install()'}
-    use {'mzlogin/vim-markdown-toc', ft = {'markdown', 'telekasten'}}
-    use {'dhruvasagar/vim-table-mode', ft = {'markdown', 'telekasten'}}
-    use {'mickael-menu/zk-nvim', config = [[require 'config.zk']]}
+    use { 'renerocksai/calendar-vim', cmd = { 'Calendar', 'CalendarVR', 'CalendarH', 'CalendarT', 'CalendarSearch' } }
+    use { 'iamcco/markdown-preview.nvim', ft = { 'markdown', 'telekasten' }, run = ':call mkdp#util#install()' }
+    use { 'mzlogin/vim-markdown-toc', ft = { 'markdown', 'telekasten' } }
+    use { 'dhruvasagar/vim-table-mode', ft = { 'markdown', 'telekasten' } }
+    use { 'mickael-menu/zk-nvim', config = [[require 'config.zk']] }
 
     -- tpope
     use 'tpope/vim-repeat'

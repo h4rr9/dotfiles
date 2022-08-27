@@ -70,12 +70,6 @@ opt.cursorline = true
 
 -- clipboard
 opt.clipboard = 'unnamedplus'
-g.clipboard = {
-    name = 'win32yank-wsl',
-    copy = {['+'] = 'win32yank.exe -i --crlf', ['*'] = 'win32yank.exe -i --crlf'},
-    paste = {['+'] = 'win32yank.exe -o --lf', ['*'] = 'win32yank.exe -o --lf'},
-    cache_enable = 0
-}
 
 -- python virtualenv
 g.python3_host_prog = '/home/h4rr9/.pyenv/versions/neovim/bin/python'
