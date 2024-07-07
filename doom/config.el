@@ -21,8 +21,8 @@
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept. For example:
 ;;
-(setq doom-font (font-spec :family "Liga SFMono Nerd Font" :size 12.5))
-(setq doom-variable-pitch-font (font-spec :family "Liga SFMono Nerd Font" :size 12.5))
+(setq doom-font (font-spec :family "Liga SFMono Nerd Font" :size 22))
+(setq doom-variable-pitch-font (font-spec :family "Liga SFMono Nerd Font" :size 22))
 ;;
 ;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
@@ -36,7 +36,7 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type 'nil)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -76,6 +76,7 @@
 ;; they are implemented.
 
 
+(setq auth-sources '("~/.authinfo"))
 (setq projectile-project-search-path '(("~/work". 1) ("~/sandbox" . 1)))
 
 (setq-default
@@ -160,7 +161,8 @@
 (after! lsp-ui
   :config
   (setq lsp-ui-doc-enable nil
-        lsp-headerline-breadcrumb-enable t
+        lsp-ui-sideline-enable nil
+        ;; lsp-headerline-breadcrumb-enable t
         lsp-signature-auto-activate nil
         lsp-signature-render-documentation nil
         )
@@ -172,307 +174,203 @@
     ("^\\*cargo" :slot -1 :size 0.50 :quit 'current :select t)
     ("^\\*rustic-compilation" :slot -1 :size 0.50 :quit 'current :select t)
     ("^\\*compilation" :slot -1 :size 0.50 :quit 'current :select t)
+    ("^\\*Shell Command Output" :slot -1 :size 0.50 :quit 'current :select t)
+    ("^\\*Async" :slot -1 :size 0.50 :quit 'current :select t)
     ("^\\*Python" :slot -1 :size 0.50 :quit 'current :select t)
     ("^\\*lsp-help" :slot -1 :select nil)
-   )
-)
+    )
+  )
 ;; blackhole
 (setq fancy-splash-image (concat doom-user-dir "assets/black-hole-small.png"))
 
-;; todo keywords
-(after! org
-  (setq org-startup-with-latex-preview t)
-  (setq org-todo-keywords
-      '((sequence
-         "TODO(t)" ; doing later
-         "NEXT(n)" ; doing now or soon
-         "|"
-         "DONE(d)" ; done
-         )
-        (sequence
-         "WAIT(w)" ; waiting for some external change
-         "HOLD(h)" ; waiting for some internal change
-         "IDEA(i)" ; maybe someday
-         "|"
-         "NOTE(o@/!)" ; end state, just keep track of it
-         "STOP(s@/!)" ; stopped waiting, decided not to work on it
-         ))
-        org-todo-keyword-faces
-        '(
-          ("TODO" :foreground "#C34043" :weight bold :underline t)
-          ("NEXT" :foreground "#E82424" :weight bold :underline t)
-          ("DONE" :foreground "#2B3328" :weight normal )
-
-          ("WAIT" :foreground "#FFA066" :weight bold :underline t)
-          ("HOLD" :foreground "#FF9E3B" :weight bold :underline t)
-          ("IDEA" :foreground "#938AA9" :weight bold :underline t)
-          ("NOTE" :foreground "#7E9CD8" :weight normal )
-          ("STOP" :foreground "#6A9589" :weight normal )
-
-          )
-      )
-  (setq org-agenda-files '("~/org/notes.org"))
-;; capture templates
-(setq org-capture-templates
-  '(("t" "Tasks" entry
-     (file+headline "" "Inbox")
-     "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
-    ("p" "Papers" entry
-     (file+headline "" "Papers")
-     "* TODO Read %a%?\n %U")
-    ("c" "Phone Call" entry
-     (file+headline "" "Inbox")
-     "* TODO Call %?\n %U")
-("m" "Meeting" entry
- (file+headline "" "Meetings")
- "* %?\n %U")
-("j" "Journal Entry" entry
- (file+datetree "journal.org")
- "* %U\n%?")))
-
-)
-
-
-
-
-;; org-latex
-(with-eval-after-load 'ox-latex
-  (add-to-list 'org-latex-classes
-               '("org-plain-latex"
-                 "\\documentclass{article}
-                [NO-DEFAULT-PACKAGES]
-                [PACKAGES]
-                [EXTRA]"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
-                 )))
-
-(setq org-latex-listings 't)
-(setq org-hide-emphasis-markers 't)
-(setq org-hide-leading-stars 't)
-(setq org-startup-indented 't)
-(setq org-latex-caption-above 't)
-(font-lock-add-keywords 'org-mode
-                        '(("^ +\\([-*]\\) "
-                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
 (setq epg-pinentry-mode 'loopback)
 
-
-;; deft
-(after! deft
-  :config
-  (setq deft-directory "~/org")
-  (setq deft-recursive t)
-  (setq deft-use-filter-string-for-filename t)
-  (setq deft-default-extension '("org" "txt"))
-      (defun cm/deft-parse-title (file contents)
-    "Parse the given FILE and CONTENTS and determine the title.
-  If `deft-use-filename-as-title' is nil, the title is taken to
-  be the first non-empty line of the FILE.  Else the base name of the FILE is
-  used as title."
-      (let ((begin (string-match "^#\\+[tT][iI][tT][lL][eE]: .*$" contents)))
-    (if begin
-        (string-trim (substring contents begin (match-end 0)) "#\\+[tT][iI][tT][lL][eE]: *" "[\n\t ]+")
-      (deft-base-filename file))))
-
-    (advice-add 'deft-parse-title :override #'cm/deft-parse-title)
-
-    (setq deft-strip-summary-regexp
-      (concat "\\("
-          "[\n\t]" ;; blank
-          "\\|^#\\+[[:alpha:]_]+:.*$" ;; org-mode metadata
-          "\\|^:PROPERTIES:\n\\(.+\n\\)+:END:\n"
-          "\\)"))
-)
-
-;; (setq! citar-bibliography '("~/org/citar.bib"))
-;; (setq! org-cite-insert-processor 'citar)
-;; (setq! org-cite-follow-processor 'citar)
-;; (setq! org-cite-activate-processor 'citar)
-
-;; bib
-(use-package! citar
-  :config
-(setq! citar-bibliography '("~/org/citar.bib")
-       citar-library-paths '("~/org/papers")
-       citar-notes-paths '("~/org/roam/references")
-       citar-library-file-extensions (list "pdf" "jpg")
-       citar-file-additional-files-separator "-"
-       citar-file-parser-functions '(citar-file--parser-default citar-file--parser-triplet)
-       )
-(setq! org-cite-export-processors '((latex . biblatex) (html . basic)))
-)
+(setq ispell-alternate-dictionary (concat doom-user-dir "assets/english_dict.txt"))
 
 
-;; org-roam
-
-(use-package! org-roam
-  :custom
-  (org-roam-directory "~/org/roam")
-  (org-roam-complete-everywhere t)
-)
-
-(use-package! websocket
-  :after org-roam)
-
-(use-package! org-roam-ui
-  :after org-roam
-
-  :config
-   (setq org-roam-ui-sync-theme t
-         org-roam-ui-follow t
-         org-roam-ui-update-on-save t
-         org-roam-ui-open-on-start t)
-)
+(defun pinentry-emacs (desc prompt ok error)
+  (let ((str (read-passwd (concat (replace-regexp-in-string "%22" "\"" (replace-regexp-in-string "%0A" "\n" desc)) prompt ": "))))
+    str))
 
 
-(use-package! elfeed
-  :config
-(defun concatenate-authors (authors-list)
-    "Given AUTHORS-LIST, list of plists; return string of all authors concatenated."
-    (if (> (length authors-list) 1)
-        (format "%s et al." (plist-get (nth 0 authors-list) :name))
-      (plist-get (nth 0 authors-list) :name)))
-
-(defun my-search-print-fn (entry)
-    "Print ENTRY to the buffer."
-    (let* ((date (elfeed-search-format-date (elfeed-entry-date entry)))
-        (title (or (elfeed-meta entry :title)
-                    (elfeed-entry-title entry) ""))
-        (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
-        (entry-authors (concatenate-authors
-                        (elfeed-meta entry :authors)))
-        (title-width (- (window-width) 10
-                        elfeed-search-trailing-width))
-        (title-column (elfeed-format-column
-                        title 100
-                        :left))
-        (entry-score (elfeed-format-column (number-to-string (elfeed-score-scoring-get-score-from-entry entry)) 10 :left))
-        (authors-column (elfeed-format-column entry-authors 40 :left)))
-    (insert (propertize date 'face 'elfeed-search-date-face) " ")
-
-    (insert (propertize title-column
-                        'face title-faces 'kbd-help title) " ")
-    (insert (propertize authors-column
-                        'kbd-help entry-authors) " ")
-    (insert entry-score " ")))
-
-
-
-
-  (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
-  (setq elfeed-search-date-format '("%y-%m-%d" 10 :left))
-  (setq elfeed-search-title-max-width 110)
-  (setq elfeed-search-filter "@2-week-ago +unread")
-  (setq elfeed-search-print-entry-function #'my-search-print-fn)
-  (setq elfeed-search-date-format '("%y-%m-%d" 10 :left))
-  (setq elfeed-search-title-max-width 110)
-  (defun my/elfeed-entry-to-arxiv ()
-    "Fetch an arXiv paper into the local library from the current elfeed entry. "
-    (interactive)
-    (let* ((link (elfeed-entry-link elfeed-show-entry))
-           (match-idx (string-match "arxiv.org/abs/\\([0-9.]*\\)" link))
-           (matched-arxiv-number (match-string 1 link)))
-      (when matched-arxiv-number
-        (message "Going to arXiv: %s" matched-arxiv-number)
-        (async-shell-command (format "arxiv-scrape %s" matched-arxiv-number))
-       )))
-  (map! :leader
-        :desc "arXIv paper to library" "n a" #'my/elfeed-entry-to-arxiv
-        :desc "Elfeed" "n e" #'elfeed)
-)
-
-
-(use-package! elfeed-score
-  :after elfeed
-  :config
-  (elfeed-score-load-score-file "~/.doom.d/elfeed.score")
-  ;; (setq elfeed-score-serde-score-file "~/.doom.d/elfeed.serde.score")
-  (elfeed-score-enable)
-  (define-key elfeed-search-mode-map "=" elfeed-score-map))
-
-
-(use-package! citar-org-roam
-  :after citar org-roam
-  :config (citar-org-roam-mode)
-  (setq citar-org-roam-note-title-template "${author} - ${title}")
-  (setq citar-org-roam-capture-template-key "n")
-)
-
-
-;; epub
-(use-package! nov
-  :mode ("\\.epub\\'" . nov-mode)
-  :config
-  (setq nov-save-place-file (concat doom-cache-dir "nov-places"))
+;; company
+(after! company
+  (setq company-minimum-prefix-length 2)
+  (setq company-show-quick-access t)
   )
 
-;; citar-org-roam only offers the citar-org-roam-note-title-template variable
-;; for customizing the contents of a new note and no way to specify a custom
-;; capture template. And the title template uses citar's own format, which means
-;; we can't run arbitrary functions in it.
-;;
-;; Left with no other options, we override the
-;; citar-org-roam--create-capture-note function and use our own template in it.
-(defun dh/citar-org-roam--create-capture-note (citekey entry)
-  "Open or create org-roam node for CITEKEY and ENTRY."
-  ;; adapted from https://jethrokuan.github.io/org-roam-guide/#orgc48eb0d
-  (let ((title (citar-format--entry
-                citar-org-roam-note-title-template entry)))
-    (org-roam-capture-
-     :templates
-     '(("r" "reference" plain "%?" :if-new
-        (file+head
-         "%(concat
- (when citar-org-roam-subdir (concat citar-org-roam-subdir \"/\")) \"${citekey}.org\")"
-         "#+title: ${title}\n\n")
-        :immediate-finish t
-        :unnarrowed t))
-     :info (list :citekey citekey)
-     :node (org-roam-node-create :title title)
-     :props '(:finalize find-file))
-    (org-roam-ref-add (concat "@" citekey))
-    (org-roam-property-add "NOTER_DOCUMENT" (concat "../../papers/" citekey ".pdf"))
-    ))
 
-;; citar has a function for inserting bibtex entries into a buffer, but none for
-;; returning a string. We could insert into a temporary buffer, but that seems
-;; silly. Plus, we'd have to deal with trailing newlines that the function
-;; inserts. Instead, we do a little copying and implement our own function.
-(defun dh/citar-get-bibtex (citekey)
-  (let* ((bibtex-files
-          (citar--bibliography-files))
-         (entry
-          (with-temp-buffer
-            (bibtex-set-dialect)
-            (dolist (bib-file bibtex-files)
-              (insert-file-contents bib-file))
-            (bibtex-search-entry citekey)
-            (let ((beg (bibtex-beginning-of-entry))
-                  (end (bibtex-end-of-entry)))
-              (buffer-substring-no-properties beg end)))))
-    entry))
+;; easy vertical/horizontal split
+(defun cust/vsplit-file-open (f)
+  (let ((evil-vsplit-window-right t))
+    (+evil/window-vsplit-and-follow)
+    (find-file f)))
 
-(advice-add #'citar-org-roam--create-capture-note :override #'dh/citar-org-roam--create-capture-note)
+(defun cust/split-file-open (f)
+  (let ((evil-split-window-below t))
+    (+evil/window-split-and-follow)
+    (find-file f)))
+
+(map! :after embark
+      :map embark-file-map
+      "V" #'cust/vsplit-file-open
+      "X" #'cust/split-file-open)
 
 
-(after! lsp-julia
+;;; :completion company
+;; IMO, modern editors have trained a bad habit into us all: a burning need for
+;; completion all the time -- as we type, as we breathe, as we pray to the
+;; ancient ones -- but how often do you *really* need that information? I say
+;; rarely. So opt for manual completion:
+(after! company
+  (setq company-idle-delay nil))
+;; Implicit /g flag on evil ex substitution, because I use the default behavior
+;; less often.
+(setq evil-ex-substitute-global t)
+
+;; (add-to-list '+lookup-provider-url-alist '("Zig std" "https://ziglang.org/documentation/master/std/#A;std?%s"))
+
+
+(after! vterm
   :config
-  (defun my/julia-repl-send-cell()
-    "Send the current julia cell (delimited by ###) to the julia shell"
-    (interactive)
-    (save-excursion (setq cell-begin (if (re-search-backward "^###" nil t) (point) (point-min))))
-    (save-excursion (setq cell-end (if (re-search-forward "^###" nil t) (point) (point-max))))
-    (set-mark cell-begin)
-    (goto-char cell-end)
-    (julia-repl-send-region-or-line)
-    (next-line))
-  (evil-add-command-properties #'my/julia-repl-send-cell :jump t)
-)
+  (setq vterm-timer-delay 0.01)
+  )
+
+(after! lsp-zig
+  :config
+  (setq lsp-zig-enable-autofix t)
+  (setq lsp-zig-warn-style t)
+  (setq lsp-zig-enable-build-on-save t)
+  (setq lsp-zig-build-on-save-step "check")
+  )
 
 
-(setq ispell-alternate-dictionary (concat doom-user-dir "assets/english_dict.txt"))
+(add-to-list 'image-types 'svg)
+(add-to-list 'image-types 'gif)
+;; double buffering fix https://github.com/doomemacs/doomemacs/issues/2217#issuecomment-568037014
+(add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
+
+(after! projectile
+  :config
+  (defun my/set-org-agenda-files (org-file)
+    "Set `org-agenda-files` to only include the given ORG-FILE."
+    (setq org-agenda-files (list org-file))
+    (message "Updated org-agenda-files: %s" org-agenda-files))
+
+
+  (defun my/projectile-create-org-file ()
+    "Create a dedicated org file for the current Projectile project with dynamic fields."
+    (let* ((project-root (projectile-project-root))
+           (org-file (concat project-root "project.org"))
+           (title (projectile-project-name))
+           (author user-full-name)
+           (email user-mail-address)
+           (date (format-time-string "<%Y-%m-%d %a>"))
+           (content (format "#+title: %s\n#+author: %s\n#+email: %s\n#+date: %s\n\n* PROJECT %s\n** TODO <First Task>\n"
+                            title author email date title)))
+      (unless (file-exists-p org-file)
+        (with-temp-file org-file
+          (insert content))
+        (message "Created project org file: %s" org-file))
+      (my/set-org-agenda-files org-file)))
+
+
+  (defun my/projectile-switch-project-action ()
+    "Switch to the project's org file when switching projects."
+    (my/projectile-create-org-file)
+    (find-file (concat (projectile-project-root) "project.org")))
+
+  (setq projectile-switch-project-action 'my/projectile-switch-project-action)
+  )
+
+
+(after! org
+  :config
+
+  (setq org-todo-keywords '
+        ((sequence "TODO(t)" "PROG(p!)" "BLOCK(b@/!)" "PROJECT(r)"
+                   "|"
+                   "DONE(d/!)" "KILL(k@/!)")))
+  ;; Ensure that log entries are recorded in the :PROPERTIES: drawer
+  (setq org-log-into-drawer t)
+
+  ;; Optionally, specify which logs to include in the drawer
+  (setq org-log-state-notes-into-drawer t)
+  (setq org-log-done 'time)
+  (setq org-log-redeadline 'time)
+  (setq org-log-reschedule 'time)
+
+  (setq org-projectile-per-project-filepath "project.org")
+  )
+
+
+(after! org-capture
+  :config
+
+  (defun +org--capture-local-root (path)
+    (let ((filename (file-name-nondirectory path)))
+      (expand-file-name
+       filename
+       (or (locate-dominating-file (file-truename default-directory)
+                                   filename)
+           (doom-project-root)
+           (user-error "Couldn't detect a project")))))
+
+  (defun +org-capture-project-org-file ()
+    "Find the nearest `+org-capture-todo-file' in a parent directory, otherwise,
+        opens a blank one at the project root. Throws an error if not in a project."
+    (+org--capture-local-root "project.org"))
+
+  (setq org-capture-templates
+        '(("t" "Personal todo" entry
+           (file+headline +org-capture-todo-file "Inbox")
+           "* [ ] %?\n%i\n%a" :prepend t)
+          ("n" "Personal notes" entry
+           (file+headline +org-capture-notes-file "Inbox")
+           "* %u %?\n%i\n%a" :prepend t)
+          ("j" "Journal" entry
+           (file+olp+datetree +org-capture-journal-file)
+           "* %U %?\n%i\n%a" :prepend t)
+
+          ;; NOTE: copied from  https://github.com/doomemacs/doomemacs/blob/21a427c33b57ab66eb7caa2830c0dfe930509318/modules/lang/org/config.el#L376
+          ;; modified to save into single project.org file
+          ;; instead of separate todo chagelod and notes files.
+          ;;
+          ;; Will use {project-root}/{todo,notes,changelog}.org, unless a
+          ;; {todo,notes,changelog}.org file is found in a parent directory.
+          ;; Uses the basename from `+org-capture-todo-file',
+          ;; `+org-capture-changelog-file' and `+org-capture-notes-file'.
+          ("p" "Templates for projects")
+          ("pt" "Project-local todo" entry  ; {project-root}/project.org
+           (file+headline +org-capture-project-org-file "Tasks")
+           "* TODO %?\n%i\n%a" :prepend t)
+          ("pn" "Project-local note" entry  ; {project-root}/project.org
+           (file+headline +org-capture-project-org-file "Notes")
+           "* %U %?\n%i\n%a" :prepend t)
+          ("pc" "Project-local changelog" entry  ; {project-root}/project.org
+           (file+headline +org-capture-project-org-file "Unreleased")
+           "* %U %?\n%i\n%a" :prepend t)
+
+          ;; Will use {org-directory}/{+org-capture-projects-file} and store
+          ;; these under {ProjectName}/{Tasks,Notes,Changelog} headings. They
+          ;; support `:parents' to specify what headings to put them under, e.g.
+          ;; :parents ("Projects")
+          ("o" "Centralized templates for projects")
+          ("ot" "Project todo" entry
+           (function +org-capture-central-project-todo-file)
+           "* TODO %?\n %i\n %a"
+           :heading "Tasks"
+           :prepend nil)
+          ("on" "Project notes" entry
+           (function +org-capture-central-project-notes-file)
+           "* %U %?\n %i\n %a"
+           :heading "Notes"
+           :prepend t)
+          ("oc" "Project changelog" entry
+           (function +org-capture-central-project-changelog-file)
+           "* %U %?\n %i\n %a"
+           :heading "Changelog"
+           :prepend t))
+        )
+
+  )
